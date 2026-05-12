@@ -793,6 +793,15 @@ let G={
   _itemRi:null,_itemNi:null,_pendingGym:null,
 };
 
+let battleLocked=false;
+function setBattleLock(state){
+  battleLocked=state;
+  document.querySelectorAll("#bmoves button, #b-main button, #b-bag-items .rnode").forEach(el=>{
+    if("disabled" in el) el.disabled=state;
+    else {el.style.pointerEvents=state?"none":"auto"; el.style.opacity=state?"0.6":"1";}
+  });
+}
+
 const HPcolor=r=>r>.5?"#639922":r>.25?"#EF9F27":"#E24B4A";
 function maxLv(){return G.team.length?Math.max(...G.team.map(p=>p.level)):5;}
 
@@ -1064,6 +1073,7 @@ function itemContinue(){
   processLearnQueue(()=>nextNode(G._itemRi,G._itemNi));
 }
 function initBattle(msg){
+  setBattleLock(false);
   document.getElementById("lvup-banner").style.display="none";
   ss("battle");renderBattle(msg);
   const b=G.battle;
@@ -1095,6 +1105,7 @@ function renderBattle(msg){
     return`<button class="mbtn" onclick="useMove(${i})">${m}<span class="mp">${mpLabel}</span></button>`;
   }).join("");
   showBMain();
+  if(battleLocked) setBattleLock(true);
 }
 function showBMain(){document.getElementById("b-main").style.display="block";document.getElementById("b-bag-panel").style.display="none";}
 function typeEffectMsg(mult){
@@ -1104,6 +1115,8 @@ function typeEffectMsg(mult){
   return"";
 }
 function useMove(i){
+  if(battleLocked) return;
+  setBattleLock(true);
   const b=G.battle,player=G.team.find(p=>p.hp>0);
   const moveName=player.moves[i];
   const {dmg,typeMultiplier}=calcDamage(player,moveName,b.e);
@@ -1112,7 +1125,7 @@ function useMove(i){
   document.getElementById("blog").textContent=player.name+" usa "+moveName+". ¡"+dmg+" de daño!"+effMsg;
   renderBattle();
   if(b.e.hp<=0){
-    if(b.queue&&b.queue.length>0){const nxt=b.queue.shift();b.e=nxt;setTimeout(()=>renderBattle("¡"+nxt.name+" entró al combate!"),700);}
+    if(b.queue&&b.queue.length>0){const nxt=b.queue.shift();b.e=nxt;setTimeout(()=>{renderBattle("¡"+nxt.name+" entró al combate!");setBattleLock(false);},700);}
     else setTimeout(()=>endBattle("win"),700);
     return;
   }
@@ -1130,8 +1143,8 @@ function enemyTurn(){
   if(player.hp<=0){
     const nxt=G.team.find(p=>p.hp>0);
     if(!nxt){setTimeout(()=>endBattle("lose"),700);return;}
-    setTimeout(()=>renderBattle("¡"+player.name+" se debilitó! ¡Adelante "+nxt.name+"!"),700);
-  }
+    setTimeout(()=>{renderBattle("¡"+player.name+" se debilitó! ¡Adelante "+nxt.name+"!");setBattleLock(false);},700);
+  } else setBattleLock(false);
 }
 function getCatchRate(ballKey,ratio){
   if(ballKey==="master_ball")return 1;
@@ -1140,8 +1153,10 @@ function getCatchRate(ballKey,ratio){
   return 0.12+ratio*0.6;
 }
 function bAct(a){
+  if(battleLocked) return;
   const b=G.battle;
   if(a==="run"){
+    setBattleLock(true);
     if(Math.random()<0.55)endBattle("run");
     else{document.getElementById("blog").textContent="¡No pudiste escapar!";setTimeout(enemyTurn,850);}
   }
@@ -1153,6 +1168,7 @@ function bAct(a){
     else if(G.bag.super_ball>0)bk="super_ball";
     else if(G.bag.pokeball>0)bk="pokeball";
     else{document.getElementById("blog").textContent="¡Sin Poké Balls!";return;}
+    setBattleLock(true);
     G.bag[bk]--;
     const bnames={pokeball:"Poké Ball",super_ball:"Super Ball",ultra_ball:"Ultra Ball",master_ball:"Master Ball"};
     const ratio=1-b.e.hp/b.e.maxHp;
@@ -1168,11 +1184,13 @@ function bAct(a){
   }
 }
 function useBagItem(k){
+  if(battleLocked) return;
   if((G.bag[k]||0)<=0)return;
+  setBattleLock(true);
   G.bag[k]--;showBMain();
   const player=G.team.find(p=>p.hp>0);
   const item=USABLE_IN_BATTLE.find(i=>i.k===k);
-  if(!item)return;
+  if(!item){setBattleLock(false);return;}
   if(item.sp==="revive"){
     const fainted=G.team.find(p=>p.hp<=0);
     if(fainted){fainted.hp=Math.floor(fainted.maxHp*0.5);document.getElementById("blog").textContent=fainted.name+" fue revivido con "+fainted.hp+" HP.";}
