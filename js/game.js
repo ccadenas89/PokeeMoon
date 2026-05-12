@@ -944,27 +944,48 @@ function continueGame(){
   }
 }
 
-function startNewGame(){
-  document.getElementById("intro-menu").style.display="none";
-  document.getElementById("intro-pokeball").style.display="block";
-}
-
 function checkIntroSave(){
   if(hasSave()){
-    document.getElementById("btn-continue").style.display="block";
+    const btnContinue=document.getElementById("btn-continue");
+    const saveInfo=document.getElementById("save-info");
+    if(btnContinue)btnContinue.style.display="block";
     try{
       const data=JSON.parse(localStorage.getItem(SAVE_KEY));
       const teamCount=data.team?data.team.length:0;
       const dexCount=data.caught?data.caught.length:0;
       const saveDate=new Date(data.timestamp);
       const dateStr=saveDate.toLocaleDateString()+" "+saveDate.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-      document.getElementById("save-info").style.display="block";
-      document.getElementById("save-info").textContent=`Equipo: ${teamCount} · Pokédex: ${dexCount} · ${dateStr}`;
+      if(saveInfo){
+        saveInfo.style.display="block";
+        saveInfo.textContent=`Equipo: ${teamCount} · Pokédex: ${dexCount} · ${dateStr}`;
+      }
     }catch(e){}
   }
 }
 
-checkIntroSave();
+function startNewGame(){
+  const menu=document.getElementById("intro-menu");
+  const pokeball=document.getElementById("intro-pokeball");
+  if(menu)menu.style.display="none";
+  if(pokeball)pokeball.style.display="block";
+}
+
+function initIntro(){
+  checkIntroSave();
+  const newGameBtn=document.getElementById("btn-new-game");
+  if(newGameBtn){
+    newGameBtn.addEventListener("click",function(e){
+      e.preventDefault();
+      startNewGame();
+    });
+  }
+}
+
+if(document.readyState==="loading"){
+  document.addEventListener("DOMContentLoaded",initIntro);
+}else{
+  initIntro();
+}
 
 let battleLocked=false;
 function setBattleLock(state){
