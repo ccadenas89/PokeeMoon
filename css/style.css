@@ -225,15 +225,16 @@ button{cursor:pointer}
 .pokedex-detail-info p{font-size:13px;color:var(--color-text-secondary)}
 
 /* ── PC BOX ── */
-.pc-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.pc-header h3{font-size:16px;font-weight:600;color:var(--color-text-primary);margin:0}
-.pc-count{font-size:12px;padding:3px 10px;border-radius:12px;background:var(--color-background-secondary);color:var(--color-text-secondary)}
-.pc-card{position:relative}
-.pc-btn{position:absolute;top:6px;right:6px;background:none;border:none;font-size:16px;cursor:pointer;padding:2px;border-radius:4px;opacity:0.5}
+.team-section{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--color-border-tertiary)}
+.pc-section{margin-top:8px}
+.section-title{font-size:14px;font-weight:600;color:var(--color-text-primary);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.team-count,.pc-count{font-size:11px;padding:2px 8px;border-radius:10px;background:var(--color-background-secondary);color:var(--color-text-secondary);font-weight:400}
+.pc-card{position:relative;cursor:pointer}
+.pc-card:hover{border-color:var(--color-border-secondary);transform:translateY(-1px)}
+.pc-btn{position:absolute;top:6px;right:6px;background:none;border:none;font-size:14px;cursor:pointer;padding:2px 4px;border-radius:4px;opacity:0.5}
 .pc-btn:hover{opacity:1;background:var(--color-background-secondary)}
-.pc-actions{display:flex;gap:4px;margin-top:6px}
-.pc-actions button{font-size:10px;padding:4px 8px;flex:1}
-.pc-release{background:var(--color-background-secondary);border:1px solid var(--color-border-tertiary)}
+.pc-release{position:absolute;top:6px;right:6px;background:none;border:none;font-size:12px;cursor:pointer;padding:2px 6px;border-radius:4px;opacity:0.5;color:#E24B4A}
+.pc-release:hover{opacity:1;background:#FCEBEB}
 
 /* ── DRAG AND DROP ── */
 .pkcard[draggable="true"]{cursor:grab;transition:transform 0.15s,box-shadow 0.15s}

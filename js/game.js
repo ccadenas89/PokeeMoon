@@ -1065,13 +1065,12 @@ function renderMap(){
 }
 
 function wTab(t){
-  ["map","team","bag","pc"].forEach(x=>{
+  ["map","team","bag"].forEach(x=>{
     document.getElementById("tw-"+x).style.display=x===t?"block":"none";
     document.getElementById("tb-"+x).classList.toggle("active",x===t);
   });
-  if(t==="team")renderTeam();
+  if(t==="team"){renderTeam();renderPC();}
   if(t==="bag")renderBag();
-  if(t==="pc")renderPC();
 }
 
 function enterNode(ri,ni){
@@ -1514,32 +1513,67 @@ function nextNode(ri,ni){G.wi=ri;G.ni=ni;advance();}
 function backWorld(ri,ni){G.wi=ri;G.ni=ni;processLearnQueue(()=>{ss("world");renderWorld();wTab("map");});}
 function renderTeam(){
   const grid=document.getElementById("tgrid");
+  const count=document.getElementById("team-count");
+  count.textContent=G.team.length+"/6";
   grid.innerHTML=G.team.map((p,i)=>{
     const r=p.hp/p.maxHp;
     const spr=spriteImg(p.name,"pk-sprite-lg",p.s);
-    return`<div class="pkcard" draggable="true" data-idx="${i}" ondragstart="teamDragStart(event)" ondragover="teamDragOver(event)" ondrop="teamDrop(event)">${spr}<div class="pn">${p.name}</div><div class="pt">Nv.${p.level} · ${p.type}</div><div class="pt">${p.hp}/${p.maxHp} HP</div><div style="height:3px;background:var(--color-background-secondary);border-radius:2px;margin:4px 0;overflow:hidden"><div style="height:100%;width:${Math.max(0,r*100)}%;background:${HPcolor(r)}"></div></div><div class="pt" style="font-size:10px">${p.moves.join(" · ")}</div><button class="pc-btn" onclick="moveToPC(${i})" title="Enviar a PC">📦</button></div>`;
-  }).join("")||"<p style='font-size:13px'>Sin equipo.</p>";
+    return`<div class="pkcard" draggable="true" data-src="team" data-idx="${i}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)">${spr}<div class="pn">${p.name}</div><div class="pt">Nv.${p.level} · ${p.type}</div><div class="pt">${p.hp}/${p.maxHp} HP</div><div style="height:3px;background:var(--color-background-secondary);border-radius:2px;margin:4px 0;overflow:hidden"><div style="height:100%;width:${Math.max(0,r*100)}%;background:${HPcolor(r)}"></div></div><div class="pt" style="font-size:10px">${p.moves.join(" · ")}</div><button class="pc-btn" onclick="moveToPC(${i})" title="Enviar a PC">📦</button></div>`;
+  }).join("")||"<p style='font-size:13px;color:var(--color-text-secondary)'>Sin Pokémon en el equipo.</p>";
 }
 
-let _dragIdx=null;
-function teamDragStart(e){
-  _dragIdx=parseInt(e.currentTarget.dataset.idx);
+function renderPC(){
+  const grid=document.getElementById("pc-grid");
+  const count=document.getElementById("pc-count");
+  count.textContent=G.pc.length;
+  grid.innerHTML=G.pc.map((p,i)=>{
+    const r=p.hp/p.maxHp;
+    const spr=spriteImg(p.name,"pk-sprite-lg",p.s);
+    return`<div class="pkcard pc-card" draggable="true" data-src="pc" data-idx="${i}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)" onclick="moveToTeam(${i})">${spr}<div class="pn">${p.name}</div><div class="pt">Nv.${p.level} · ${p.type}</div><div class="pt">${p.hp}/${p.maxHp} HP</div><div style="height:3px;background:var(--color-background-secondary);border-radius:2px;margin:4px 0;overflow:hidden"><div style="height:100%;width:${Math.max(0,r*100)}%;background:${HPcolor(r)}"></div></div><button class="pc-release" onclick="event.stopPropagation();releaseFromPC(${i})" title="Liberar">✕</button></div>`;
+  }).join("")||"<p style='font-size:13px;color:var(--color-text-secondary)'>PC vacío.</p>";
+}
+
+let _dragData=null;
+function dragStart(e){
+  _dragData={src:e.currentTarget.dataset.src,idx:parseInt(e.currentTarget.dataset.idx)};
   e.dataTransfer.effectAllowed="move";
 }
-function teamDragOver(e){
+function dragOver(e){
   e.preventDefault();
   e.dataTransfer.dropEffect="move";
 }
-function teamDrop(e){
+function drop(e){
   e.preventDefault();
-  const target=parseInt(e.currentTarget.dataset.idx);
-  if(_dragIdx===null||isNaN(target)||_dragIdx===target)return;
-  const temp=G.team[_dragIdx];
-  G.team[_dragIdx]=G.team[target];
-  G.team[target]=temp;
-  _dragIdx=null;
+  if(!_dragData)return;
+  const targetSrc=e.currentTarget.dataset.src;
+  const targetIdx=parseInt(e.currentTarget.dataset.idx);
+  if(_dragData.src===targetSrc){
+    if(_dragData.src==="team"){
+      if(_dragData.idx===targetIdx)return;
+      const temp=G.team[_dragData.idx];
+      G.team[_dragData.idx]=G.team[targetIdx];
+      G.team[targetIdx]=temp;
+    }else{
+      if(_dragData.idx===targetIdx)return;
+      const temp=G.pc[_dragData.idx];
+      G.pc[_dragData.idx]=G.pc[targetIdx];
+      G.pc[targetIdx]=temp;
+    }
+  }else{
+    if(_dragData.src==="team"&&targetSrc==="pc"){
+      if(G.team.length<=1)return;
+      const poke=G.team.splice(_dragData.idx,1)[0];
+      G.pc.splice(targetIdx,0,poke);
+    }else if(_dragData.src==="pc"&&targetSrc==="team"){
+      if(G.team.length>=6)return;
+      const poke=G.pc.splice(_dragData.idx,1)[0];
+      G.team.splice(targetIdx,0,poke);
+    }
+  }
+  _dragData=null;
   saveGame();
   renderTeam();
+  renderPC();
 }
 
 function moveToPC(idx){
@@ -1564,17 +1598,6 @@ function releaseFromPC(pcIdx){
   G.pc.splice(pcIdx,1);
   saveGame();
   renderPC();
-}
-
-function renderPC(){
-  const grid=document.getElementById("pc-grid");
-  const count=document.getElementById("pc-count");
-  count.textContent=G.pc.length+" Pokémon";
-  grid.innerHTML=G.pc.map((p,i)=>{
-    const r=p.hp/p.maxHp;
-    const spr=spriteImg(p.name,"pk-sprite-lg",p.s);
-    return`<div class="pkcard pc-card">${spr}<div class="pn">${p.name}</div><div class="pt">Nv.${p.level} · ${p.type}</div><div class="pt">${p.hp}/${p.maxHp} HP</div><div style="height:3px;background:var(--color-background-secondary);border-radius:2px;margin:4px 0;overflow:hidden"><div style="height:100%;width:${Math.max(0,r*100)}%;background:${HPcolor(r)}"></div></div><div class="pc-actions"><button onclick="moveToTeam(${i})" ${G.team.length>=6?'disabled title="Equipo lleno"':''}>Equipo</button><button onclick="releaseFromPC(${i})" class="pc-release">Liberar</button></div></div>`;
-  }).join("")||"<p style='font-size:13px'>PC vacío.</p>";
 }
 function renderBag(){
   const rendered=new Set();

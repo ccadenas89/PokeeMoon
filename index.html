@@ -76,22 +76,22 @@
     <button class="tab active" id="tb-map" onclick="wTab('map')">Ruta</button>
     <button class="tab" id="tb-team" onclick="wTab('team')">Equipo</button>
     <button class="tab" id="tb-bag" onclick="wTab('bag')">Mochila</button>
-    <button class="tab" id="tb-pc" onclick="wTab('pc')">PC</button>
     <button class="tab" id="tb-pokedex" onclick="openPokedex()">Pokédex</button>
   </div>
   <div id="tw-map"><div class="route-map" id="rmap"></div></div>
   <div id="tw-team" style="display:none">
-    <p style="font-size:11px;color:var(--color-text-secondary);margin-bottom:8px">Arrastra para reordenar · Máximo 6 Pokémon</p>
-    <div class="pkgrid" id="tgrid"></div>
+    <div class="team-section">
+      <h3 class="section-title">Equipo <span class="team-count" id="team-count">0/6</span></h3>
+      <p style="font-size:11px;color:var(--color-text-secondary);margin-bottom:8px">Arrastra para reordenar · Click 📦 enviar al PC</p>
+      <div class="pkgrid" id="tgrid"></div>
+    </div>
+    <div class="pc-section">
+      <h3 class="section-title">PC de Bill <span class="pc-count" id="pc-count">0</span></h3>
+      <p style="font-size:11px;color:var(--color-text-secondary);margin-bottom:8px">Click en el Pokémon para enviar al equipo</p>
+      <div class="pkgrid" id="pc-grid"></div>
+    </div>
   </div>
   <div id="tw-bag" style="display:none"><div style="display:flex;flex-direction:column;gap:5px;margin-top:8px" id="bagui"></div></div>
-  <div id="tw-pc" style="display:none">
-    <div class="pc-header">
-      <h3>PC de Bill</h3>
-      <span class="pc-count" id="pc-count">0 Pokémon</span>
-    </div>
-    <div class="pkgrid" id="pc-grid"></div>
-  </div>
 </div>
 <div id="s-pokedex" class="screen">
   <div class="pokedex-container">
