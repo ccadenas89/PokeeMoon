@@ -866,6 +866,7 @@ function pickItem(){
 
 let G={
   team:[],
+  caught:new Set(),
   bag:{pokeball:5,pocion:3,superpocion:1,super_ball:0,ultra_ball:0,master_ball:0,
        hiper_pocion:0,full_restore:0,revivir:0,pp_up:0,fruta_frambu:0,antidoto:0,despertar:0,
        caramelo_exp:0,caramelo_raro:0,caramelo_gordo:0,caramelo_maximo:0,
@@ -989,6 +990,7 @@ function enterNode(ri,ni){
       const giftPoke=mkPoke(giftData,5);
       giftPoke.hp=giftPoke.maxHp;
       if(G.team.length<6)G.team.push(giftPoke);
+      G.caught.add(giftData.n);
       const tc={planta:"#EAF3DE",fuego:"#FAEEDA",agua:"#E6F1FB",eléctrico:"#FAEEDA",normal:"#F1EFE8"};
       const giftMsg=`Tu madre te regala un ${giftData.n} para tu largo viaje. ¡Cuídalo!`;
       showResult(giftData.s,"¡Regalo de tu mamá!",giftMsg,ri,ni,false);
@@ -1322,6 +1324,7 @@ function endBattle(result){
     showResult("✨","¡Victoria!","+"+reward+" monedas."+extraMsg,ri,ni,false);
   }else if(result==="catch"){
     if(G.team.length<6)G.team.push({...b.e,hp:b.e.hp,moves:[...b.e.moves]});
+    G.caught.add(b.e.name);
     const _catchName=b.e.name,_catchS=b.e.s;
     showResult(_catchS,"¡Capturado!","¡"+_catchName+" se unió a tu equipo!",ri,ni,false);
     // Replace emoji icon with actual sprite
@@ -1552,7 +1555,23 @@ renderTeam=function(){
     const spr=spriteImg(p.name,"pk-sprite-lg",p.s);
     return`<div class="pkcard"><span class="ps">${spr}</span><div class="pn">${p.name}</div><div class="pt">Nv.${p.level} · ${p.type}</div><div class="pt">${p.hp}/${p.maxHp} HP</div><div style="height:3px;background:var(--color-background-secondary);border-radius:2px;margin:4px 0;overflow:hidden"><div style="height:100%;width:${Math.max(0,r*100)}%;background:${HPcolor(r)}"></div></div><div class="pt" style="font-size:10px">${p.moves.join(" · ")}</div></div>`;
   }).join("")||"<p style='font-size:13px'>Sin equipo.</p>";
+  renderPokedex();
 };
+function renderPokedex(){
+  const cont=document.getElementById("pokedex-grid");
+  if(!cont)return;
+  const caught=G.caught.size;
+  const total=BASE_POKEMON.length;
+  cont.innerHTML=BASE_POKEMON.map(p=>{
+    const isCaught=G.caught.has(p.n);
+    if(isCaught){
+      const spr=spriteImg(p.n,"pk-sprite-sm",p.s);
+      return`<div class="pdex-cell caught"><span class="pdex-spr">${spr}</span><span class="pdex-name">${p.n}</span></div>`;
+    }
+    return`<div class="pdex-cell"><span class="pdex-spr">?</span></div>`;
+  }).join("");
+  document.getElementById("pokedex-count").textContent=`${caught}/${total} descubiertos`;
+}
 
 const _origShowGymPreview=showGymPreview;
 showGymPreview=function(gd,ri,ni){
@@ -1568,7 +1587,7 @@ openBall=function(){
   document.getElementById("pb").classList.add("opening");
   setTimeout(()=>{
     const sd=STARTERS[Math.floor(Math.random()*STARTERS.length)];
-    const p=mkPoke(sd,5);p.hp=p.maxHp;G.team=[p];
+    const p=mkPoke(sd,5);p.hp=p.maxHp;G.team=[p];G.caught.add(sd.n);
     const tc={planta:"#EAF3DE",fuego:"#FAEEDA",agua:"#E6F1FB",electrico:"#FAEEDA",normal:"#F1EFE8"};
     const id=PKID[sd.n];
     const revealId="rspr"+Date.now();
