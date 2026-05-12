@@ -62,6 +62,89 @@ const FISH=[
   {n:"Inkay",s:"🦑",t:"siniestro",hp:53,atk:54},{n:"Arrokuda",s:"🐟",t:"agua",hp:41,atk:63},
   {n:"Dracovish",s:"🦈",t:"agua",hp:90,atk:90},{n:"Clauncher",s:"🦐",t:"agua",hp:50,atk:53},
 ];
+const BASE_POKEMON=[
+  {n:"Bulbasaur",s:"🌿",t:"planta",hp:45,atk:49,mv:["Látigo cepa","Polvo veneno","Drenadoras","Rayo solar"]},
+  {n:"Charmander",s:"🔥",t:"fuego",hp:39,atk:52,mv:["Ascuas","Rasguño","Lanzallamas","Garra dragón"]},
+  {n:"Squirtle",s:"💧",t:"agua",hp:44,atk:48,mv:["Pistola agua","Burbuja","Surf","Hidrobomba"]},
+  {n:"Chikorita",s:"🍃",t:"planta",hp:45,atk:49,mv:["Placaje","Hoja afilada","Síntesis","Rayo solar"]},
+  {n:"Cyndaquil",s:"🦔",t:"fuego",hp:39,atk:52,mv:["Ascuas","Finta","Lanzallamas","Rueda fuego"]},
+  {n:"Totodile",s:"🐊",t:"agua",hp:50,atk:65,mv:["Mordisco","Pistola agua","Tajo brutal","Hidrobomba"]},
+  {n:"Treecko",s:"🦎",t:"planta",hp:40,atk:45,mv:["Libra","Hoja afilada","Drenadoras","Rayo solar"]},
+  {n:"Torchic",s:"🐣",t:"fuego",hp:45,atk:60,mv:["Destructor","Ascuas","Patada ígnea","Llamarada"]},
+  {n:"Mudkip",s:"🌊",t:"agua",hp:50,atk:70,mv:["Placaje","Pistola agua","Terremoto","Hidrobomba"]},
+  {n:"Turtwig",s:"🐢",t:"planta",hp:55,atk:68,mv:["Placaje","Hoja afilada","Terremoto","Rayo solar"]},
+  {n:"Chimchar",s:"🐒",t:"fuego",hp:44,atk:58,mv:["Arañazo","Ascuas","Puño fuego","Lanzallamas"]},
+  {n:"Piplup",s:"🐧",t:"agua",hp:53,atk:51,mv:["Libra","Burbuja","Surf","Hidrobomba"]},
+  {n:"Snivy",s:"🐍",t:"planta",hp:45,atk:45,mv:["Placaje","Vinculo","Hoja afilada","Rayo solar"]},
+  {n:"Tepig",s:"🐷",t:"fuego",hp:65,atk:63,mv:["Placaje","Ascuas","Combustión","Lanzallamas"]},
+  {n:"Oshawott",s:"🦦",t:"agua",hp:55,atk:55,mv:["Placaje","Pistola agua","Cuchillada","Hidrobomba"]},
+  {n:"Chespin",s:"🌰",t:"planta",hp:56,atk:61,mv:["Placaje","Vinculo","Matraca","Rayo solar"]},
+  {n:"Fennekin",s:"🦊",t:"fuego",hp:40,atk:45,mv:["Arañazo","Ascuas","Psicocarga","Lanzallamas"]},
+  {n:"Froakie",s:"🐸",t:"agua",hp:41,atk:56,mv:["Placaje","Pistola agua","Acua jet","Hidrobomba"]},
+  {n:"Rowlet",s:"🦉",t:"planta",hp:68,atk:55,mv:["Placaje","Hoja afilada","Ataque ala","Rayo solar"]},
+  {n:"Litten",s:"🐱",t:"fuego",hp:45,atk:65,mv:["Arañazo","Ascuas","Incineración","Lanzallamas"]},
+  {n:"Popplio",s:"🦭",t:"agua",hp:50,atk:54,mv:["Placaje","Pistola agua","Vozarrón","Hidrobomba"]},
+  {n:"Grookey",s:"🎵",t:"planta",hp:50,atk:65,mv:["Arañazo","Vinculo","Tamborrada","Rayo solar"]},
+  {n:"Scorbunny",s:"🐰",t:"fuego",hp:50,atk:71,mv:["Placaje","Ascuas","Patada ígnea","Llamarada"]},
+  {n:"Sobble",s:"🫧",t:"agua",hp:50,atk:40,mv:["Placaje","Pistola agua","Burla","Hidrobomba"]},
+  {n:"Sprigatito",s:"🌸",t:"planta",hp:40,atk:61,mv:["Arañazo","Vinculo","Hoja afilada","Rayo solar"]},
+  {n:"Fuecoco",s:"🦷",t:"fuego",hp:67,atk:45,mv:["Placaje","Ascuas","Mordisco","Lanzallamas"]},
+  {n:"Quaxly",s:"🦆",t:"agua",hp:55,atk:65,mv:["Placaje","Pistola agua","Acua jet","Hidrobomba"]},
+  {n:"Pikachu",s:"⚡",t:"eléctrico",hp:35,atk:55,mv:["Impactrueno","Ataque rápido","Voltio cruel","Trueno"]},
+  {n:"Eevee",s:"🦊",t:"normal",hp:55,atk:45,mv:["Placaje","Mordisco","Velocidad extrema","Cabezazo"]},
+  {n:"Rattata",s:"🐭",t:"normal",hp:30,atk:56,mv:["Mordisco","Ataque rápido","Placaje"]},
+  {n:"Pidgey",s:"🐦",t:"volador",hp:40,atk:45,mv:["Placaje","Tornado","Ataque ala"]},
+  {n:"Caterpie",s:"🐛",t:"bicho",hp:45,atk:30,mv:["Placaje","Polvo veneno"]},
+  {n:"Geodude",s:"🪨",t:"roca",hp:40,atk:80,mv:["Lanzarrocas","Defensa","Placaje"]},
+  {n:"Gastly",s:"👻",t:"fantasma",hp:30,atk:35,mv:["Bola sombra","Hipnosis","Lametazo"]},
+  {n:"Zubat",s:"🦇",t:"veneno",hp:40,atk:45,mv:["Mordisco","Asombro","Aire cortante"]},
+  {n:"Jigglypuff",s:"🎵",t:"normal",hp:115,atk:45,mv:["Canto","Beso drenante","Doble bofetón"]},
+  {n:"Abra",s:"🔮",t:"psíquico",hp:25,atk:20,mv:["Teletransporte","Protección"]},
+  {n:"Machop",s:"💪",t:"lucha",hp:70,atk:80,mv:["Golpe dinámico","Patada baja","Lanzamiento"]},
+  {n:"Growlithe",s:"🐕",t:"fuego",hp:55,atk:70,mv:["Mordisco","Lanzallamas","Ascuas"]},
+  {n:"Ponyta",s:"🐎",t:"fuego",hp:50,atk:85,mv:["Rueda fuego","Pisotón","Ascuas"]},
+  {n:"Snorlax",s:"🐻",t:"normal",hp:160,atk:110,mv:["Cuerpo a cuerpo","Bostezo","Amnesia"]},
+  {n:"Meowth",s:"🐱",t:"normal",hp:40,atk:45,mv:["Arañazo","Mordisco","Finta"]},
+  {n:"Psyduck",s:"🐤",t:"agua",hp:50,atk:52,mv:["Agua pulverizada","Psíquico","Confusión"]},
+  {n:"Vulpix",s:"🦊",t:"fuego",hp:38,atk:41,mv:["Llama carga","Ascuas","Lanzallamas"]},
+  {n:"Oddish",s:"🌿",t:"planta",hp:45,atk:50,mv:["Absorber","Polvo veneno","Esporasueño"]},
+  {n:"Poliwag",s:"💧",t:"agua",hp:40,atk:50,mv:["Agua pulverizada","Hipnosis"]},
+  {n:"Slowpoke",s:"🐌",t:"agua",hp:90,atk:65,mv:["Confusión","Amnesia","Bosteza"]},
+  {n:"Magnemite",s:"🔩",t:"eléctrico",hp:25,atk:35,mv:["Impactrueno","Trueno","Sónico"]},
+  {n:"Koffing",s:"☁️",t:"veneno",hp:65,atk:60,mv:["Tóxico","Niebla tóxica","Placaje"]},
+  {n:"Mareep",s:"🐑",t:"eléctrico",hp:55,atk:40,mv:["Impactrueno","Carga","Rayo"]},
+  {n:"Houndour",s:"🐶",t:"fuego",hp:45,atk:60,mv:["Mordisco","Lanzallamas","Fuego sagrado"]},
+  {n:"Larvitar",s:"🦖",t:"roca",hp:50,atk:64,mv:["Lanzarrocas","Pisotón"]},
+  {n:"Ralts",s:"🧝",t:"psíquico",hp:28,atk:25,mv:["Confusión","Encanto","Señuelo"]},
+  {n:"Bagon",s:"🐉",t:"dragón",hp:45,atk:75,mv:["Garra dragón","Mordisco","Cabezazo"]},
+  {n:"Shinx",s:"⚡",t:"eléctrico",hp:45,atk:65,mv:["Impactrueno","Carga","Dentellada"]},
+  {n:"Riolu",s:"🐺",t:"lucha",hp:40,atk:70,mv:["Puño dinámico","Golpe bajo"]},
+  {n:"Zorua",s:"🦊",t:"siniestro",hp:40,atk:65,mv:["Mordisco","Finta","Asombro"]},
+  {n:"Deino",s:"🐲",t:"dragón",hp:52,atk:65,mv:["Garra dragón","Mordisco","Pulso dragón"]},
+  {n:"Goomy",s:"🟣",t:"dragón",hp:45,atk:50,mv:["Agua pulverizada","Pulso dragón","Paralizador"]},
+  {n:"Dreepy",s:"🌀",t:"fantasma",hp:28,atk:60,mv:["Bola sombra","Garra dragón"]},
+  {n:"Pawmi",s:"⚡",t:"eléctrico",hp:45,atk:70,mv:["Impactrueno","Carga","Tacleada"]},
+  {n:"Magikarp",s:"🐟",t:"agua",hp:20,atk:10,mv:["Chapoteo"]},
+  {n:"Goldeen",s:"🐠",t:"agua",hp:45,atk:67,mv:["Pistola agua","Ataque cornada"]},
+  {n:"Tentacool",s:"🪼",t:"agua",hp:40,atk:40,mv:["Agua pulverizada","Veneno polvo"]},
+  {n:"Horsea",s:"🌊",t:"agua",hp:30,atk:40,mv:["Agua pulverizada","Paralizador","Rayo burbuja"]},
+  {n:"Shellder",s:"🐚",t:"agua",hp:30,atk:65,mv:["Pistola agua","Carcazo","Picadura"]},
+  {n:"Krabby",s:"🦀",t:"agua",hp:30,atk:105,mv:["Garra X","Picadura","Placaje"]},
+  {n:"Staryu",s:"⭐",t:"agua",hp:30,atk:45,mv:["Pistola agua","Impactrueno","Rayo burbuja"]},
+  {n:"Dratini",s:"🐲",t:"dragón",hp:41,atk:64,mv:["Envolvimiento","Garra dragón","Bola trueno"]},
+  {n:"Lapras",s:"🧊",t:"agua",hp:130,atk:85,mv:["Surf","Ventisca","Canto"]},
+  {n:"Wooper",s:"💧",t:"agua",hp:55,atk:45,mv:["Agua pulverizada","Lodo bomba","Amnesia"]},
+  {n:"Remoraid",s:"🔫",t:"agua",hp:35,atk:65,mv:["Pistola agua","Chispazo","Rayo burbuja"]},
+  {n:"Corsola",s:"🪸",t:"agua",hp:55,atk:55,mv:["Burbuja","Rayo burbuja","Recuperación"]},
+  {n:"Feebas",s:"🐡",t:"agua",hp:20,atk:15,mv:["Agua pulverizada","Espejo"]},
+  {n:"Barboach",s:"🐍",t:"agua",hp:50,atk:48,mv:["Agua pulverizada","Terremoto","Lodo bomba"]},
+  {n:"Finneon",s:"🐠",t:"agua",hp:49,atk:49,mv:["Agua pulverizada","Ataque rápido","Aqua Ring"]},
+  {n:"Basculin",s:"🐟",t:"agua",hp:70,atk:92,mv:["Pistola agua","Mordisco","Tajo brutal"]},
+  {n:"Alomomola",s:"🩷",t:"agua",hp:165,atk:75,mv:["Protección","Recuperación","Aqua Ring"]},
+  {n:"Inkay",s:"🦑",t:"siniestro",hp:53,atk:54,mv:["Confusión","Tinte tóxico","Chispazo"]},
+  {n:"Arrokuda",s:"🐟",t:"agua",hp:41,atk:63,mv:["Pistola agua","Mordisco","Asombro"]},
+  {n:"Clauncher",s:"🦐",t:"agua",hp:50,atk:53,mv:["Burbuja","Pistola agua","Ataque ala"]},
+];
 const TRAINER_NAMES=["Ash","Gary","May","Dawn","Iris","Serena","Lillie","Gloria","Victor","Nemona","Ethan","Rosa","Brendan","Calem","Hilbert","Hilda"];
 const MOVES_BY_TYPE={
   planta:["Hoja afilada","Drenadoras","Rayo solar","Energibola","Megaagotar","Síntesis","Esporasueño","Látigo cepa"],
@@ -791,6 +874,7 @@ let G={
   money:500,badges:0,wi:0,ni:0,shakes:0,
   battle:null,pendingLearnQueue:[],
   _itemRi:null,_itemNi:null,_pendingGym:null,
+  _paletaGiftReceived:false,
 };
 
 let battleLocked=false;
@@ -896,7 +980,20 @@ function wTab(t){
 
 function enterNode(ri,ni){
   const node=WORLD[ri].nodes[ni];
-  if(node.t==="town"){healTeam();showResult("🏡",node.n,"Equipo curado. ¡Sigue adelante!",ri,ni,false);}
+  if(node.t==="town"){
+    healTeam();
+    if(node.id==="paleta"&&!G._paletaGiftReceived&&Math.random()<0.5){
+      G._paletaGiftReceived=true;
+      const otherPoke=BASE_POKEMON.filter(p=>p.n!==G.team[0].name);
+      const giftData=otherPoke[Math.floor(Math.random()*otherPoke.length)];
+      const giftPoke=mkPoke(giftData,5);
+      giftPoke.hp=giftPoke.maxHp;
+      if(G.team.length<6)G.team.push(giftPoke);
+      const tc={planta:"#EAF3DE",fuego:"#FAEEDA",agua:"#E6F1FB",eléctrico:"#FAEEDA",normal:"#F1EFE8"};
+      const giftMsg=`Tu madre te regala un ${giftData.n} para tu largo viaje. ¡Cuídalo!`;
+      showResult(giftData.s,"¡Regalo de tu mamá!",giftMsg,ri,ni,false);
+    } else showResult("🏡",node.n,"Equipo curado. ¡Sigue adelante!",ri,ni,false);
+  }
   else if(node.t==="route"||node.t==="cave")showRoulette(ri,ni);
   else if(node.t==="gym")showGymPreview(node.gd,ri,ni);
   else if(node.t==="league")startLeague(node.ld,ri,ni);
