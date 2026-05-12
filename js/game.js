@@ -866,6 +866,7 @@ function pickItem(){
 
 let G={
   team:[],
+  pc:[],
   caught:new Set(),
   bag:{pokeball:5,pocion:3,superpocion:1,super_ball:0,ultra_ball:0,master_ball:0,
        hiper_pocion:0,full_restore:0,revivir:0,pp_up:0,fruta_frambu:0,antidoto:0,despertar:0,
@@ -899,6 +900,7 @@ function loadPokedex(){
 function saveGame(){
   const data={
     team:G.team,
+    pc:G.pc,
     bag:G.bag,
     money:G.money,
     badges:G.badges,
@@ -918,6 +920,7 @@ function loadGame(){
     const data=JSON.parse(raw);
     if(!data)return false;
     G.team=data.team||[];
+    G.pc=data.pc||[];
     G.bag=data.bag||G.bag;
     G.money=data.money||500;
     G.badges=data.badges||0;
@@ -1062,12 +1065,13 @@ function renderMap(){
 }
 
 function wTab(t){
-  ["map","team","bag"].forEach(x=>{
+  ["map","team","bag","pc"].forEach(x=>{
     document.getElementById("tw-"+x).style.display=x===t?"block":"none";
     document.getElementById("tb-"+x).classList.toggle("active",x===t);
   });
   if(t==="team")renderTeam();
   if(t==="bag")renderBag();
+  if(t==="pc")renderPC();
 }
 
 function enterNode(ri,ni){
@@ -1081,6 +1085,7 @@ function enterNode(ri,ni){
       const giftPoke=mkPoke(giftData,5);
       giftPoke.hp=giftPoke.maxHp;
       if(G.team.length<6)G.team.push(giftPoke);
+      else G.pc.push(giftPoke);
       G.caught.add(giftData.n);
       savePokedex();saveGame();
       const tc={planta:"#EAF3DE",fuego:"#FAEEDA",agua:"#E6F1FB",eléctrico:"#FAEEDA",normal:"#F1EFE8"};
@@ -1419,11 +1424,15 @@ function endBattle(result){
     saveGame();
     showResult("✨","¡Victoria!","+"+reward+" monedas."+extraMsg,ri,ni,false);
   }else if(result==="catch"){
-    if(G.team.length<6)G.team.push({...b.e,hp:b.e.hp,moves:[...b.e.moves]});
+    const caughtPoke={...b.e,hp:b.e.hp,moves:[...b.e.moves]};
+    let wentToPC=false;
+    if(G.team.length<6)G.team.push(caughtPoke);
+    else{G.pc.push(caughtPoke);wentToPC=true;}
     G.caught.add(b.e.name);
     savePokedex();saveGame();
     const _catchName=b.e.name,_catchS=b.e.s;
-    showResult(_catchS,"¡Capturado!","¡"+_catchName+" se unió a tu equipo!",ri,ni,false);
+    const catchMsg=wentToPC?"¡"+_catchName+" fue enviado a la PC!":"¡"+_catchName+" se unió a tu equipo!";
+    showResult(_catchS,"¡Capturado!",catchMsg,ri,ni,false);
     setTimeout(()=>loadSpriteForResult(_catchName,_catchS),100);
   }else if(result==="run"){
     saveGame();ss("world");renderWorld();
@@ -1504,10 +1513,68 @@ function loadSpriteForResult(pokeName,fallbackEmoji){
 function nextNode(ri,ni){G.wi=ri;G.ni=ni;advance();}
 function backWorld(ri,ni){G.wi=ri;G.ni=ni;processLearnQueue(()=>{ss("world");renderWorld();wTab("map");});}
 function renderTeam(){
-  document.getElementById("tgrid").innerHTML=G.team.map(p=>{
+  const grid=document.getElementById("tgrid");
+  grid.innerHTML=G.team.map((p,i)=>{
     const r=p.hp/p.maxHp;
-    return`<div class="pkcard"><span class="ps">${p.s}</span><div class="pn">${p.name}</div><div class="pt">Nv.${p.level} · ${p.type}</div><div class="pt">${p.hp}/${p.maxHp} HP</div><div style="height:3px;background:var(--color-background-secondary);border-radius:2px;margin:4px 0;overflow:hidden"><div style="height:100%;width:${Math.max(0,r*100)}%;background:${HPcolor(r)}"></div></div><div class="pt" style="font-size:10px">${p.moves.join(" · ")}</div></div>`;
+    const spr=spriteImg(p.name,"pk-sprite-lg",p.s);
+    return`<div class="pkcard" draggable="true" data-idx="${i}" ondragstart="teamDragStart(event)" ondragover="teamDragOver(event)" ondrop="teamDrop(event)">${spr}<div class="pn">${p.name}</div><div class="pt">Nv.${p.level} · ${p.type}</div><div class="pt">${p.hp}/${p.maxHp} HP</div><div style="height:3px;background:var(--color-background-secondary);border-radius:2px;margin:4px 0;overflow:hidden"><div style="height:100%;width:${Math.max(0,r*100)}%;background:${HPcolor(r)}"></div></div><div class="pt" style="font-size:10px">${p.moves.join(" · ")}</div><button class="pc-btn" onclick="moveToPC(${i})" title="Enviar a PC">📦</button></div>`;
   }).join("")||"<p style='font-size:13px'>Sin equipo.</p>";
+}
+
+let _dragIdx=null;
+function teamDragStart(e){
+  _dragIdx=parseInt(e.currentTarget.dataset.idx);
+  e.dataTransfer.effectAllowed="move";
+}
+function teamDragOver(e){
+  e.preventDefault();
+  e.dataTransfer.dropEffect="move";
+}
+function teamDrop(e){
+  e.preventDefault();
+  const target=parseInt(e.currentTarget.dataset.idx);
+  if(_dragIdx===null||isNaN(target)||_dragIdx===target)return;
+  const temp=G.team[_dragIdx];
+  G.team[_dragIdx]=G.team[target];
+  G.team[target]=temp;
+  _dragIdx=null;
+  saveGame();
+  renderTeam();
+}
+
+function moveToPC(idx){
+  if(G.team.length<=1)return;
+  const poke=G.team.splice(idx,1)[0];
+  G.pc.push(poke);
+  saveGame();
+  renderTeam();
+  renderPC();
+}
+
+function moveToTeam(pcIdx){
+  if(G.team.length>=6)return;
+  const poke=G.pc.splice(pcIdx,1)[0];
+  G.team.push(poke);
+  saveGame();
+  renderTeam();
+  renderPC();
+}
+
+function releaseFromPC(pcIdx){
+  G.pc.splice(pcIdx,1);
+  saveGame();
+  renderPC();
+}
+
+function renderPC(){
+  const grid=document.getElementById("pc-grid");
+  const count=document.getElementById("pc-count");
+  count.textContent=G.pc.length+" Pokémon";
+  grid.innerHTML=G.pc.map((p,i)=>{
+    const r=p.hp/p.maxHp;
+    const spr=spriteImg(p.name,"pk-sprite-lg",p.s);
+    return`<div class="pkcard pc-card">${spr}<div class="pn">${p.name}</div><div class="pt">Nv.${p.level} · ${p.type}</div><div class="pt">${p.hp}/${p.maxHp} HP</div><div style="height:3px;background:var(--color-background-secondary);border-radius:2px;margin:4px 0;overflow:hidden"><div style="height:100%;width:${Math.max(0,r*100)}%;background:${HPcolor(r)}"></div></div><div class="pc-actions"><button onclick="moveToTeam(${i})" ${G.team.length>=6?'disabled title="Equipo lleno"':''}>Equipo</button><button onclick="releaseFromPC(${i})" class="pc-release">Liberar</button></div></div>`;
+  }).join("")||"<p style='font-size:13px'>PC vacío.</p>";
 }
 function renderBag(){
   const rendered=new Set();
