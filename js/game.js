@@ -1522,15 +1522,44 @@ function renderTeam(){
   }).join("")||"<p style='font-size:13px;color:var(--color-text-secondary)'>Sin Pokémon en el equipo.</p>";
 }
 
+let _pcBox=0;
+const PC_BOX_SIZE=20;
+
 function renderPC(){
+  const tabsEl=document.getElementById("pc-tabs");
   const grid=document.getElementById("pc-grid");
-  const count=document.getElementById("pc-count");
-  count.textContent=G.pc.length;
-  grid.innerHTML=G.pc.map((p,i)=>{
-    const r=p.hp/p.maxHp;
-    const spr=spriteImg(p.name,"pk-sprite-lg",p.s);
-    return`<div class="pkcard pc-card" draggable="true" data-src="pc" data-idx="${i}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)" onclick="moveToTeam(${i})">${spr}<div class="pn">${p.name}</div><div class="pt">Nv.${p.level} · ${p.type}</div><div class="pt">${p.hp}/${p.maxHp} HP</div><div style="height:3px;background:var(--color-background-secondary);border-radius:2px;margin:4px 0;overflow:hidden"><div style="height:100%;width:${Math.max(0,r*100)}%;background:${HPcolor(r)}"></div></div><button class="pc-release" onclick="event.stopPropagation();releaseFromPC(${i})" title="Liberar">✕</button></div>`;
-  }).join("")||"<p style='font-size:13px;color:var(--color-text-secondary)'>PC vacío.</p>";
+  const totalBoxes=Math.max(1,Math.ceil(G.pc.length/PC_BOX_SIZE));
+  if(_pcBox>=totalBoxes)_pcBox=totalBoxes-1;
+  
+  let tabsHTML="";
+  for(let i=0;i<totalBoxes;i++){
+    const isActive=i===_pcBox?"active":"";
+    tabsHTML+=`<button class="pc-tab ${isActive}" onclick="switchPCBox(${i})">Caja ${i+1}</button>`;
+  }
+  tabsEl.innerHTML=tabsHTML;
+  
+  const start=_pcBox*PC_BOX_SIZE;
+  const end=start+PC_BOX_SIZE;
+  const boxPokes=G.pc.slice(start,end);
+  
+  let gridHTML="";
+  for(let i=0;i<PC_BOX_SIZE;i++){
+    const pcIdx=start+i;
+    if(i<boxPokes.length){
+      const p=boxPokes[i];
+      const r=p.hp/p.maxHp;
+      const spr=spriteImg(p.name,"pk-sprite-lg",p.s);
+      gridHTML+=`<div class="pkcard pc-card" draggable="true" data-src="pc" data-idx="${pcIdx}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)" onclick="moveToTeam(${pcIdx})">${spr}<div class="pn">${p.name}</div><div class="pt">Nv.${p.level}</div><button class="pc-release" onclick="event.stopPropagation();releaseFromPC(${pcIdx})" title="Liberar">✕</button></div>`;
+    }else{
+      gridHTML+=`<div class="pkcard pc-empty"><span class="pc-empty-icon">—</span></div>`;
+    }
+  }
+  grid.innerHTML=gridHTML;
+}
+
+function switchPCBox(idx){
+  _pcBox=idx;
+  renderPC();
 }
 
 let _dragData=null;

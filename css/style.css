@@ -48,24 +48,20 @@ body::before{
   100%{transform:translateY(-120px) rotate(360deg);}
 }
 
-/* App container: white glass card */
+/* App container */
 #app{
   font-family:var(--font-sans);
-  padding:1rem;
-  max-width:680px;
+  padding:0.75rem;
+  max-width:480px;
   width:100%;
-  margin:0 auto;
+  margin:1rem auto;
   position:relative;
   z-index:1;
-  background:#f5f5f0;
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-  min-height:100vh;
-  box-shadow:0 0 40px rgba(0,0,0,0.25);
+  background:#e8e4dc;
+  border-radius:16px;
+  min-height:auto;
+  box-shadow:0 4px 24px rgba(0,0,0,0.15);
   color-scheme: light;
-}
-@media(prefers-color-scheme:dark){
-  #app{background:#f5f5f0;}
 }
 
 /* ── SPRITE IMG HELPERS ── */
@@ -133,10 +129,10 @@ button{cursor:pointer}
 .bgr{background:#EAF3DE;color:#3B6D11}.bc{background:#F1EFE8;color:#5F5E5A}
 .conn{width:2px;height:10px;background:var(--color-border-tertiary);margin-left:23px}
 .rhdr{font-size:10px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.07em;padding:8px 0 3px}
-.hud{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:8px 12px;display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;justify-content:center}
+.hud{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:6px 10px;display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;font-size:11px;justify-content:center}
 .hud span{color:var(--color-text-secondary)}.hud strong{color:var(--color-text-primary);font-weight:500}
-.tabs{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;justify-content:center}
-.tab{font-size:12px;padding:5px 12px;border-radius:var(--border-radius-md)}
+.tabs{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap;justify-content:center}
+.tab{font-size:11px;padding:4px 10px;border-radius:var(--border-radius-md)}
 .tab.active{background:var(--color-background-secondary);font-weight:500}
 .battle-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:10px}
 .ftr{display:flex;align-items:center;gap:10px;padding:5px 0}
@@ -153,11 +149,11 @@ button{cursor:pointer}
 .mbtn{padding:7px 10px;font-size:12px;border-radius:var(--border-radius-md);text-align:left}
 .mbtn .mp{font-size:9px;opacity:0.6;display:block;margin-top:1px}
 .arow{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
-.pkcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:10px;text-align:center;font-size:12px}
-.pkcard .ps{font-size:32px;display:block;margin-bottom:3px}
-.pkcard .pn{font-weight:500;color:var(--color-text-primary);font-size:13px}
-.pkcard .pt{color:var(--color-text-secondary)}
-.pkgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:7px;margin:8px 0}
+.pkcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:8px;text-align:center;font-size:11px}
+.pkcard .ps{font-size:28px;display:block;margin-bottom:2px}
+.pkcard .pn{font-weight:500;color:var(--color-text-primary);font-size:12px}
+.pkcard .pt{color:var(--color-text-secondary);font-size:10px}
+.pkgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:6px 0}
 .lvup-banner{background:#EAF3DE;border:0.5px solid #97C459;border-radius:var(--border-radius-md);padding:8px 12px;font-size:13px;color:#27500A;margin-bottom:8px;display:none}
 .learn-modal{background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:16px;margin-bottom:10px;text-align:center}
 .learn-modal .rnode{text-align:left;max-width:300px;width:100%}
@@ -226,15 +222,22 @@ button{cursor:pointer}
 .pokedex-detail-info p{font-size:13px;color:var(--color-text-secondary)}
 
 /* ── PC BOX ── */
-.team-section{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--color-border-tertiary)}
+.team-section{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--color-border-tertiary)}
 .pc-section{margin-top:8px}
-.section-title{font-size:14px;font-weight:600;color:var(--color-text-primary);margin-bottom:8px;display:flex;align-items:center;gap:8px}
-.team-count,.pc-count{font-size:11px;padding:2px 8px;border-radius:10px;background:var(--color-background-secondary);color:var(--color-text-secondary);font-weight:400}
-.pc-card{position:relative;cursor:pointer}
-.pc-card:hover{border-color:var(--color-border-secondary);transform:translateY(-1px)}
-.pc-btn{position:absolute;top:6px;right:6px;background:none;border:none;font-size:14px;cursor:pointer;padding:2px 4px;border-radius:4px;opacity:0.5}
+.section-title{font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.team-count{font-size:10px;padding:2px 6px;border-radius:8px;background:var(--color-background-secondary);color:var(--color-text-secondary);font-weight:400}
+.team-grid{grid-template-columns:repeat(3,1fr)!important}
+.pc-tabs{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
+.pc-tab{font-size:10px;padding:4px 10px;border-radius:6px;background:var(--color-background-secondary);border:1px solid var(--color-border-tertiary)}
+.pc-tab.active{background:var(--color-background-primary);border-color:var(--color-border-secondary);font-weight:600}
+.pc-grid{grid-template-columns:repeat(5,1fr)!important}
+.pc-card{position:relative;cursor:pointer;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pc-card:hover{border-color:var(--color-border-secondary);background:var(--color-background-secondary)}
+.pc-empty{aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:var(--color-background-secondary);border:1px dashed var(--color-border-tertiary);border-radius:var(--border-radius-lg)}
+.pc-empty-icon{color:var(--color-text-tertiary);font-size:16px}
+.pc-btn{position:absolute;top:4px;right:4px;background:none;border:none;font-size:12px;cursor:pointer;padding:2px 4px;border-radius:4px;opacity:0.5}
 .pc-btn:hover{opacity:1;background:var(--color-background-secondary)}
-.pc-release{position:absolute;top:6px;right:6px;background:none;border:none;font-size:12px;cursor:pointer;padding:2px 6px;border-radius:4px;opacity:0.5;color:#E24B4A}
+.pc-release{position:absolute;top:4px;right:4px;background:none;border:none;font-size:10px;cursor:pointer;padding:1px 4px;border-radius:4px;opacity:0.5;color:#E24B4A}
 .pc-release:hover{opacity:1;background:#FCEBEB}
 
 /* ── DRAG AND DROP ── */
