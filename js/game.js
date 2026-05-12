@@ -944,14 +944,22 @@ function continueGame(){
   }
 }
 
+function startNewGame(){
+  document.getElementById("intro-menu").style.display="none";
+  document.getElementById("intro-pokeball").style.display="block";
+}
+
 function checkIntroSave(){
   if(hasSave()){
-    document.getElementById("intro-continue").style.display="block";
+    document.getElementById("btn-continue").style.display="block";
     try{
       const data=JSON.parse(localStorage.getItem(SAVE_KEY));
       const teamCount=data.team?data.team.length:0;
       const dexCount=data.caught?data.caught.length:0;
-      document.getElementById("save-info").textContent=`Equipo: ${teamCount} Pokémon · Pokédex: ${dexCount} descubiertos`;
+      const saveDate=new Date(data.timestamp);
+      const dateStr=saveDate.toLocaleDateString()+" "+saveDate.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      document.getElementById("save-info").style.display="block";
+      document.getElementById("save-info").textContent=`Equipo: ${teamCount} · Pokédex: ${dexCount} · ${dateStr}`;
     }catch(e){}
   }
 }
