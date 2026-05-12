@@ -878,6 +878,86 @@ let G={
   _paletaGiftReceived:false,
 };
 
+const SAVE_KEY="pokeemoon_save";
+const DEX_KEY="pokeemoon_pokedex";
+
+function savePokedex(){
+  const dexData=Array.from(G.caught);
+  try{localStorage.setItem(DEX_KEY,JSON.stringify(dexData));}catch(e){}
+}
+
+function loadPokedex(){
+  try{
+    const raw=localStorage.getItem(DEX_KEY);
+    if(raw){
+      const arr=JSON.parse(raw);
+      if(Array.isArray(arr))G.caught=new Set(arr);
+    }
+  }catch(e){}
+}
+
+function saveGame(){
+  const data={
+    team:G.team,
+    bag:G.bag,
+    money:G.money,
+    badges:G.badges,
+    wi:G.wi,
+    ni:G.ni,
+    _paletaGiftReceived:G._paletaGiftReceived,
+    caught:Array.from(G.caught),
+    timestamp:Date.now()
+  };
+  try{localStorage.setItem(SAVE_KEY,JSON.stringify(data));}catch(e){}
+}
+
+function loadGame(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY);
+    if(!raw)return false;
+    const data=JSON.parse(raw);
+    if(!data)return false;
+    G.team=data.team||[];
+    G.bag=data.bag||G.bag;
+    G.money=data.money||500;
+    G.badges=data.badges||0;
+    G.wi=data.wi||0;
+    G.ni=data.ni||0;
+    G._paletaGiftReceived=data._paletaGiftReceived||false;
+    if(data.caught)G.caught=new Set(data.caught);
+    return true;
+  }catch(e){return false;}
+}
+
+function hasSave(){
+  try{return!!localStorage.getItem(SAVE_KEY);}catch(e){return false;}
+}
+
+function deleteSave(){
+  try{localStorage.removeItem(SAVE_KEY);}catch(e){}
+}
+
+function continueGame(){
+  if(loadGame()){
+    loadPokedex();
+    ss("world");renderWorld();
+  }
+}
+
+function checkIntroSave(){
+  if(hasSave()){
+    document.getElementById("intro-continue").style.display="block";
+    try{
+      const data=JSON.parse(localStorage.getItem(SAVE_KEY));
+      const teamCount=data.team?data.team.length:0;
+      const dexCount=data.caught?data.caught.length:0;
+      document.getElementById("save-info").textContent=`Equipo: ${teamCount} Pokémon · Pokédex: ${dexCount} descubiertos`;
+    }catch(e){}
+  }
+}
+
+checkIntroSave();
+
 let battleLocked=false;
 function setBattleLock(state){
   battleLocked=state;
@@ -991,10 +1071,11 @@ function enterNode(ri,ni){
       giftPoke.hp=giftPoke.maxHp;
       if(G.team.length<6)G.team.push(giftPoke);
       G.caught.add(giftData.n);
+      savePokedex();saveGame();
       const tc={planta:"#EAF3DE",fuego:"#FAEEDA",agua:"#E6F1FB",eléctrico:"#FAEEDA",normal:"#F1EFE8"};
       const giftMsg=`Tu madre te regala un ${giftData.n} para tu largo viaje. ¡Cuídalo!`;
       showResult(giftData.s,"¡Regalo de tu mamá!",giftMsg,ri,ni,false);
-    } else showResult("🏡",node.n,"Equipo curado. ¡Sigue adelante!",ri,ni,false);
+    } else{saveGame();showResult("🏡",node.n,"Equipo curado. ¡Sigue adelante!",ri,ni,false);}
   }
   else if(node.t==="route"||node.t==="cave")showRoulette(ri,ni);
   else if(node.t==="gym")showGymPreview(node.gd,ri,ni);
@@ -1029,6 +1110,7 @@ function advance(){
   G.ni++;
   if(G.ni>=WORLD[G.wi].nodes.length){G.wi++;G.ni=0;}
   if(G.wi>=WORLD.length){finalScreen();return;}
+  saveGame();
   processLearnQueue(()=>{ss("world");renderWorld();wTab("map");});
 }
 
@@ -1313,9 +1395,48 @@ function endBattle(result){
       G.money+=reward;
       G.team.forEach(p=>{if(p.hp>0)grantXP(p,5);});
       resetForNextRegion();
+      savePokedex();saveGame();
       showResult("🏆","¡Liga superada!","¡Liga "+b._ld_name+" vencida! Tu equipo pasa a la siguiente región a Nv.5 conservando movimientos.",ri,ni,false);
       return;
     }
+    G.money+=reward;
+    G.team.forEach(p=>{if(p.hp>0)grantXP(p,xpGain);});
+    const banner=document.getElementById("lvup-banner");
+    banner.textContent="¡"+G.team.filter(p=>p.hp>0).map(p=>p.name+" Nv."+p.level).join(" · ")+"!";
+    banner.style.display="block";
+    saveGame();
+    showResult("✨","¡Victoria!","+"+reward+" monedas."+extraMsg,ri,ni,false);
+  }else if(result==="catch"){
+    if(G.team.length<6)G.team.push({...b.e,hp:b.e.hp,moves:[...b.e.moves]});
+    G.caught.add(b.e.name);
+    savePokedex();saveGame();
+    const _catchName=b.e.name,_catchS=b.e.s;
+    showResult(_catchS,"¡Capturado!","¡"+_catchName+" se unió a tu equipo!",ri,ni,false);
+    // Replace emoji icon with actual sprite
+    const _catchId=PKID[_catchName];
+    if(_catchId){
+      const _rIco=document.getElementById("res-ico");
+      _rIco.style.fontSize="0";_rIco.innerHTML="";
+      const _artUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${_catchId}.png`;
+      const _smlUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${_catchId}.png`;
+      const _img=document.createElement("img");
+      _img.style.cssText="width:120px;height:120px;object-fit:contain;image-rendering:pixelated;display:block;margin:0 auto;";
+      _rIco.appendChild(_img);
+      let _tried=0;const _urls=[_artUrl,_smlUrl];
+      (function _tryNext(){
+        _img.onload=function(){_img.style.display="block";};
+        _img.onerror=function(){if(++_tried<_urls.length){_img.src=_urls[_tried];}else{_rIco.style.fontSize="56px";_rIco.textContent=_catchS;}};
+        _img.src=_urls[_tried];
+      })();
+    }
+  }else if(result==="run"){
+    saveGame();ss("world");renderWorld();
+  }else{
+    G.team.forEach(p=>{p.hp=Math.floor(p.maxHp*0.25);});
+    saveGame();
+    showResult("😵","Derrota","Tu equipo fue derrotado. Se ha recuperado parcialmente.",ri,ni,true);
+  }
+}
     G.money+=reward;
     G.team.forEach(p=>{if(p.hp>0)grantXP(p,xpGain);});
     const banner=document.getElementById("lvup-banner");
@@ -1399,11 +1520,26 @@ function renderBag(){
   ).join("")||"<p style='font-size:13px;padding:8px'>Mochila vacía.</p>";
 }
 function finalScreen(){
+  savePokedex();saveGame();
   document.getElementById("res-ico").textContent="🌟";
   document.getElementById("res-title").textContent="¡Maestro Pokémon!";
   document.getElementById("res-msg").textContent="Has conquistado los gimnasios y ligas de las 9 regiones. ¡Eres una leyenda!";
-  document.getElementById("res-acts").innerHTML=`<button onclick="location.reload()">Nueva partida</button>`;
+  document.getElementById("res-acts").innerHTML=`<button onclick="newGameKeepDex()">Nueva partida (Pokédex conservada)</button>`;
   ss("result");
+}
+
+function newGameKeepDex(){
+  const savedDex=Array.from(G.caught);
+  deleteSave();
+  G.team=[];G.bag={pokeball:5,pocion:3,superpocion:1,super_ball:0,ultra_ball:0,master_ball:0,
+    hiper_pocion:0,full_restore:0,revivir:0,pp_up:0,fruta_frambu:0,antidoto:0,despertar:0,
+    caramelo_exp:0,caramelo_raro:0,caramelo_gordo:0,caramelo_maximo:0,
+    piedra_fuego:0,piedra_agua:0,piedra_trueno:0,piedra_hoja:0,piedra_luna:0,
+    piedra_sol:0,piedra_hielo:0,piedra_oscu:0,tm_hiperrayo:0,tm_esfera:0};
+  G.money=500;G.badges=0;G.wi=0;G.ni=0;G.shakes=0;G._paletaGiftReceived=false;
+  G.caught=new Set(savedDex);
+  savePokedex();
+  location.reload();
 }
 
 /* ── POKÉMON SPRITE SYSTEM ── */
@@ -1588,6 +1724,7 @@ openBall=function(){
   setTimeout(()=>{
     const sd=STARTERS[Math.floor(Math.random()*STARTERS.length)];
     const p=mkPoke(sd,5);p.hp=p.maxHp;G.team=[p];G.caught.add(sd.n);
+    savePokedex();saveGame();
     const tc={planta:"#EAF3DE",fuego:"#FAEEDA",agua:"#E6F1FB",electrico:"#FAEEDA",normal:"#F1EFE8"};
     const id=PKID[sd.n];
     const revealId="rspr"+Date.now();
