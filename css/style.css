@@ -53,7 +53,7 @@ body::before{
   font-family:var(--font-sans);
   padding:10px;
   width:480px;
-  height:520px;
+  height:560px;
   margin:1rem auto;
   position:relative;
   z-index:1;
@@ -61,9 +61,10 @@ body::before{
   border-radius:16px;
   box-shadow:0 4px 24px rgba(0,0,0,0.15);
   color-scheme: light;
-  overflow-y:auto;
-  overflow-x:hidden;
+  overflow:hidden;
 }
+
+.screen{display:none}.screen.active{display:block;height:100%;overflow-y:auto;overflow-x:hidden}
 
 /* ── SPRITE IMG HELPERS ── */
 .pk-sprite{
@@ -90,13 +91,12 @@ body::before{
   width:120px;height:120px;
   image-rendering:pixelated;
 }
-.screen{display:none}.screen.active{display:block}
 h2{font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px}
 p{font-size:14px;color:var(--color-text-secondary);line-height:1.6}
 button{cursor:pointer}
-.pb-wrap{display:flex;flex-direction:column;align-items:center;padding:2rem 1rem;min-height:400px;justify-content:center}
+.pb-wrap{display:flex;flex-direction:column;align-items:center;padding:1rem;justify-content:center;height:100%}
 #intro-menu{width:100%;text-align:center}
-#intro-pokeball{width:100%;text-align:center;display:flex;flex-direction:column;align-items:center}
+#intro-pokeball{width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1}
 #intro-menu button{border-radius:var(--border-radius-lg);font-weight:500;transition:all 0.15s}
 #intro-menu button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
 #btn-continue{background:var(--color-background-secondary);border:1px solid var(--color-border-secondary);color:var(--color-text-primary)}
@@ -111,7 +111,7 @@ button{cursor:pointer}
 @keyframes pbtop{to{transform:translateY(-38px) rotate(-25deg);opacity:0}}
 @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .fadeup{animation:fadeup 0.5s ease forwards}
-.roulette-wrap{text-align:center;padding:1.5rem 0}
+.roulette-wrap{text-align:center;padding:1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%}
 .rou-wheel{width:176px;height:176px;border-radius:50%;margin:0 auto 14px;border:3px solid var(--color-border-secondary);position:relative;transition:transform 1.8s cubic-bezier(0.17,0.67,0.21,1)}
 .rou-ptr{font-size:22px;margin-bottom:3px}
 .rou-result{font-size:15px;font-weight:500;color:var(--color-text-primary);min-height:22px;margin-bottom:10px}
@@ -158,12 +158,12 @@ button{cursor:pointer}
 .lvup-banner{background:#EAF3DE;border:0.5px solid #97C459;border-radius:var(--border-radius-md);padding:8px 12px;font-size:13px;color:#27500A;margin-bottom:8px;display:none}
 .learn-modal{background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:16px;margin-bottom:10px;text-align:center}
 .learn-modal .rnode{text-align:left;max-width:300px;width:100%}
-.item-found-card{background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:20px;text-align:center;margin-bottom:12px}
+.item-found-card{background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:20px;text-align:center;margin:auto;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .item-rarity{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500;margin-bottom:6px}
 .rc{background:#EAF3DE;color:#3B6D11}.ru{background:#E6F1FB;color:#185FA5}
 .rr{background:#EEEDFE;color:#534AB7}.re{background:#FAEEDA;color:#854F0B}
 .rl{background:#FCEBEB;color:#A32D2D}
-.gym-preview{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:12px;text-align:center}
+.gym-preview{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1}
 .gym-preview h3{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px}
 .gym-team{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .gym-mon{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:6px 10px;text-align:center;font-size:12px;min-width:70px}
