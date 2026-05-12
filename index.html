@@ -1,7 +1,100 @@
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-#app{font-family:var(--font-sans);padding:1rem;max-width:680px}
+
+/* ── POKÉMON BRAND BACKGROUND ── */
+body{
+  min-height:100vh;
+  overflow-x:hidden;
+  /* Pokémon Red → Yellow → Blue gradient, full page */
+  background:
+    linear-gradient(135deg,
+      #CC0000 0%,
+      #FF6B00 18%,
+      #FFCB05 36%,
+      #4DAF4E 54%,
+      #3B5BA8 72%,
+      #6A3FA6 90%,
+      #CC0000 100%);
+  background-size:400% 400%;
+  animation:pkbg 18s ease infinite;
+}
+@keyframes pkbg{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+/* Pokéball circle pattern overlay */
+body::before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    radial-gradient(circle 38px at center, transparent 22px, rgba(255,255,255,0.10) 22px, rgba(255,255,255,0.10) 26px, transparent 26px),
+    radial-gradient(circle 38px at center, rgba(255,255,255,0.06) 22px, transparent 22px);
+  background-size:90px 90px;
+  opacity:0.6;
+}
+
+/* Floating background sprites */
+#bg-sprites{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.bg-sprite{
+  position:absolute;
+  image-rendering:pixelated;
+  opacity:0.18;
+  filter:brightness(0) invert(1);
+  animation:sprfloat linear infinite;
+}
+@keyframes sprfloat{
+  0%  {transform:translateY(110vh) rotate(0deg);}
+  100%{transform:translateY(-120px) rotate(360deg);}
+}
+
+/* App container: white glass card */
+#app{
+  font-family:var(--font-sans);
+  padding:1rem;
+  max-width:680px;
+  width:100%;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  min-height:100vh;
+  box-shadow:0 0 40px rgba(0,0,0,0.25);
+  color-scheme: light;
+}
+@media(prefers-color-scheme:dark){
+  #app{background:rgba(255,255,255,0.95);}
+}
+
+/* ── SPRITE IMG HELPERS ── */
+.pk-sprite{
+  image-rendering:pixelated;
+  display:inline-block;
+}
+.pk-sprite-battle{
+  width:80px;height:80px;
+  image-rendering:pixelated;
+}
+.pk-sprite-sm{
+  width:40px;height:40px;
+  image-rendering:pixelated;
+}
+.pk-sprite-md{
+  width:56px;height:56px;
+  image-rendering:pixelated;
+}
+.pk-sprite-lg{
+  width:80px;height:80px;
+  image-rendering:pixelated;
+}
+.pk-sprite-xl{
+  width:120px;height:120px;
+  image-rendering:pixelated;
+}
 .screen{display:none}.screen.active{display:block}
 h2{font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px}
 p{font-size:14px;color:var(--color-text-secondary);line-height:1.6}
@@ -78,6 +171,7 @@ button{cursor:pointer}
 .gym-mon .ml{color:var(--color-text-secondary);font-size:10px}
 </style>
 
+<div id="bg-sprites"></div>
 <div id="app">
 <div id="s-intro" class="screen active">
   <div class="pb-wrap">
@@ -303,28 +397,42 @@ const WORLD=[
  {r:"Kanto",nodes:[
   {id:"paleta",n:"Pueblo Paleta",i:"🏡",t:"town",s:"Tu hogar. Equipo curado.",cl:"bgr"},
   {id:"ruta1",n:"Ruta 1",i:"🌿",t:"route",s:"Rattata y Pidgey",cl:"bgr"},
-  {id:"ruta2",n:"Ruta 2 · Bosque Viridian",i:"🌲",t:"cave",s:"Caterpie y Pikachu",cl:"bc"},
+  {id:"viridian",n:"Ciudad Viridian",i:"🏘️",t:"town",s:"Primera ciudad. Equipo curado.",cl:"bgr"},
+  {id:"ruta2n",n:"Ruta 2 norte",i:"🌿",t:"route",s:"Rattata y Nidoran",cl:"bgr"},
+  {id:"bosque",n:"Bosque Viridian",i:"🌲",t:"cave",s:"Caterpie, Metapod y Weedle",cl:"bc"},
+  {id:"pewter",n:"Ciudad Pewter",i:"🏘️",t:"town",s:"Museo de fósiles. Equipo curado.",cl:"bgr"},
   {id:"gym-brock",n:"Gimnasio · Brock",i:"⚔️",t:"gym",s:"Roca · Medalla Roca",cl:"bg",
    gd:{l:"Brock",badge:"Medalla Roca",type:"roca",
        pk:[{n:"Geodude",s:"🪨",t:"roca",hp:40,atk:80,lv:12,mv:["Lanzarrocas","Defensa","Placaje","Fortaleza"]},
            {n:"Onix",s:"🐍",t:"roca",hp:35,atk:45,lv:14,mv:["Lanzarrocas","Cola férrea","Placaje","Fortaleza"]}]}},
-  {id:"mt-moon",n:"Monte Moon",i:"🌙",t:"cave",s:"Zubat y Geodude",cl:"bc"},
+  {id:"ruta3",n:"Ruta 3",i:"🌿",t:"route",s:"Jigglypuff y Mankey",cl:"bgr"},
+  {id:"plateada",n:"Ciudad Plateada",i:"🏘️",t:"town",s:"Centro Pokémon. Equipo curado.",cl:"bgr"},
+  {id:"mt-moon",n:"Monte Moon",i:"🌙",t:"cave",s:"Zubat y Clefairy",cl:"bc"},
+  {id:"ruta4",n:"Ruta 4",i:"🌿",t:"route",s:"Rattata y Spearow",cl:"bgr"},
+  {id:"cerulean",n:"Ciudad Celeste",i:"🏘️",t:"town",s:"Puente Nugget y Bici. Equipo curado.",cl:"bgr"},
   {id:"gym-misty",n:"Gimnasio · Misty",i:"⚔️",t:"gym",s:"Agua · Medalla Cascada",cl:"bg",
    gd:{l:"Misty",badge:"Medalla Cascada",type:"agua",
        pk:[{n:"Staryu",s:"⭐",t:"agua",hp:30,atk:45,lv:18,mv:["Pistola agua","Impactrueno","Rayo burbuja"]},
            {n:"Starmie",s:"🌟",t:"agua",hp:60,atk:75,lv:21,mv:["Hidrobomba","Psíquico","Impactrueno","Velocidad extrema"]}]}},
+  {id:"ruta9",n:"Rutas 9 y 10",i:"🌿",t:"route",s:"Voltorb y Magnemite",cl:"bgr"},
   {id:"central-elec",n:"Central Eléctrica",i:"⚡",t:"cave",s:"Voltorb y Magnemite",cl:"bc"},
+  {id:"vermilion",n:"Ciudad Carmín",i:"🏘️",t:"town",s:"Puerto S.S. Anne. Equipo curado.",cl:"bgr"},
   {id:"gym-surge",n:"Gimnasio · Lt. Surge",i:"⚔️",t:"gym",s:"Eléctrico · Medalla Trueno",cl:"bg",
    gd:{l:"Lt. Surge",badge:"Medalla Trueno",type:"eléctrico",
        pk:[{n:"Voltorb",s:"💣",t:"eléctrico",hp:40,atk:30,lv:21,mv:["Impactrueno","Rapidez","Sónico"]},
            {n:"Pikachu",s:"⚡",t:"eléctrico",hp:35,atk:55,lv:18,mv:["Impactrueno","Ataque rápido","Onda voltio"]},
            {n:"Raichu",s:"🌩️",t:"eléctrico",hp:60,atk:90,lv:24,mv:["Trueno","Impactrueno","Golpe cuerpo","Onda voltio"]}]}},
+  {id:"ruta11",n:"Rutas 11-12-13-14-15",i:"🌿",t:"route",s:"Ekans, Drowzee y Doduo",cl:"bgr"},
+  {id:"lavender",n:"Pueblo Lavanda",i:"🏘️",t:"town",s:"Torre Pokémon. Equipo curado.",cl:"bgr"},
   {id:"torre-lavender",n:"Torre Pokémon",i:"🏚️",t:"cave",s:"Gastly y Haunter",cl:"bc"},
+  {id:"celadon",n:"Ciudad Azulona",i:"🏙️",t:"town",s:"Gran Almacén y Salón recreativo. Equipo curado.",cl:"bgr"},
   {id:"gym-erika",n:"Gimnasio · Erika",i:"⚔️",t:"gym",s:"Planta · Medalla Arcoíris",cl:"bg",
    gd:{l:"Erika",badge:"Medalla Arcoíris",type:"planta",
        pk:[{n:"Victreebel",s:"🌿",t:"planta",hp:80,atk:105,lv:29,mv:["Hoja afilada","Polvo veneno","Drenadoras","Látigo cepa"]},
            {n:"Tangela",s:"🌱",t:"planta",hp:65,atk:55,lv:24,mv:["Drenadoras","Megaagotar","Polvo veneno"]},
            {n:"Vileplume",s:"🌺",t:"planta",hp:75,atk:80,lv:29,mv:["Hoja afilada","Esporasueño","Polvo veneno","Pétalo danza"]}]}},
+  {id:"ruta16",n:"Rutas 16-17-18",i:"🌿",t:"route",s:"Doduo y Raticate",cl:"bgr"},
+  {id:"fuchsia",n:"Ciudad Fucsia",i:"🏘️",t:"town",s:"Zoológico Pokémon. Equipo curado.",cl:"bgr"},
   {id:"seafoam",n:"Islas Canela",i:"🏝️",t:"cave",s:"Seel y Lapras",cl:"bc"},
   {id:"gym-koga",n:"Gimnasio · Koga",i:"⚔️",t:"gym",s:"Veneno · Medalla Alma",cl:"bg",
    gd:{l:"Koga",badge:"Medalla Alma",type:"veneno",
@@ -332,12 +440,15 @@ const WORLD=[
            {n:"Koffing",s:"☁️",t:"veneno",hp:65,atk:60,lv:37,mv:["Niebla tóxica","Tóxico","Explosión","Humo"]},
            {n:"Muk",s:"💩",t:"veneno",hp:105,atk:105,lv:39,mv:["Minimizar","Lanzamiento","Tóxico","Humo"]},
            {n:"Weezing",s:"💨",t:"veneno",hp:65,atk:90,lv:43,mv:["Explosión","Tóxico","Niebla tóxica","Autodestrucción"]}]}},
+  {id:"saffron",n:"Ciudad Azafrán",i:"🏙️",t:"town",s:"Torre Silph Co. Equipo curado.",cl:"bgr"},
   {id:"gym-sabrina",n:"Gimnasio · Sabrina",i:"⚔️",t:"gym",s:"Psíquico · Medalla Pantano",cl:"bg",
    gd:{l:"Sabrina",badge:"Medalla Pantano",type:"psíquico",
        pk:[{n:"Kadabra",s:"🔮",t:"psíquico",hp:40,atk:35,lv:38,mv:["Psíquico","Teletransporte","Recuperación","Señuelo"]},
            {n:"Mr. Mime",s:"🤡",t:"psíquico",hp:40,atk:45,lv:37,mv:["Psíquico","Señuelo","Barrera","Recuperación"]},
            {n:"Venomoth",s:"🦋",t:"veneno",hp:70,atk:65,lv:38,mv:["Psíquico","Paralizador","Polvo veneno","Zumbido"]},
            {n:"Alakazam",s:"✨",t:"psíquico",hp:55,atk:50,lv:43,mv:["Psíquico","Señuelo","Recuperación","Agilidad"]}]}},
+  {id:"ruta21",n:"Ruta 21 · Isla Canela",i:"🌊",t:"route",s:"Tentacool y Horsea",cl:"bgr"},
+  {id:"cinnabar",n:"Isla Canela",i:"🌋",t:"town",s:"Laboratorio Pokémon. Equipo curado.",cl:"bgr"},
   {id:"gym-blaine",n:"Gimnasio · Blaine",i:"⚔️",t:"gym",s:"Fuego · Medalla Volcán",cl:"bg",
    gd:{l:"Blaine",badge:"Medalla Volcán",type:"fuego",
        pk:[{n:"Growlithe",s:"🐕",t:"fuego",hp:55,atk:70,lv:42,mv:["Mordisco","Lanzallamas","Ascuas","Rugido"]},
@@ -351,6 +462,7 @@ const WORLD=[
            {n:"Nidoqueen",s:"💜",t:"veneno",hp:90,atk:92,lv:44,mv:["Terremoto","Cuerpo a cuerpo","Cornada","Tóxico"]},
            {n:"Nidoking",s:"💙",t:"veneno",hp:81,atk:102,lv:45,mv:["Terremoto","Megacuerno","Cuerpo a cuerpo","Tóxico"]},
            {n:"Rhydon",s:"🦕",t:"roca",hp:105,atk:130,lv:50,mv:["Terremoto","Cornada","Lanzarrocas","Golpe cuerpo"]}]}},
+  {id:"ruta22-23",n:"Ruta 22 y 23 · Vic. Road",i:"🌿",t:"route",s:"Nidoran y Mankey",cl:"bgr"},
   {id:"alto-kanto",n:"Alto Mando Kanto",i:"👑",t:"league",s:"Lorelei · Bruno · Agatha · Lance · Blue",cl:"bl",
    ld:{n:"Kanto",tr:[
      {n:"Lorelei",s:"❄️",lv:54,pk:[{n:"Dewgong",s:"🐬",hp:90,atk:70,mv:["Surf","Ventisca","Canto"]},{n:"Cloyster",s:"🐚",hp:50,atk:95,mv:["Surf","Supersónico","Tornillo"]},{n:"Jynx",s:"🧊",hp:65,atk:50,mv:["Psíquico","Come sueños","Lovely Kiss"]},{n:"Lapras",s:"🧊",hp:130,atk:85,mv:["Surf","Ventisca","Canto"]},{n:"Slowbro",s:"🐠",hp:95,atk:75,mv:["Surf","Psíquico","Amnesia"]}]},
@@ -759,6 +871,180 @@ const WORLD=[
  ]},
 ];
 
+// ── TYPE EFFECTIVENESS TABLE ────────────────────────────────────────────────
+// TYPE_CHART[attackType][defenderType] = multiplier (0=inmune, 0.5=débil, 2=efectivo)
+const TYPE_CHART={
+  normal:   {roca:0.5,acero:0.5,fantasma:0},
+  fuego:    {fuego:0.5,agua:0.5,roca:0.5,dragón:0.5, planta:2,hielo:2,bicho:2,acero:2},
+  agua:     {agua:0.5,planta:0.5,dragón:0.5,          fuego:2,tierra:2,roca:2},
+  eléctrico:{eléctrico:0.5,planta:0.5,dragón:0.5,     agua:2,volador:2, tierra:0},
+  planta:   {fuego:0.5,planta:0.5,veneno:0.5,volador:0.5,bicho:0.5,dragón:0.5,acero:0.5, agua:2,tierra:2,roca:2},
+  hielo:    {agua:0.5,hielo:0.5,acero:0.5,fuego:0.5,   planta:2,tierra:2,volador:2,dragón:2},
+  lucha:    {veneno:0.5,bicho:0.5,psíquico:0.5,volador:0.5,hada:0.5,fantasma:0, normal:2,hielo:2,roca:2,siniestro:2,acero:2},
+  veneno:   {veneno:0.5,tierra:0.5,roca:0.5,fantasma:0.5,acero:0,  planta:2,hada:2},
+  tierra:   {planta:0.5,bicho:0.5,volador:0,           fuego:2,eléctrico:2,veneno:2,roca:2,acero:2},
+  volador:  {eléctrico:0.5,roca:0.5,acero:0.5,         planta:2,lucha:2,bicho:2},
+  psíquico: {psíquico:0.5,acero:0.5,siniestro:0,       lucha:2,veneno:2},
+  bicho:    {fuego:0.5,lucha:0.5,volador:0.5,fantasma:0.5,acero:0.5,hada:0.5, planta:2,psíquico:2,siniestro:2},
+  roca:     {lucha:0.5,tierra:0.5,acero:0.5,           fuego:2,hielo:2,volador:2,bicho:2},
+  fantasma: {normal:0,siniestro:0.5,                   fantasma:2,psíquico:2},
+  dragón:   {acero:0.5,hada:0,                         dragón:2},
+  siniestro:{lucha:0.5,siniestro:0.5,hada:0.5,         fantasma:2,psíquico:2},
+  acero:    {fuego:0.5,agua:0.5,eléctrico:0.5,acero:0.5, hielo:2,roca:2,hada:2},
+  hada:     {fuego:0.5,veneno:0.5,acero:0.5,           lucha:2,dragón:2,siniestro:2},
+};
+
+function getTypeMultiplier(atkType,defType){
+  if(!atkType||!defType)return 1;
+  const row=TYPE_CHART[atkType];
+  if(!row)return 1;
+  const val=row[defType];
+  return val===undefined?1:val;
+}
+
+// ── MOVE TYPE & POWER LOOKUP ─────────────────────────────────────────────────
+const MOVE_TYPE={
+  // planta
+  "Hoja afilada":"planta","Drenadoras":"planta","Rayo solar":"planta","Energibola":"planta",
+  "Megaagotar":"planta","Síntesis":"planta","Esporasueño":"planta","Látigo cepa":"planta",
+  "Vinculo":"planta","Tamborrada":"planta",
+  // fuego
+  "Lanzallamas":"fuego","Ascuas":"fuego","Rueda fuego":"fuego","Llamarada":"fuego",
+  "Pirotecnia":"fuego","Patada ígnea":"fuego","Incineración":"fuego","Erupción":"fuego",
+  "Combustión":"fuego","Puño fuego":"fuego","Fuego sagrado":"fuego","Brazo banda":"fuego",
+  // agua
+  "Surf":"agua","Hidrobomba":"agua","Pistola agua":"agua","Acua jet":"agua",
+  "Burbuja":"agua","Catarata":"agua","Rayo burbuja":"agua","Buceo":"agua",
+  // eléctrico
+  "Trueno":"eléctrico","Impactrueno":"eléctrico","Voltio cruel":"eléctrico","Chispazo":"eléctrico",
+  "Rayo":"eléctrico","Ondavatio":"eléctrico","Onda voltio":"eléctrico","Carga":"eléctrico",
+  // normal
+  "Cuerpo a cuerpo":"normal","Demolición":"normal","Velocidad extrema":"normal","Machazo":"normal",
+  "Cabezazo":"normal","Placaje":"normal","Hiperrayo":"normal","Rasguño":"normal",
+  "Finta":"normal","Libra":"normal","Arañazo":"normal","Ataque rápido":"normal",
+  "Doble filo":"normal","Pisotón":"normal","Canto":"normal","Vozarrón":"normal",
+  "Hiper voz":"normal","Burla":"normal","Matraca":"normal","Impacto":"normal",
+  "Bostezo":"normal","Cabeza de roca":"normal","Represalia":"normal","Amnesia":"normal",
+  // psíquico
+  "Psíquico":"psíquico","Teletransporte":"psíquico","Psicocarga":"psíquico","Señuelo":"psíquico",
+  "Recuperación":"psíquico","Psicoimpulso":"psíquico","Carga zen":"psíquico","Psico corte":"psíquico",
+  "Impacto fuerza":"psíquico","Plumas":"psíquico","Rapidez":"psíquico",
+  // fantasma
+  "Bola sombra":"fantasma","Golpe fantasma":"fantasma","Maldición":"fantasma","Come sueños":"fantasma",
+  "Hipnosis":"fantasma","Infortunio":"fantasma","Tinieblas":"fantasma","Languidez":"fantasma",
+  "Asombro":"fantasma","Sombra bola":"fantasma","Fantasma de dragón":"fantasma",
+  // roca
+  "Lanzarrocas":"roca","Canto de roca":"roca","Defensa roca":"roca","Avalancha":"roca",
+  "Pedrada":"roca","Pedrisco":"roca","Colmillo de roca":"roca","Roca afilada":"roca",
+  "Caída de piedra":"roca",
+  // lucha
+  "Puño dinámico":"lucha","Patada baja":"lucha","Golpe kárate":"lucha","Aguante":"lucha",
+  "Golpe bis":"lucha","Patada triple":"lucha","Puño fuego":"lucha","Esfera Aural":"lucha",
+  "Golpe bajo":"lucha","Tajo umbrío":"siniestro",
+  // dragón
+  "Garra dragón":"dragón","Pulso dragón":"dragón","Furia dragón":"dragón","Danza dragón":"dragón",
+  "Cola dragón":"dragón","Vendaval dragón":"dragón","Látigo dragón":"dragón",
+  "Manzanada":"dragón","Fantasma de dragón":"dragón",
+  // hielo
+  "Ventisca":"hielo","Rayo hielo":"hielo","Cañón hielo":"hielo","Polvo hielo":"hielo",
+  "Aurora":"hielo","Carámbano":"hielo","Nevisca":"hielo","Puño hielo":"hielo",
+  // veneno
+  "Tóxico":"veneno","Niebla tóxica":"veneno","Colmillo venenoso":"veneno","Bomba ácida":"veneno",
+  "Bomba lodo":"veneno","Picadura":"veneno","Aguijón":"veneno","Polvo veneno":"veneno",
+  "Polvo tóxico":"veneno","Puño veneno":"veneno","Destructor":"veneno",
+  // bicho
+  "Zumbido":"bicho","X-Tijera":"bicho","Zunzún":"bicho","Cuchillada":"bicho",
+  "Paralizador":"bicho","Seda pegajosa":"bicho",
+  // volador
+  "Ataque ala":"volador","Vendaval":"volador","Vuelo":"volador","Pico taladrante":"volador",
+  "Aire cortante":"volador","Tornado":"volador","Acróbata":"volador","Acrobacia":"volador",
+  // tierra
+  "Terremoto":"tierra","Excavar":"tierra","Fisura":"tierra","Remolino arena":"tierra",
+  "Golpe de roca":"tierra","Hundimiento":"tierra","Tormenta de arena":"tierra","Cavar":"tierra",
+  // acero
+  "Cola férrea":"acero","Cabeza de hierro":"acero","Cuerpo metálico":"acero","Giro bola":"acero",
+  "Bayoneta":"acero","Fogonazo metálico":"acero","Bola ferro":"acero","Defensa metálica":"acero",
+  "Hiper ataque":"acero","Cola de acero":"acero",
+  // siniestro
+  "Mordisco":"siniestro","Triturar":"siniestro","Acoso":"siniestro","Lengüetazo":"siniestro",
+  "Embargo":"siniestro","Maquinación":"siniestro","Aura oscura":"siniestro","Pulso oscuro":"siniestro",
+  "Tajo brutal":"siniestro",
+  // hada
+  "Voz cautivadora":"hada","Beso drenante":"hada","Encanto":"hada","Cambia fuerza":"hada",
+  "Danza amiga":"hada","Neblina":"hada","Celo":"hada","Fuerza lunar":"hada",
+};
+
+const MOVE_POWER={
+  // Alta potencia
+  "Hiperrayo":150,"Llamarada":120,"Hidrobomba":110,"Trueno":110,"Erupción":110,
+  "Vendaval":110,"Ventisca":110,"Rayo solar":120,"Esfera Aural":80,"Fantasma de dragón":100,
+  "Pulso dragón":85,"Garra dragón":80,"Terremoto":100,"Cola férrea":100,"Puño dinámico":100,
+  "Voltio cruel":80,"Fisura":120,"Manzanada":100,"Baxcalibur":140,
+  "Lanzallamas":90,"Surf":90,"Rayo":90,"Catarata":80,"Fuego sagrado":130,
+  "Rueda fuego":60,"Patada ígnea":90,"Incineración":100,"Combustión":60,
+  "Energibola":80,"Hoja afilada":55,"Rayo burbuja":65,"Chispazo":80,
+  "Impactrueno":40,"Ondavatio":50,"Canto de roca":80,"Lanzarrocas":50,"Avalancha":75,
+  "Cuerpo a cuerpo":80,"Demolición":80,"Machazo":80,"Cabezazo":70,"Hiper voz":90,
+  "Doble filo":120,"Pisotón":65,"Velocidad extrema":80,"Ataque rápido":40,
+  "Bola sombra":80,"Golpe fantasma":90,"Sombra bola":80,"Pulso oscuro":80,
+  "Tajo umbrío":80,"Aura oscura":80,"Mordisco":60,"Triturar":80,"Tajo brutal":90,
+  "Psíquico":90,"Psicocarga":65,"Psico corte":70,"Impacto fuerza":85,
+  "Golpe bis":60,"Patada baja":50,"Golpe kárate":60,"Golpe bajo":40,
+  "Colmillo venenoso":50,"Bomba ácida":40,"Bomba lodo":65,"Tóxico":30,
+  "Picadura":60,"Aguijón":50,"Polvo veneno":40,"Polvo tóxico":30,"Destructor":45,
+  "Ataque ala":60,"Aire cortante":55,"Acrobacia":55,"Acróbata":55,"Vendaval":110,
+  "Excavar":80,"Cavar":60,"Remolino arena":50,"Hundimiento":80,
+  "Carámbano":85,"Rayo hielo":90,"Cañón hielo":95,"Puño hielo":75,"Polvo hielo":40,
+  "Cuchillada":70,"X-Tijera":80,"Zumbido":40,"Zunzún":60,
+  "Ascuas":40,"Pirotecnia":65,"Puño fuego":75,"Brazo banda":40,
+  "Pistola agua":40,"Acua jet":40,"Burbuja":40,"Buceo":80,
+  "Cola dragón":60,"Furia dragón":40,"Látigo dragón":40,
+  "Voz cautivadora":90,"Beso drenante":75,"Fuerza lunar":95,"Cambia fuerza":65,
+  "Pico taladrante":80,"Tornado":55,"Pedrada":50,"Pedrisco":25,"Colmillo de roca":80,
+  "Roca afilada":75,"Cola de acero":80,"Giro bola":60,"Bayoneta":65,"Bola ferro":60,
+  "Látigo cepa":45,"Drenadoras":20,"Megaagotar":40,"Síntesis":0,"Drenadoras":20,
+  "Placaje":40,"Rasguño":40,"Finta":60,"Libra":40,"Arañazo":40,"Burla":0,
+  "Matraca":20,"Impacto":40,"Represalia":50,"Vinculo":15,"Tamborrada":80,
+  "Carga zen":80,"Psicoimpulso":70,"Señuelo":0,"Recuperación":0,"Amnesia":0,
+  "Maldición":0,"Hipnosis":0,"Infortunio":0,"Tinieblas":0,"Languidez":0,"Asombro":40,
+  "Canto":0,"Vozarrón":0,"Bostezo":0,"Seda pegajosa":0,"Paralizador":0,
+  "Danza dragón":0,"Maquinación":0,"Aceleración":0,"Encanto":0,"Neblina":0,"Celo":0,
+  "Danza amiga":0,"Acoso":0,"Embargo":0,"Lengüetazo":30,"Fortaleza":0,
+  "Defensa roca":0,"Teletransporte":0,"Defensa metálica":0,"Cuerpo metálico":0,
+  "Cabeza de roca":150,"Doble filo":120,"Aguante":0,
+};
+
+function getMovePower(moveName){
+  const p=MOVE_POWER[moveName];
+  return(p!==undefined&&p>0)?p:50; // default 50 for unknown/status moves
+}
+
+function getMoveType(moveName){
+  return MOVE_TYPE[moveName]||null;
+}
+
+// ── REALISTIC DAMAGE FORMULA ──────────────────────────────────────────────────
+// Based on Gen V formula: ((2*level/5+2)*power*atk/def/50+2)*modifier
+// def is approximated from baseAtk (no def stat) and hp
+// Results in ~15-25% HP damage for neutral, 30-45% for super effective
+function calcDamage(attacker,moveName,defender){
+  const level=attacker.level||5;
+  const atkStat=attacker.atk||50;
+  // Approximate defense as fraction of HP pool; higher HP = tankier
+  const defStat=Math.max(15, Math.floor((defender.baseHp||50)*defender.level/6+10));
+  const power=getMovePower(moveName);
+  const atkType=attacker.type;
+  const moveType=getMoveType(moveName)||atkType; // fallback: move type = pokemon type
+  const defType=defender.type;
+  const typeMultiplier=getTypeMultiplier(moveType,defType);
+  // STAB (same-type attack bonus)
+  const stab=(moveType===atkType)?1.5:1;
+  // Random factor 0.85-1.0
+  const rand=0.85+Math.random()*0.15;
+  const base=Math.floor(((2*level/5+2)*power*atkStat/defStat/50+2)*stab*typeMultiplier*rand);
+  return {dmg:Math.max(1,base), typeMultiplier, moveType};
+}
+
 function rnd(a,b){return a+Math.floor(Math.random()*(b-a+1));}
 function pickItem(){
   const total=ITEM_POOL.reduce((s,i)=>s+i.pct,0);
@@ -837,20 +1123,30 @@ function gIdx(wi,ni){let x=0;for(let r=0;r<wi;r++)x+=WORLD[r].nodes.length;retur
 function renderMap(){
   const m=document.getElementById("rmap");m.innerHTML="";
   const cur=gIdx(G.wi,G.ni);
-  WORLD.forEach((reg,ri)=>{
-    const rh=document.createElement("div");rh.className="rhdr";rh.textContent=reg.r;m.appendChild(rh);
-    reg.nodes.forEach((node,ni)=>{
-      const idx=gIdx(ri,ni),done=idx<cur,isCur=idx===cur,locked=idx>cur;
-      const el=document.createElement("div");
-      el.className="rnode"+(done?" done":isCur?" current":locked?" locked":"");
-      el.innerHTML=`<div class="ni">${node.i}</div><div class="nd"><div class="nn">${node.n}${isCur?" ◀":""}</div><div class="ns">${node.s}</div></div><span class="nb ${node.cl}">${node.t}</span>`;
-      if(isCur)el.onclick=()=>enterNode(ri,ni);
-      m.appendChild(el);
-      if(ni<reg.nodes.length-1){const c=document.createElement("div");c.className="conn";m.appendChild(c);}
-    });
+  // Build flat list of all nodes
+  const flat=[];
+  WORLD.forEach((reg,ri)=>{reg.nodes.forEach((node,ni)=>{flat.push({node,ri,ni,reg:reg.r,idx:gIdx(ri,ni)});});});
+  // Show only prev, current, next
+  const visible=flat.filter(f=>f.idx>=cur-1&&f.idx<=cur+1);
+  let lastReg=null;
+  visible.forEach((f,vi)=>{
+    const isCur=f.idx===cur,done=f.idx<cur,locked=f.idx>cur;
+    if(f.reg!==lastReg){
+      const rh=document.createElement("div");rh.className="rhdr";
+      rh.textContent=f.reg;m.appendChild(rh);lastReg=f.reg;
+    }
+    const el=document.createElement("div");
+    el.className="rnode"+(done?" done":isCur?" current":locked?" locked":"");
+    const showSub=f.node.t!=="route"&&f.node.t!=="cave";
+    el.innerHTML=`<div class="ni">${f.node.i}</div><div class="nd"><div class="nn">${f.node.n}${isCur?" ◀":""}</div>${showSub?`<div class="ns">${f.node.s}</div>`:""}</div><span class="nb ${f.node.cl}">${f.node.t}</span>`;
+    if(isCur)el.onclick=()=>enterNode(f.ri,f.ni);
+    m.appendChild(el);
+    if(vi<visible.length-1){const c=document.createElement("div");c.className="conn";m.appendChild(c);}
   });
-  const cur2=document.querySelector(".rnode.current");
-  if(cur2)setTimeout(()=>cur2.scrollIntoView({behavior:"smooth",block:"center"}),80);
+  const prog=document.createElement("div");
+  prog.style.cssText="font-size:11px;color:var(--color-text-secondary);text-align:center;padding:8px 0 2px;";
+  prog.textContent=`Nodo ${cur+1} de ${flat.length}`;
+  m.appendChild(prog);
 }
 
 function wTab(t){
@@ -1065,15 +1361,28 @@ function renderBattle(msg){
   document.getElementById("b-ph").style.background=HPcolor(pr);
   document.getElementById("b-pht").textContent=player.hp+"/"+player.maxHp+" HP";
   if(msg)document.getElementById("blog").textContent=msg;
-  document.getElementById("bmoves").innerHTML=player.moves.map((m,i)=>`<button class="mbtn" onclick="useMove(${i})">${m}<span class="mp">${10+i*8} daño base</span></button>`).join("");
+  document.getElementById("bmoves").innerHTML=player.moves.map((m,i)=>{
+    const mt=getMoveType(m)||player.type;
+    const mp=getMovePower(m);
+    const mpLabel=mp>0?`${mt} · Pot.${mp}`:`${mt} · estado`;
+    return`<button class="mbtn" onclick="useMove(${i})">${m}<span class="mp">${mpLabel}</span></button>`;
+  }).join("");
   showBMain();
 }
 function showBMain(){document.getElementById("b-main").style.display="block";document.getElementById("b-bag-panel").style.display="none";}
+function typeEffectMsg(mult){
+  if(mult===0)return" ¡No afecta!";
+  if(mult>=2)return" ¡Es muy eficaz!";
+  if(mult<=0.5)return" No es muy eficaz...";
+  return"";
+}
 function useMove(i){
   const b=G.battle,player=G.team.find(p=>p.hp>0);
-  const dmg=Math.max(1,Math.floor(player.atk*(0.75+Math.random()*0.5)));
+  const moveName=player.moves[i];
+  const {dmg,typeMultiplier}=calcDamage(player,moveName,b.e);
   b.e.hp=Math.max(0,b.e.hp-dmg);
-  document.getElementById("blog").textContent=player.name+" usa "+player.moves[i]+". ¡"+dmg+" de daño!";
+  const effMsg=typeEffectMsg(typeMultiplier);
+  document.getElementById("blog").textContent=player.name+" usa "+moveName+". ¡"+dmg+" de daño!"+effMsg;
   renderBattle();
   if(b.e.hp<=0){
     if(b.queue&&b.queue.length>0){const nxt=b.queue.shift();b.e=nxt;setTimeout(()=>renderBattle("¡"+nxt.name+" entró al combate!"),700);}
@@ -1085,10 +1394,11 @@ function useMove(i){
 function enemyTurn(){
   const b=G.battle,player=G.team.find(p=>p.hp>0);
   if(!player){endBattle("lose");return;}
-  const dmg=Math.max(1,Math.floor(b.e.atk*(0.7+Math.random()*0.55)));
-  player.hp=Math.max(0,player.hp-dmg);
   const mv=b.e.moves?b.e.moves[Math.floor(Math.random()*b.e.moves.length)]:"Ataque";
-  document.getElementById("blog").textContent=b.e.name+" usa "+mv+". ¡"+dmg+" de daño a "+player.name+"!";
+  const {dmg,typeMultiplier}=calcDamage(b.e,mv,player);
+  player.hp=Math.max(0,player.hp-dmg);
+  const effMsg=typeEffectMsg(typeMultiplier);
+  document.getElementById("blog").textContent=b.e.name+" usa "+mv+". ¡"+dmg+" de daño a "+player.name+"!"+effMsg;
   renderBattle();
   if(player.hp<=0){
     const nxt=G.team.find(p=>p.hp>0);
@@ -1232,4 +1542,204 @@ function finalScreen(){
   document.getElementById("res-acts").innerHTML=`<button onclick="location.reload()">Nueva partida</button>`;
   ss("result");
 }
+
+/* ── POKÉMON SPRITE SYSTEM ── */
+const PKID={
+  "Bulbasaur":1,"Charmander":4,"Squirtle":7,"Caterpie":10,"Pidgey":16,"Rattata":19,
+  "Pikachu":25,"Raichu":26,"Clefairy":35,"Jigglypuff":39,"Geodude":74,"Slowpoke":79,
+  "Magnemite":81,"Koffing":109,"Snorlax":143,"Eevee":133,"Abra":63,"Machop":66,
+  "Growlithe":58,"Ponyta":77,"Gengar":94,"Gastly":92,"Haunter":93,"Meowth":52,
+  "Psyduck":54,"Vulpix":37,"Oddish":43,"Poliwag":60,"Zubat":41,"Onix":95,
+  "Voltorb":100,"Magikarp":129,"Gyarados":130,"Lapras":131,"Dratini":147,
+  "Dragonair":148,"Dragonite":149,"Alakazam":65,"Kadabra":64,"Mr. Mime":122,
+  "Venomoth":49,"Jynx":124,"Dewgong":87,"Cloyster":91,"Slowbro":80,"Hitmonchan":107,
+  "Hitmonlee":106,"Machamp":68,"Arbok":24,"Muk":89,"Weezing":110,"Rhydon":112,
+  "Rhyhorn":111,"Nidoqueen":31,"Nidoking":34,"Dugtrio":51,"Aerodactyl":142,
+  "Pidgeot":18,"Pidgeotto":17,"Arcanine":59,"Rapidash":78,"Exeggutor":103,
+  "Blastoise":9,"Starmie":121,"Staryu":120,"Tangela":114,"Vileplume":45,"Victreebel":71,
+  "Chikorita":152,"Cyndaquil":155,"Totodile":158,"Treecko":252,"Torchic":255,"Mudkip":258,
+  "Turtwig":387,"Chimchar":390,"Piplup":393,"Snivy":495,"Tepig":498,"Oshawott":501,
+  "Chespin":650,"Fennekin":653,"Froakie":656,"Rowlet":722,"Litten":725,"Popplio":728,
+  "Grookey":810,"Scorbunny":813,"Sobble":816,"Sprigatito":906,"Fuecoco":909,"Quaxly":912,
+  "Meganium":154,"Typhlosion":157,"Feraligatr":160,"Ampharos":181,"Espeon":196,"Umbreon":197,
+  "Misdreavus":200,"Snubbull":209,"Houndour":228,"Larvitar":246,"Pupitar":247,"Tyranitar":248,
+  "Ralts":280,"Bagon":371,"Shelgon":372,"Salamence":373,"Riolu":447,"Lucario":448,
+  "Zorua":570,"Deino":633,"Zweilous":634,"Hydreigon":635,"Goomy":704,"Dreepy":885,
+  "Pawmi":921,"Shinx":403,"Luxio":404,"Luxray":405,"Mareep":179,"Flaaffy":180,
+  "Golbat":42,"Crobat":169,"Mismagius":429,"Rotom":479,
+  "Goldeen":118,"Tentacool":72,"Horsea":116,"Shellder":90,"Krabby":98,"Dratini":147,
+  "Wooper":194,"Remoraid":223,"Corsola":222,"Feebas":349,"Barboach":339,"Finneon":456,
+  "Basculin":550,"Alomomola":594,"Inkay":686,"Arrokuda":846,"Dracovish":882,"Clauncher":692,
+  "Nosepass":299,"Makuhita":296,"Hariyama":297,"Meditite":307,"Medicham":308,
+  "Manectric":310,"Electrike":309,"Numel":322,"Camerupt":323,"Slugma":218,"Torkoal":324,
+  "Vigoroth":288,"Linoone":264,"Slaking":289,"Spinda":327,"Swablu":333,"Altaria":334,
+  "Tropius":357,"Pelipper":279,"Skarmory":227,"Lunatone":337,"Solrock":338,
+  "Luvdisc":370,"Whiscash":340,"Sealeo":364,"Crawdaunt":342,"Milotic":350,
+  "Mightyena":262,"Cacturne":332,"Sharpedo":319,"Absol":359,"Shiftry":275,
+  "Dusclops":356,"Banette":354,"Sableye":302,"Glalie":362,"Walrein":365,
+  "Flygon":330,"Shelgon":372,"Snover":459,"Sneasel":215,"Abomasnow":460,
+  "Jolteon":135,"Ambipom":424,"Dustox":269,"Beautifly":267,"Vespiquen":416,
+  "Heracross":214,"Drapion":452,"Whirlipede":544,"Dwebble":557,"Leavanny":542,
+  "Emolga":587,"Zebstrika":523,"Krokorok":552,"Palpitoad":536,"Excadrill":530,
+  "Swoobat":528,"Unfezant":521,"Swanna":581,"Vanillish":583,"Cryogonal":615,
+  "Beartic":614,"Fraxure":611,"Druddigon":621,"Haxorus":612,"Cofagrigus":563,
+  "Chandelure":609,"Golurk":623,"Jellicent":593,"Liepard":510,"Scrafty":560,
+  "Krookodile":553,"Bisharp":625,"Musharna":518,"Sigilyph":561,"Reuniclus":579,
+  "Gothitelle":576,"Throh":538,"Sawk":539,"Mienshao":620,"Conkeldurr":534,
+  "Accelgor":617,"Bouffalant":626,"Vanilluxe":584,"Escavalier":589,"Volcarona":637,
+  "Surskit":283,"Vivillon":666,"Amaura":698,"Tyrunt":696,"Mienfoo":619,"Jumpluff":189,
+  "Weepinbell":70,"Gogoat":673,"Heliolisk":695,"Mawile":303,"Sylveon":700,
+  "Sigilyph":561,"Slowking":199,"Meowstic":678,"Avalugg":avalugg=713,
+  "Hawlucha":701,"Tyrantrum":697,"Aurorus":699,"Gourgeist":711,"Goodra":700,
+  "Gardevoir":282,"Mankey":56,"Crabrawler":739,"Nosepass":299,"Boldore":525,
+  "Lycanroc":745,"Dugtrio":51,"Gastrodon":423,"Mudsdale":750,"Hariyama":297,
+  "Bewear":760,"Crabominable":740,"Poliwrath":62,"Relicanth":369,"Carbink":703,
+  "Golem":76,"Golisopod":768,"Dhelmise":769,"Palossand":770,"Drifblim":426,
+  "Mimikyu":778,"Braviary":628,"Mandibuzz":630,"Oricorio":741,"Toucannon":733,
+  "Gossifleur":829,"Eldegoss":830,"Drednaw":834,"Ninetales":38,"Centiskorch":851,
+  "Hitmontop":237,"Pangoro":675,"Sirfetch'd":865,"Weezing":110,"Togekiss":468,
+  "Barbaracle":689,"Shuckle":213,"Stonjourner":900,"Coalossal":839,"Sandaconda":844,
+  "Duraludon":884,"Morpeko":877,"Toxicroak":454,"Grimmsnarl":861,"Hatterene":858,
+  "Rillaboom":812,"Talonflame":663,"Pincurchin":874,"Corviknight":823,"Dragapult":887,
+  "Mr. Rime":866,"Rhyperior":464,"Charizard":6,"Nymble":919,"Tarountula":917,
+  "Teddiursa":216,"Petilil":548,"Smoliv":928,"Sudowoodo":185,"Wattrel":940,
+  "Luxio":404,"Bellibolt":939,"Veluza":976,"Wugtrio":975,"Crabominable":740,
+  "Komala":775,"Dudunsparce":982,"Frosmoth":873,"Cetitan":975,"Farigiraf":981,
+  "Espathra":956,"Florges":671,"Houndstone":975,"Toxtricity":849,"Rika":0,
+  "Kingambit":983,"Glimmora":970,"Noivern":715,"Flapple":841,"Baxcalibur":998,
+  "Dragalge":691,"Staraptor":398,"Flamigo":973,"Copperajah":879,"Magnezone":462,
+  "Tinkaton":964,"Klefki":707,"Probopass":476,"Scizor":212,"Aegislash":681,
+  "Dhelmise":769,"Clawitzer":693,"Pyroar":668,"Talonflame":663,"Primeape":57,
+  "Poliwrath":62,"Herdier":507,"Watchog":505,"Steelix":208,"Magneton":82,
+  "Cherubi":420,"Roserade":407,"Cranidos":408,"Metagross":376,"Bronzong":437,
+  "Gallade":475,"Spiritomb":442,"Infernape":392,"Magmortar":467,"Flareon":136,
+  "Glaceon":471,"Honchkrow":430,"Mismagius":429,"Houndoom":229,"Weavile":461,
+  "Garchomp":445,"Lucario":448,"Hippowdon":450,"Gliscor":472,"Electivire":466,
+  "Rhyperior":464,"Togekiss":468,"Porygon-Z":474,"Mamoswine":473,"Rotom":479,
+};
+
+function spriteUrl(name,size){
+  const id=PKID[name];
+  if(!id)return null;
+  if(size==="artwork")
+    return`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+  return`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+}
+
+function spriteImg(name,cls,alt){
+  const url=spriteUrl(name);
+  if(!url)return`<span style="font-size:28px">${alt||"\u2753"}</span>`;
+  // Use a wrapper that shows emoji until image loads, hides emoji once img loads
+  const eid="e"+Math.random().toString(36).slice(2,9);
+  const iid="i"+Math.random().toString(36).slice(2,9);
+  setTimeout(()=>{
+    const img=document.getElementById(iid);
+    const em=document.getElementById(eid);
+    if(!img||!em)return;
+    img.onload=function(){em.style.display="none";img.style.display="";};
+    img.onerror=function(){img.style.display="none";em.style.display="";};
+    img.src=url;
+  },0);
+  return`<span id="${eid}" style="font-size:24px">${alt||"\u2753"}</span><img id="${iid}" class="${cls||"pk-sprite-md"}" alt="${name}" style="display:none">`;
+}
+
+/* ── SPAWN FLOATING BACKGROUND SPRITES ── */
+(function spawnBgSprites(){
+  const BG_MONS=[1,4,7,25,39,52,54,63,94,133,143,152,155,158,252,255,258,
+                 387,390,393,495,498,501,650,653,656,722,725,728,810,813,816];
+  const wrap=document.getElementById("bg-sprites");
+  BG_MONS.forEach((id,i)=>{
+    const img=document.createElement("img");
+    img.src=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+    img.className="bg-sprite";
+    const size=48+Math.random()*56;
+    const left=Math.random()*95;
+    const delay=Math.random()*25;
+    const dur=20+Math.random()*20;
+    img.style.cssText=`width:${size}px;height:${size}px;left:${left}%;animation-duration:${dur}s;animation-delay:-${delay}s;`;
+    wrap.appendChild(img);
+  });
+})();
+
+/* ── PATCH RENDER FUNCTIONS TO USE SPRITES ── */
+function loadSpriteInto(elId,name,fallbackEmoji,flip){
+  const url=spriteUrl(name);
+  const el=document.getElementById(elId);
+  if(!el)return;
+  if(!url){el.innerHTML=`<span style="font-size:44px">${fallbackEmoji||"\u2753"}</span>`;return;}
+  const flipStyle=flip?"transform:scaleX(-1);":"";
+  el.innerHTML=`<span class="b-spr-em" style="font-size:44px">${fallbackEmoji||"\u2753"}</span>`
+    +`<img class="pk-sprite-battle b-spr-img" src="${url}" style="${flipStyle}display:none" alt="${name}">`;
+  const img=el.querySelector(".b-spr-img");
+  const em=el.querySelector(".b-spr-em");
+  img.onload=function(){em.style.display="none";img.style.display="";};
+  img.onerror=function(){img.style.display="none";em.style.display="";};
+}
+const _origRenderBattle=renderBattle;
+renderBattle=function(msg){
+  _origRenderBattle(msg);
+  const b=G.battle,player=G.team.find(p=>p.hp>0);
+  if(!player)return;
+  const eName=b.e.name.split(" · ").pop().split(" (")[0];
+  loadSpriteInto("b-es",eName,b.e.s,false);
+  loadSpriteInto("b-ps",player.name,player.s,true);
+};
+
+const _origRenderTeam=renderTeam;
+renderTeam=function(){
+  document.getElementById("tgrid").innerHTML=G.team.map(p=>{
+    const r=p.hp/p.maxHp;
+    const spr=spriteImg(p.name,"pk-sprite-lg",p.s);
+    return`<div class="pkcard"><span class="ps">${spr}</span><div class="pn">${p.name}</div><div class="pt">Nv.${p.level} · ${p.type}</div><div class="pt">${p.hp}/${p.maxHp} HP</div><div style="height:3px;background:var(--color-background-secondary);border-radius:2px;margin:4px 0;overflow:hidden"><div style="height:100%;width:${Math.max(0,r*100)}%;background:${HPcolor(r)}"></div></div><div class="pt" style="font-size:10px">${p.moves.join(" · ")}</div></div>`;
+  }).join("")||"<p style='font-size:13px'>Sin equipo.</p>";
+};
+
+const _origShowGymPreview=showGymPreview;
+showGymPreview=function(gd,ri,ni){
+  _origShowGymPreview(gd,ri,ni);
+  const teamEl=document.getElementById("gp-team");
+  teamEl.innerHTML=gd.pk.map(p=>{
+    const spr=spriteImg(p.n,"pk-sprite-md",p.s);
+    return`<div class="gym-mon">${spr}<div class="mn">${p.n}</div><div class="ml">Nv.${p.lv||"?"}</div></div>`;
+  }).join("");
+};
+
+openBall=function(){
+  document.getElementById("pb").classList.add("opening");
+  setTimeout(()=>{
+    const sd=STARTERS[Math.floor(Math.random()*STARTERS.length)];
+    const p=mkPoke(sd,5);p.hp=p.maxHp;G.team=[p];
+    const tc={planta:"#EAF3DE",fuego:"#FAEEDA",agua:"#E6F1FB",electrico:"#FAEEDA",normal:"#F1EFE8"};
+    const id=PKID[sd.n];
+    const revealId="rspr"+Date.now();
+    document.getElementById("reveal-inner").innerHTML=`<div class="fadeup" style="padding:2rem 1rem;text-align:center">
+      <div id="${revealId}" style="width:160px;height:160px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;"><span style="font-size:80px">${sd.s}</span></div>
+      <h2 style="margin-bottom:4px">¡${sd.n}!</h2>
+      <span style="display:inline-block;font-size:11px;padding:3px 10px;border-radius:12px;background:${tc[sd.t]||"#F1EFE8"};color:#444;margin:4px">${sd.t}</span>
+      <p style="margin:10px 0 5px">Nv.5 · HP: ${p.maxHp} · Ataque: ${p.atk}</p>
+      <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:18px">Movimientos: ${sd.mv.join(" · ")}</p>
+      <button onclick="startWorld()" style="font-size:14px;padding:9px 22px">¡Comenzar aventura! →</button>
+    </div>`;
+    // Wire up sprite swap after DOM is set
+    if(id){
+      const el=document.getElementById(revealId);
+      if(el){
+        const artUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+        const smlUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+        const img=document.createElement("img");
+        img.style.cssText="width:160px;height:160px;object-fit:contain;display:none;";
+        el.appendChild(img);
+        let tried=0;
+        const urls=[artUrl,smlUrl];
+        function tryNext(){
+          img.onload=function(){el.querySelector("span").style.display="none";img.style.display="block";};
+          img.onerror=function(){if(++tried<urls.length){img.src=urls[tried];}};
+          img.src=urls[tried];
+        }
+        tryNext();
+      }
+    }
+    ss("reveal");
+  },500);
+};
 </script>
