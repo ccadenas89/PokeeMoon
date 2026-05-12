@@ -64,11 +64,9 @@ body::before{
   overflow:hidden;
 }
 
-.screen{display:none!important}
-.screen.active{display:block!important;height:100%;overflow-y:auto;overflow-x:hidden}
-.screen-flex.active{display:flex!important;flex-direction:column;padding:1rem}
-.screen-col.active{display:flex!important;flex-direction:column;justify-content:space-between}
-.screen-center.active{display:flex!important;align-items:center;justify-content:center}
+/* Screen visibility - high specificity to override everything */
+#app .screen{display:none!important}
+#app .screen.active{display:block!important;height:100%;overflow-y:auto;overflow-x:hidden}
 
 /* ── SPRITE IMG HELPERS ── */
 .pk-sprite{
