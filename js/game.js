@@ -842,7 +842,7 @@ function calcDamage(attacker,moveName,defender){
   const level=attacker.level||5;
   const atkStat=attacker.atk||50;
   // Approximate defense as fraction of HP pool; higher HP = tankier
-  const defStat=Math.max(15, Math.floor((defender.baseHp||50)*defender.level/6+10));
+  const defStat=Math.max(15, Math.floor((defender.baseHp||50)*defender.level/4+5));
   const power=getMovePower(moveName);
   const atkType=attacker.type;
   const moveType=getMoveType(moveName)||atkType; // fallback: move type = pokemon type
@@ -852,7 +852,7 @@ function calcDamage(attacker,moveName,defender){
   const stab=(moveType===atkType)?1.5:1;
   // Random factor 0.85-1.0
   const rand=0.85+Math.random()*0.15;
-  const base=Math.floor(((2*level/5+2)*power*atkStat/defStat/50+2)*stab*typeMultiplier*rand);
+  const base=Math.floor(((2*level/5+2)*power*atkStat/defStat/75+2)*stab*typeMultiplier*rand);
   return {dmg:Math.max(1,base), typeMultiplier, moveType};
 }
 
@@ -893,7 +893,7 @@ function mkPoke(d,lv){
   lv=lv||5;
   const bH=d.hp||50,bA=d.atk||50;
   return{name:d.n||d.name,s:d.s||"❓",type:d.t||d.type||"normal",
-    level:lv,maxHp:Math.floor(bH*lv/5+lv+10),hp:0,atk:Math.floor(bA*lv/5+5),
+    level:lv,maxHp:Math.floor(bH*lv/8+lv/2+5),hp:0,atk:Math.floor(bA*lv/5+5),
     moves:[...(d.mv||d.moves||["Placaje"])],baseHp:bH,baseAtk:bA};
 }
 
@@ -1068,7 +1068,7 @@ function grantXP(poke,amount){
   const milestones=[];
   for(let lv=poke.level+1;lv<=newLv;lv++)if(lv%5===0)milestones.push(lv);
   poke.level=newLv;
-  poke.maxHp=Math.floor(poke.baseHp*poke.level/5+poke.level+10);
+  poke.maxHp=Math.floor(poke.baseHp*poke.level/8+poke.level/2+5);
   poke.atk=Math.floor(poke.baseAtk*poke.level/5+5);
   if(poke.hp>poke.maxHp)poke.hp=poke.maxHp;
   milestones.forEach(()=>{G.pendingLearnQueue.push({poke});});
