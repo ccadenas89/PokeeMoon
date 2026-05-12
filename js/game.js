@@ -1000,24 +1000,6 @@ function shakeBall(){
   if(G.shakes>=3)setTimeout(openBall,500);
 }
 
-function openBall(){
-  document.getElementById("pb").classList.add("opening");
-  setTimeout(()=>{
-    const sd=STARTERS[Math.floor(Math.random()*STARTERS.length)];
-    const p=mkPoke(sd,5);p.hp=p.maxHp;G.team=[p];
-    const tc={planta:"#EAF3DE",fuego:"#FAEEDA",agua:"#E6F1FB",eléctrico:"#FAEEDA",normal:"#F1EFE8"};
-    document.getElementById("reveal-inner").innerHTML=`<div class="fadeup" style="padding:2rem 1rem">
-      <div style="font-size:76px;margin-bottom:8px">${sd.s}</div>
-      <h2 style="margin-bottom:4px">¡${sd.n}!</h2>
-      <span style="display:inline-block;font-size:11px;padding:3px 10px;border-radius:12px;background:${tc[sd.t]||"#F1EFE8"};color:#444;margin:4px">${sd.t}</span>
-      <p style="margin:10px 0 5px">Nv.5 · HP: ${p.maxHp} · Ataque: ${p.atk}</p>
-      <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:18px">Movimientos: ${sd.mv.join(" · ")}</p>
-      <button onclick="startWorld()" style="font-size:14px;padding:9px 22px">¡Comenzar aventura! →</button>
-    </div>`;
-    ss("reveal");
-  },500);
-}
-
 function startWorld(){G.wi=0;G.ni=0;ss("world");renderWorld();}
 function renderWorld(){updateHUD();renderMap();}
 function updateHUD(){
@@ -1442,41 +1424,6 @@ function endBattle(result){
   }else{
     G.team.forEach(p=>{p.hp=Math.floor(p.maxHp*0.25);});
     saveGame();
-    showResult("😵","Derrota","Tu equipo fue derrotado. Se ha recuperado parcialmente.",ri,ni,true);
-  }
-}
-    G.money+=reward;
-    G.team.forEach(p=>{if(p.hp>0)grantXP(p,xpGain);});
-    const banner=document.getElementById("lvup-banner");
-    banner.textContent="¡"+G.team.filter(p=>p.hp>0).map(p=>p.name+" Nv."+p.level).join(" · ")+"!";
-    banner.style.display="block";
-    showResult("✨","¡Victoria!","+"+reward+" monedas."+extraMsg,ri,ni,false);
-  }else if(result==="catch"){
-    if(G.team.length<6)G.team.push({...b.e,hp:b.e.hp,moves:[...b.e.moves]});
-    G.caught.add(b.e.name);
-    const _catchName=b.e.name,_catchS=b.e.s;
-    showResult(_catchS,"¡Capturado!","¡"+_catchName+" se unió a tu equipo!",ri,ni,false);
-    // Replace emoji icon with actual sprite
-    const _catchId=PKID[_catchName];
-    if(_catchId){
-      const _rIco=document.getElementById("res-ico");
-      _rIco.style.fontSize="0";_rIco.innerHTML="";
-      const _artUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${_catchId}.png`;
-      const _smlUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${_catchId}.png`;
-      const _img=document.createElement("img");
-      _img.style.cssText="width:120px;height:120px;object-fit:contain;image-rendering:pixelated;display:block;margin:0 auto;";
-      _rIco.appendChild(_img);
-      let _tried=0;const _urls=[_artUrl,_smlUrl];
-      (function _tryNext(){
-        _img.onload=function(){_img.style.display="block";};
-        _img.onerror=function(){if(++_tried<_urls.length){_img.src=_urls[_tried];}else{_rIco.style.fontSize="56px";_rIco.textContent=_catchS;}};
-        _img.src=_urls[_tried];
-      })();
-    }
-  }else if(result==="run"){
-    ss("world");renderWorld();
-  }else{
-    G.team.forEach(p=>{p.hp=Math.floor(p.maxHp*0.25);});
     showResult("😵","Derrota","Tu equipo fue derrotado. Se ha recuperado parcialmente.",ri,ni,true);
   }
 }
