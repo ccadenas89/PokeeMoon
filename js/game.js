@@ -1086,6 +1086,7 @@ function enterNode(ri,ni){
       const tc={planta:"#EAF3DE",fuego:"#FAEEDA",agua:"#E6F1FB",eléctrico:"#FAEEDA",normal:"#F1EFE8"};
       const giftMsg=`Tu madre te regala un ${giftData.n} para tu largo viaje. ¡Cuídalo!`;
       showResult(giftData.s,"¡Regalo de tu mamá!",giftMsg,ri,ni,false);
+      loadSpriteForResult(giftData.n,giftData.s);
     } else{saveGame();showResult("🏡",node.n,"Equipo curado. ¡Sigue adelante!",ri,ni,false);}
   }
   else if(node.t==="route"||node.t==="cave")showRoulette(ri,ni);
@@ -1423,23 +1424,7 @@ function endBattle(result){
     savePokedex();saveGame();
     const _catchName=b.e.name,_catchS=b.e.s;
     showResult(_catchS,"¡Capturado!","¡"+_catchName+" se unió a tu equipo!",ri,ni,false);
-    // Replace emoji icon with actual sprite
-    const _catchId=PKID[_catchName];
-    if(_catchId){
-      const _rIco=document.getElementById("res-ico");
-      _rIco.style.fontSize="0";_rIco.innerHTML="";
-      const _artUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${_catchId}.png`;
-      const _smlUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${_catchId}.png`;
-      const _img=document.createElement("img");
-      _img.style.cssText="width:120px;height:120px;object-fit:contain;image-rendering:pixelated;display:block;margin:0 auto;";
-      _rIco.appendChild(_img);
-      let _tried=0;const _urls=[_artUrl,_smlUrl];
-      (function _tryNext(){
-        _img.onload=function(){_img.style.display="block";};
-        _img.onerror=function(){if(++_tried<_urls.length){_img.src=_urls[_tried];}else{_rIco.style.fontSize="56px";_rIco.textContent=_catchS;}};
-        _img.src=_urls[_tried];
-      })();
-    }
+    loadSpriteForResult(_catchName,_catchS);
   }else if(result==="run"){
     saveGame();ss("world");renderWorld();
   }else{
@@ -1479,6 +1464,25 @@ function showResult(ico,title,msg,ri,ni,lost){
   acts.innerHTML=lost?`<button onclick="backWorld(${ri},${ni})">← Mapa</button>`:
     `<button onclick="nextNode(${ri},${ni})">Siguiente →</button><button onclick="backWorld(${ri},${ni})">Ver mapa</button>`;
   ss("result");
+}
+
+function loadSpriteForResult(pokeName,fallbackEmoji){
+  const _rIco=document.getElementById("res-ico");
+  if(!_rIco)return;
+  const _pokeId=PKID[pokeName];
+  if(!_pokeId)return;
+  _rIco.style.fontSize="0";_rIco.innerHTML="";
+  const _artUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${_pokeId}.png`;
+  const _smlUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${_pokeId}.png`;
+  const _img=document.createElement("img");
+  _img.style.cssText="width:120px;height:120px;object-fit:contain;image-rendering:pixelated;display:block;margin:0 auto;";
+  _rIco.appendChild(_img);
+  let _tried=0;const _urls=[_artUrl,_smlUrl];
+  (function _tryNext(){
+    _img.onload=function(){_img.style.display="block";};
+    _img.onerror=function(){if(++_tried<_urls.length){_img.src=_urls[_tried];}else{_rIco.style.fontSize="56px";_rIco.textContent=fallbackEmoji||"❓";}};
+    _img.src=_urls[_tried];
+  })();
 }
 function nextNode(ri,ni){G.wi=ri;G.ni=ni;advance();}
 function backWorld(ri,ni){G.wi=ri;G.ni=ni;processLearnQueue(()=>{ss("world");renderWorld();wTab("map");});}
