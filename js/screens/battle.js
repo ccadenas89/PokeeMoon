@@ -27,6 +27,7 @@ function renderBattleScreen(){
       <div class="mgrid" id="bmoves"></div>
       <div class="arow">
         <button onclick="bAct('bag')">Mochila</button>
+        <button onclick="bAct('team')">Equipo</button>
         <button id="b-catch-btn" onclick="bAct('catch')">Poké Ball</button>
         <button onclick="bAct('run')" id="b-run-btn">Huir</button>
       </div>
@@ -34,6 +35,11 @@ function renderBattleScreen(){
     <div id="b-bag-panel" style="display:none">
       <p style="font-size:12px;margin-bottom:6px">Elige objeto:</p>
       <div style="display:flex;flex-direction:column;gap:5px" id="b-bag-items"></div>
+      <button onclick="showBMain()" style="margin-top:7px">← Volver</button>
+    </div>
+    <div id="b-team-panel" style="display:none">
+      <p style="font-size:12px;margin-bottom:6px">Elige Pokémon:</p>
+      <div style="display:flex;flex-direction:column;gap:5px" id="b-team-list"></div>
       <button onclick="showBMain()" style="margin-top:7px">← Volver</button>
     </div>
   `;

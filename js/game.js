@@ -1325,7 +1325,7 @@ function renderBattle(msg){
   showBMain();
   if(battleLocked) setBattleLock(true);
 }
-function showBMain(){document.getElementById("b-main").style.display="block";document.getElementById("b-bag-panel").style.display="none";}
+function showBMain(){document.getElementById("b-main").style.display="block";document.getElementById("b-bag-panel").style.display="none";document.getElementById("b-team-panel").style.display="none";}
 function typeEffectMsg(mult){
   if(mult===0)return" ¡No afecta!";
   if(mult>=2)return" ¡Es muy eficaz!";
@@ -1400,6 +1400,34 @@ function bAct(a){
     const usable=USABLE_IN_BATTLE.filter(it=>(G.bag[it.k]||0)>0);
     bl.innerHTML=usable.length?usable.map(it=>`<div class="rnode" onclick="useBagItem('${it.k}')"><div class="nd"><div class="nn">${it.n}</div></div><span style="font-size:12px;color:var(--color-text-secondary)">x${G.bag[it.k]}</span></div>`).join(""):"<p style='font-size:12px'>Sin objetos curadores.</p>";
   }
+  if(a==="team"){
+    document.getElementById("b-main").style.display="none";
+    document.getElementById("b-team-panel").style.display="block";
+    const tl=document.getElementById("b-team-list");
+    const current=G.team.find(p=>p.hp>0);
+    tl.innerHTML=G.team.map((p,i)=>{
+      const isCurrent=current&&p.name===current.name&&p.level===current.level;
+      const hpPct=Math.max(0,p.hp/p.maxHp*100);
+      const hpCol=HPcolor(p.hp/p.maxHp);
+      const disabled=p.hp<=0||isCurrent;
+      return`<div class="rnode" onclick="${disabled?'':'switchPokemon('+i+')'}" style="${disabled?'opacity:0.5;pointer-events:none':''}"><div class="nd"><div class="nn">${p.s} ${p.name}${isCurrent?' (actual)':''}</div><div class="ns">Nv.${p.level} · ${p.type}</div></div><div style="width:80px"><div class="hpb" style="height:8px"><div class="hpf" style="width:${hpPct}%;background:${hpCol}"></div></div><div style="font-size:10px;text-align:right">${p.hp}/${p.maxHp}</div></div></div>`;
+    }).join("");
+  }
+}
+function switchPokemon(i){
+  if(battleLocked)return;
+  const p=G.team[i];
+  if(!p||p.hp<=0)return;
+  const currentIdx=G.team.findIndex(t=>t.hp>0);
+  if(currentIdx===i)return;
+  setBattleLock(true);
+  const temp=G.team[currentIdx];
+  G.team[currentIdx]=G.team[i];
+  G.team[i]=temp;
+  showBMain();
+  document.getElementById("blog").textContent="¡Adelante "+p.name+"!";
+  renderBattle();
+  setTimeout(enemyTurn,850);
 }
 function useBagItem(k){
   if(battleLocked) return;
@@ -1430,16 +1458,18 @@ function endBattle(result){
     else if(isLeague){
       reward+=500;G.badges+=5;G.bag.hiper_pocion+=2;G.bag.ultra_ball+=2;
       G.money+=reward;
-      G.team.forEach(p=>{if(p.hp>0)grantXP(p,5);});
+      G.team.forEach(p=>{grantXP(p,5);});
+      healTeam();
       resetForNextRegion();
       savePokedex();saveGame();
       showResult("🏆","¡Liga superada!","¡Liga "+b._ld_name+" vencida! Tu equipo pasa a la siguiente región a Nv.5 conservando movimientos.",ri,ni,false);
       return;
     }
     G.money+=reward;
-    G.team.forEach(p=>{if(p.hp>0)grantXP(p,xpGain);});
+    G.team.forEach(p=>{grantXP(p,xpGain);});
+    healTeam();
     const banner=document.getElementById("lvup-banner");
-    banner.textContent="¡"+G.team.filter(p=>p.hp>0).map(p=>p.name+" Nv."+p.level).join(" · ")+"!";
+    banner.textContent="¡"+G.team.map(p=>p.name+" Nv."+p.level).join(" · ")+"!";
     banner.style.display="block";
     saveGame();
     showResult("✨","¡Victoria!","+"+reward+" monedas."+extraMsg,ri,ni,false);
@@ -1449,12 +1479,15 @@ function endBattle(result){
     if(G.team.length<6)G.team.push(caughtPoke);
     else{G.pc.push(caughtPoke);wentToPC=true;}
     G.caught.add(b.e.name);
+    G.team.forEach(p=>{grantXP(p,1);});
+    healTeam();
     savePokedex();saveGame();
     const _catchName=b.e.name,_catchS=b.e.s;
     const catchMsg=wentToPC?"¡"+_catchName+" fue enviado a la PC!":"¡"+_catchName+" se unió a tu equipo!";
     showResult(_catchS,"¡Capturado!",catchMsg,ri,ni,false);
     setTimeout(()=>loadSpriteForResult(_catchName,_catchS),100);
   }else if(result==="run"){
+    healTeam();
     saveGame();ss("world");renderWorld();
   }else{
     G.team.forEach(p=>{p.hp=Math.floor(p.maxHp*0.25);});
