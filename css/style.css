@@ -51,17 +51,18 @@ body::before{
 /* App container */
 #app{
   font-family:var(--font-sans);
-  padding:0.75rem;
-  max-width:480px;
-  width:100%;
+  padding:10px;
+  width:480px;
+  height:520px;
   margin:1rem auto;
   position:relative;
   z-index:1;
   background:#e8e4dc;
   border-radius:16px;
-  min-height:auto;
   box-shadow:0 4px 24px rgba(0,0,0,0.15);
   color-scheme: light;
+  overflow-y:auto;
+  overflow-x:hidden;
 }
 
 /* ── SPRITE IMG HELPERS ── */
@@ -149,11 +150,11 @@ button{cursor:pointer}
 .mbtn{padding:7px 10px;font-size:12px;border-radius:var(--border-radius-md);text-align:left}
 .mbtn .mp{font-size:9px;opacity:0.6;display:block;margin-top:1px}
 .arow{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
-.pkcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:8px;text-align:center;font-size:11px}
-.pkcard .ps{font-size:28px;display:block;margin-bottom:2px}
-.pkcard .pn{font-weight:500;color:var(--color-text-primary);font-size:12px}
-.pkcard .pt{color:var(--color-text-secondary);font-size:10px}
-.pkgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:6px 0}
+.pkcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:6px;text-align:center;font-size:10px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pkcard .ps{font-size:24px;display:block;margin-bottom:1px}
+.pkcard .pn{font-weight:500;color:var(--color-text-primary);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.pkcard .pt{color:var(--color-text-secondary);font-size:9px}
+.pkgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:4px 0}
 .lvup-banner{background:#EAF3DE;border:0.5px solid #97C459;border-radius:var(--border-radius-md);padding:8px 12px;font-size:13px;color:#27500A;margin-bottom:8px;display:none}
 .learn-modal{background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:16px;margin-bottom:10px;text-align:center}
 .learn-modal .rnode{text-align:left;max-width:300px;width:100%}
@@ -222,22 +223,28 @@ button{cursor:pointer}
 .pokedex-detail-info p{font-size:13px;color:var(--color-text-secondary)}
 
 /* ── PC BOX ── */
-.team-section{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--color-border-tertiary)}
-.pc-section{margin-top:8px}
-.section-title{font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:8px;display:flex;align-items:center;gap:8px}
-.team-count{font-size:10px;padding:2px 6px;border-radius:8px;background:var(--color-background-secondary);color:var(--color-text-secondary);font-weight:400}
-.team-grid{grid-template-columns:repeat(3,1fr)!important}
-.pc-tabs{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
-.pc-tab{font-size:10px;padding:4px 10px;border-radius:6px;background:var(--color-background-secondary);border:1px solid var(--color-border-tertiary)}
+.team-section{margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--color-border-tertiary)}
+.pc-section{margin-top:6px}
+.section-title{font-size:12px;font-weight:600;color:var(--color-text-primary);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.team-count{font-size:9px;padding:2px 5px;border-radius:6px;background:var(--color-background-secondary);color:var(--color-text-secondary);font-weight:400}
+.team-grid{grid-template-columns:repeat(6,1fr)!important;gap:3px!important}
+.team-grid .pkcard{padding:4px}
+.team-grid .pkcard .ps{font-size:20px}
+.team-grid .pkcard .pn{font-size:9px}
+.team-grid .pkcard .pt{font-size:8px}
+.pkcard-empty{background:var(--color-background-secondary);border:1px dashed var(--color-border-tertiary)}
+.empty-icon{color:var(--color-text-tertiary);font-size:18px}
+.pc-tabs{display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap}
+.pc-tab{font-size:9px;padding:3px 8px;border-radius:5px;background:var(--color-background-secondary);border:1px solid var(--color-border-tertiary)}
 .pc-tab.active{background:var(--color-background-primary);border-color:var(--color-border-secondary);font-weight:600}
-.pc-grid{grid-template-columns:repeat(5,1fr)!important}
-.pc-card{position:relative;cursor:pointer;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pc-grid{grid-template-columns:repeat(5,1fr)!important;gap:3px!important}
+.pc-card{position:relative;cursor:pointer;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3px}
 .pc-card:hover{border-color:var(--color-border-secondary);background:var(--color-background-secondary)}
 .pc-empty{aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:var(--color-background-secondary);border:1px dashed var(--color-border-tertiary);border-radius:var(--border-radius-lg)}
-.pc-empty-icon{color:var(--color-text-tertiary);font-size:16px}
-.pc-btn{position:absolute;top:4px;right:4px;background:none;border:none;font-size:12px;cursor:pointer;padding:2px 4px;border-radius:4px;opacity:0.5}
+.pc-empty-icon{color:var(--color-text-tertiary);font-size:14px}
+.pc-btn{position:absolute;top:2px;right:2px;background:none;border:none;font-size:10px;cursor:pointer;padding:1px 3px;border-radius:3px;opacity:0.5}
 .pc-btn:hover{opacity:1;background:var(--color-background-secondary)}
-.pc-release{position:absolute;top:4px;right:4px;background:none;border:none;font-size:10px;cursor:pointer;padding:1px 4px;border-radius:4px;opacity:0.5;color:#E24B4A}
+.pc-release{position:absolute;top:2px;right:2px;background:none;border:none;font-size:9px;cursor:pointer;padding:1px 3px;border-radius:3px;opacity:0.5;color:#E24B4A}
 .pc-release:hover{opacity:1;background:#FCEBEB}
 
 /* ── DRAG AND DROP ── */

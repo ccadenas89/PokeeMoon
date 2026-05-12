@@ -1515,11 +1515,18 @@ function renderTeam(){
   const grid=document.getElementById("tgrid");
   const count=document.getElementById("team-count");
   count.textContent=G.team.length+"/6";
-  grid.innerHTML=G.team.map((p,i)=>{
-    const r=p.hp/p.maxHp;
-    const spr=spriteImg(p.name,"pk-sprite-lg",p.s);
-    return`<div class="pkcard" draggable="true" data-src="team" data-idx="${i}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)">${spr}<div class="pn">${p.name}</div><div class="pt">Nv.${p.level} · ${p.type}</div><div class="pt">${p.hp}/${p.maxHp} HP</div><div style="height:3px;background:var(--color-background-secondary);border-radius:2px;margin:4px 0;overflow:hidden"><div style="height:100%;width:${Math.max(0,r*100)}%;background:${HPcolor(r)}"></div></div><div class="pt" style="font-size:10px">${p.moves.join(" · ")}</div><button class="pc-btn" onclick="moveToPC(${i})" title="Enviar a PC">📦</button></div>`;
-  }).join("")||"<p style='font-size:13px;color:var(--color-text-secondary)'>Sin Pokémon en el equipo.</p>";
+  let html="";
+  for(let i=0;i<6;i++){
+    if(i<G.team.length){
+      const p=G.team[i];
+      const r=p.hp/p.maxHp;
+      const spr=spriteImg(p.name,"pk-sprite-sm",p.s);
+      html+=`<div class="pkcard" draggable="true" data-src="team" data-idx="${i}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)">${spr}<div class="pn">${p.name}</div><div class="pt">Nv.${p.level}</div><button class="pc-btn" onclick="moveToPC(${i})" title="Enviar a PC">📦</button></div>`;
+    }else{
+      html+=`<div class="pkcard pkcard-empty"><span class="empty-icon">—</span></div>`;
+    }
+  }
+  grid.innerHTML=html;
 }
 
 let _pcBox=0;
