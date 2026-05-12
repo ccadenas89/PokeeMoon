@@ -39,39 +39,10 @@
     </div>
   </div>
 </div>
-<div id="s-reveal" class="screen"><div id="reveal-inner" style="text-align:center;padding:1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%"></div></div>
-<div id="s-roulette" class="screen">
-  <div class="roulette-wrap">
-    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:10px" id="rou-title">¡Evento entre nodos!</p>
-    <div class="rou-ptr">▼</div>
-    <div class="rou-wheel" id="rou-wheel"></div>
-    <div class="rou-result" id="rou-result"></div>
-    <button id="rou-btn" onclick="spinRoulette()">Girar ruleta</button>
-  </div>
-</div>
-<div id="s-item" class="screen">
-  <div class="item-found-card">
-    <div style="font-size:52px;margin-bottom:8px" id="item-ico"></div>
-    <div class="item-rarity" id="item-rbadge"></div>
-    <h2 id="item-name" style="margin-bottom:4px"></h2>
-    <p id="item-desc" style="font-size:13px;margin-bottom:16px"></p>
-    <button onclick="itemContinue()">Continuar →</button>
-  </div>
-</div>
-<div id="s-gym-preview" class="screen">
-  <div style="display:flex;flex-direction:column;height:100%;padding:1rem">
-    <div class="gym-preview">
-      <h3 id="gp-title"></h3>
-      <p id="gp-sub" style="font-size:12px;margin-bottom:10px"></p>
-      <div class="gym-team" id="gp-team"></div>
-    </div>
-    <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:10px;text-align:center" id="gp-advice"></p>
-    <div style="display:flex;gap:7px;justify-content:center">
-      <button onclick="confirmGym()">¡Luchar!</button>
-      <button onclick="backFromGym()">← Volver al mapa</button>
-    </div>
-  </div>
-</div>
+<div id="s-reveal" class="screen"></div>
+<div id="s-roulette" class="screen"></div>
+<div id="s-item" class="screen"></div>
+<div id="s-gym-preview" class="screen"></div>
 <div id="s-world" class="screen">
   <div class="hud" id="whud"></div>
   <div class="tabs">
@@ -105,47 +76,9 @@
   </div>
 </div>
 <div id="pokedex-detail" class="pokedex-detail-overlay" style="display:none"></div>
-<div id="s-battle" class="screen">
-  <div style="display:flex;flex-direction:column;justify-content:space-between;height:100%">
-    <div id="lvup-banner" class="lvup-banner"></div>
-    <div class="battle-box">
-      <div class="ftr enemy"><div class="sp" id="b-es"></div><div class="fi"><div class="fn" id="b-en"></div><div class="fl" id="b-el"></div><div class="hpb"><div class="hpf" id="b-eh" style="background:#E24B4A"></div></div><div class="hpt" id="b-eht"></div></div></div>
-      <div class="divl"></div>
-      <div class="ftr"><div class="sp" id="b-ps"></div><div class="fi"><div class="fn" id="b-pn"></div><div class="fl" id="b-pl"></div><div class="hpb"><div class="hpf" id="b-ph" style="background:#639922"></div></div><div class="hpt" id="b-pht"></div></div></div>
-    </div>
-    <div class="blog" id="blog"></div>
-    <div id="b-main">
-      <div class="mgrid" id="bmoves"></div>
-      <div class="arow">
-        <button onclick="bAct('bag')">Mochila</button>
-        <button id="b-catch-btn" onclick="bAct('catch')">Poké Ball</button>
-        <button onclick="bAct('run')" id="b-run-btn">Huir</button>
-      </div>
-    </div>
-    <div id="b-bag-panel" style="display:none">
-      <p style="font-size:12px;margin-bottom:6px">Elige objeto:</p>
-      <div style="display:flex;flex-direction:column;gap:5px" id="b-bag-items"></div>
-      <button onclick="showBMain()" style="margin-top:7px">← Volver</button>
-    </div>
-  </div>
-</div>
-<div id="s-learn" class="screen">
-  <div style="display:flex;align-items:center;justify-content:center;height:100%">
-    <div class="learn-modal" style="text-align:center">
-      <h2 id="learn-title"></h2>
-      <p id="learn-sub" style="font-size:13px"></p>
-      <div style="display:flex;flex-direction:column;gap:5px;margin-top:8px;align-items:center" id="learn-opts"></div>
-    </div>
-  </div>
-</div>
-<div id="s-result" class="screen">
-  <div style="text-align:center;padding:1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%">
-    <div style="font-size:56px" id="res-ico"></div>
-    <h2 id="res-title" style="margin:10px 0 5px"></h2>
-    <p id="res-msg" style="margin-bottom:18px"></p>
-    <div style="display:flex;gap:7px;justify-content:center;flex-wrap:wrap" id="res-acts"></div>
-  </div>
-</div>
+<div id="s-battle" class="screen"></div>
+<div id="s-learn" class="screen"></div>
+<div id="s-result" class="screen"></div>
 </div>
 
 
@@ -159,6 +92,14 @@
 <script src="js/pokedex/gen8.js"></script>
 <script src="js/pokedex/gen9.js"></script>
 <script src="js/pokedex/pokedex.js"></script>
+<script src="js/screens/manager.js"></script>
+<script src="js/screens/reveal.js"></script>
+<script src="js/screens/roulette.js"></script>
+<script src="js/screens/item.js"></script>
+<script src="js/screens/gymPreview.js"></script>
+<script src="js/screens/battle.js"></script>
+<script src="js/screens/learn.js"></script>
+<script src="js/screens/result.js"></script>
 <script src="js/game.js"></script>
 </body>
 </html>

@@ -1100,10 +1100,8 @@ function enterNode(ri,ni){
 
 function showGymPreview(gd,ri,ni){
   G._pendingGym={gd,ri,ni};
-  document.getElementById("gp-title").textContent="⚔️ "+gd.l+" · "+gd.badge;
-  document.getElementById("gp-sub").textContent="Tipo "+gd.type+" · "+gd.pk.length+" Pokémon";
-  const teamEl=document.getElementById("gp-team");
-  teamEl.innerHTML=gd.pk.map(p=>`<div class="gym-mon"><span class="ms">${p.s}</span><div class="mn">${p.n}</div><div class="ml">Nv.${p.lv||gd.pk[0].lv||"?"}</div></div>`).join("");
+  Screens.render("gym-preview",renderGymPreviewScreen(gd,ri,ni));
+  Screens.show("gym-preview");
   const myMaxLv=maxLv();
   const gymMaxLv=Math.max(...gd.pk.map(p=>p.lv||20));
   const diff=gymMaxLv-myMaxLv;
@@ -1111,8 +1109,8 @@ function showGymPreview(gd,ri,ni){
   if(diff>5)advice=`⚠️ Tu equipo está ${diff} niveles por debajo. ¡Considera entrenar antes!`;
   else if(diff>0)advice=`El rival tiene ${diff} nivel(es) más. ¡Ve con precaución!`;
   else advice=`✅ Tu equipo está bien nivelado para este gimnasio.`;
-  document.getElementById("gp-advice").textContent=advice;
-  ss("s-gym-preview");
+  const adviceEl=document.getElementById("gp-advice");
+  if(adviceEl)adviceEl.textContent=advice;
 }
 function confirmGym(){
   const {gd,ri,ni}=G._pendingGym;
@@ -1137,13 +1135,14 @@ function processLearnQueue(cb){
 }
 
 function showLearnScreen(item,cb){
+  Screens.render("learn",renderLearnScreen());
   document.getElementById("learn-title").textContent=item.poke.name+" puede aprender un movimiento (Nv."+item.poke.level+")";
   document.getElementById("learn-sub").textContent="Elige qué movimiento aprender. Si ya tiene 4 reemplazará uno al azar.";
   const pool=buildMovePool(item.poke);
   const opts=document.getElementById("learn-opts");
   opts.innerHTML=pool.map((mv,i)=>`<div class="rnode" onclick="learnMove(${i},this)" data-mv="${mv}" data-poke="${item.poke.name}"><div class="nd"><div class="nn">${mv}</div><div class="ns">Nuevo movimiento</div></div></div>`).join("");
   opts.innerHTML+=`<button onclick="skipLearn()" style="margin-top:8px">Saltar</button>`;
-  G._learnCb=cb;ss("learn");
+  G._learnCb=cb;Screens.show("learn");
 }
 
 function buildMovePool(p){
@@ -1183,10 +1182,11 @@ const RSEG=[
 ];
 let rRi,rNi;
 function showRoulette(ri,ni){
+  Screens.render("roulette",renderRouletteScreen());
   rRi=ri;rNi=ni;
   document.getElementById("rou-result").textContent="";
   document.getElementById("rou-btn").style.display="block";
-  drawWheel();ss("roulette");
+  drawWheel();Screens.show("roulette");
 }
 function drawWheel(){
   const w=document.getElementById("rou-wheel");
@@ -1245,6 +1245,7 @@ function resolveRoulette(type){
   }else{showItemFound(ri,ni);}
 }
 function showItemFound(ri,ni){
+  Screens.render("item",renderItemScreen());
   const itemDef=pickItem(),qty=itemDef.qty();
   G._itemRi=ri;G._itemNi=ni;
   G.bag[itemDef.k]=(G.bag[itemDef.k]||0)+qty;
@@ -1254,7 +1255,7 @@ function showItemFound(ri,ni){
   document.getElementById("item-rbadge").className="item-rarity "+itemDef.cls;
   document.getElementById("item-name").textContent=(qty>1?qty+"x ":"")+itemDef.n;
   document.getElementById("item-desc").textContent=itemDef.desc;
-  ss("item");
+  Screens.show("item");
 }
 function applySpecialItem(itemDef,qty){
   if(!itemDef.sp)return;
@@ -1270,9 +1271,11 @@ function itemContinue(){
   processLearnQueue(()=>nextNode(G._itemRi,G._itemNi));
 }
 function initBattle(msg){
+  Screens.render("battle",renderBattleScreen());
   setBattleLock(false);
   document.getElementById("lvup-banner").style.display="none";
-  ss("battle");renderBattle(msg);
+  Screens.show("battle");
+  renderBattle(msg);
   const b=G.battle;
   document.getElementById("b-catch-btn").style.display=b.canCatch?"inline":"none";
   document.getElementById("b-run-btn").style.display=(b.type==="gym"||b.type==="league")?"none":"inline";
@@ -1465,13 +1468,14 @@ function startLeague(ld,ri,ni){
   initBattle("¡Liga "+ld.n+"! "+ld.tr.length+" entrenadores. ¡"+ld.tr[0].n+" te desafía!");
 }
 function showResult(ico,title,msg,ri,ni,lost){
+  Screens.render("result",renderResultScreen());
   document.getElementById("res-ico").textContent=ico;
   document.getElementById("res-title").textContent=title;
   document.getElementById("res-msg").textContent=msg;
   const acts=document.getElementById("res-acts");
   acts.innerHTML=lost?`<button onclick="backWorld(${ri},${ni})">← Mapa</button>`:
     `<button onclick="nextNode(${ri},${ni})">Siguiente →</button><button onclick="backWorld(${ri},${ni})">Ver mapa</button>`;
-  ss("result");
+  Screens.show("result");
 }
 
 function loadSpriteForResult(pokeName,fallbackEmoji){
@@ -1851,6 +1855,7 @@ openBall=function(){
     const tc={planta:"#EAF3DE",fuego:"#FAEEDA",agua:"#E6F1FB",electrico:"#FAEEDA",normal:"#F1EFE8"};
     const id=PKID[sd.n];
     const revealId="rspr"+Date.now();
+    Screens.render("reveal",renderRevealScreen());
     document.getElementById("reveal-inner").innerHTML=`<div class="fadeup" style="padding:2rem 1rem;text-align:center">
       <div id="${revealId}" style="width:160px;height:160px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;"><span style="font-size:80px">${sd.s}</span></div>
       <h2 style="margin-bottom:4px">¡${sd.n}!</h2>
@@ -1859,7 +1864,6 @@ openBall=function(){
       <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:18px">Movimientos: ${sd.mv.join(" · ")}</p>
       <button onclick="startWorld()" style="font-size:14px;padding:9px 22px">¡Comenzar aventura! →</button>
     </div>`;
-    // Wire up sprite swap after DOM is set
     if(id){
       const el=document.getElementById(revealId);
       if(el){
@@ -1878,6 +1882,6 @@ openBall=function(){
         tryNext();
       }
     }
-    ss("reveal");
+    Screens.show("reveal");
   },500);
 };
