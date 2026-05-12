@@ -180,3 +180,41 @@ button{cursor:pointer}
 .pdex-cell.caught .pdex-spr{display:flex;align-items:center;justify-content:center}
 .pdex-cell.caught .pdex-spr img{width:32px;height:32px}
 .pdex-name{font-size:8px;color:var(--color-text-secondary);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;padding:0 2px}
+
+/* ── FULL POKÉDEX ── */
+.pokedex-container{padding:10px 0}
+.pokedex-header-bar{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--color-border-tertiary)}
+.pokedex-header-bar h2{font-size:18px;font-weight:600;color:var(--color-text-primary);margin:0}
+.pokedex-back-btn{font-size:13px;padding:6px 12px;border-radius:var(--border-radius-md);background:var(--color-background-secondary);border:1px solid var(--color-border-tertiary);cursor:pointer}
+.pokedex-back-btn:hover{background:var(--color-background-tertiary)}
+.pokedex-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.pokedex-header h2{font-size:16px;font-weight:600;color:var(--color-text-primary);margin:0}
+.pokedex-gen-badge{font-size:11px;padding:3px 10px;border-radius:12px;background:#E6F1FB;color:#185FA5;font-weight:500}
+.pokedex-count{font-size:12px;padding:3px 10px;border-radius:12px;background:var(--color-background-secondary);color:var(--color-text-secondary);font-weight:500}
+.pokedex-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.pokedex-tab{font-size:11px;padding:6px 12px;border-radius:var(--border-radius-md);cursor:pointer;transition:all 0.15s}
+.pokedex-tab:hover{background:var(--color-background-secondary)}
+.pokedex-tab.active{background:var(--color-background-secondary);font-weight:600;border:1px solid var(--color-border-secondary)}
+.pokedex-grid-full{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
+.pokedex-entry{display:flex;flex-direction:column;align-items:center;padding:10px 6px;border-radius:var(--border-radius-lg);border:1px solid var(--color-border-tertiary);background:var(--color-background-primary);transition:all 0.15s;cursor:pointer}
+.pokedex-entry:hover{border-color:var(--color-border-secondary);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+.pokedex-entry.caught{background:var(--color-background-primary)}
+.pokedex-entry.unknown{background:var(--color-background-tertiary,#E8E8E8);cursor:default;opacity:0.6}
+.pokedex-entry.unknown:hover{transform:none;box-shadow:none}
+.pokedex-sprite{width:56px;height:56px;image-rendering:pixelated;object-fit:contain}
+.pokedex-emoji-fallback{font-size:36px}
+.pokedex-unknown-icon{font-size:36px;color:var(--color-text-tertiary,#AAA);font-weight:700}
+.pokedex-number{font-size:10px;color:var(--color-text-secondary);margin-top:4px;font-weight:500}
+.pokedex-name{font-size:11px;font-weight:500;color:var(--color-text-primary);text-align:center;margin-top:2px}
+.pokedex-type{font-size:9px;color:var(--color-text-secondary);text-align:center;margin-top:2px}
+.pokedex-detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.pokedex-detail-card{background:white;border-radius:var(--border-radius-lg);padding:24px;text-align:center;max-width:320px;width:90%;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.pokedex-detail-close{position:absolute;top:12px;right:12px;background:none;border:none;font-size:24px;cursor:pointer;color:var(--color-text-secondary);width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.pokedex-detail-close:hover{background:var(--color-background-secondary)}
+.pokedex-detail-sprite{width:160px;height:160px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center}
+.pokedex-detail-sprite img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.pokedex-detail-card h2{font-size:20px;font-weight:600;color:var(--color-text-primary);margin:0 0 8px}
+.pokedex-detail-number{font-size:14px;color:var(--color-text-secondary);display:block;margin-bottom:8px}
+.pokedex-detail-type{font-size:12px;padding:4px 14px;border-radius:16px;background:var(--color-background-secondary);color:var(--color-text-primary);display:inline-block}
+.pokedex-detail-info{margin-top:16px;padding-top:16px;border-top:1px solid var(--color-border-tertiary)}
+.pokedex-detail-info p{font-size:13px;color:var(--color-text-secondary)}

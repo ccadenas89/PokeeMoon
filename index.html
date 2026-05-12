@@ -63,6 +63,7 @@
     <button class="tab active" id="tb-map" onclick="wTab('map')">Ruta</button>
     <button class="tab" id="tb-team" onclick="wTab('team')">Equipo</button>
     <button class="tab" id="tb-bag" onclick="wTab('bag')">Mochila</button>
+    <button class="tab" id="tb-pokedex" onclick="openPokedex()">Pokédex</button>
   </div>
   <div id="tw-map"><div class="route-map" id="rmap"></div></div>
   <div id="tw-team" style="display:none">
@@ -74,6 +75,16 @@
   </div>
   <div id="tw-bag" style="display:none"><div style="display:flex;flex-direction:column;gap:5px;margin-top:8px" id="bagui"></div></div>
 </div>
+<div id="s-pokedex" class="screen">
+  <div class="pokedex-container">
+    <div class="pokedex-header-bar">
+      <button onclick="backFromPokedex()" class="pokedex-back-btn">← Volver</button>
+      <h2>Pokédex Nacional</h2>
+    </div>
+    <div id="pokedex-content"></div>
+  </div>
+</div>
+<div id="pokedex-detail" class="pokedex-detail-overlay" style="display:none"></div>
 <div id="s-battle" class="screen">
   <div id="lvup-banner" class="lvup-banner"></div>
   <div class="battle-box">
@@ -114,6 +125,16 @@
 </div>
 
 
+<script src="js/pokedex/gen1.js"></script>
+<script src="js/pokedex/gen2.js"></script>
+<script src="js/pokedex/gen3.js"></script>
+<script src="js/pokedex/gen4.js"></script>
+<script src="js/pokedex/gen5.js"></script>
+<script src="js/pokedex/gen6.js"></script>
+<script src="js/pokedex/gen7.js"></script>
+<script src="js/pokedex/gen8.js"></script>
+<script src="js/pokedex/gen9.js"></script>
+<script src="js/pokedex/pokedex.js"></script>
 <script src="js/game.js"></script>
 </body>
 </html>
