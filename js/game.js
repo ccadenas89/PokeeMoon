@@ -26,8 +26,6 @@ const STARTERS=[
   {n:"Sprigatito",s:"🌸",t:"planta",hp:40,atk:61,mv:["Arañazo","Vinculo","Hoja afilada","Rayo solar"]},
   {n:"Fuecoco",s:"🦷",t:"fuego",hp:67,atk:45,mv:["Placaje","Ascuas","Mordisco","Lanzallamas"]},
   {n:"Quaxly",s:"🦆",t:"agua",hp:55,atk:65,mv:["Placaje","Pistola agua","Acua jet","Hidrobomba"]},
-  {n:"Pikachu",s:"⚡",t:"eléctrico",hp:35,atk:55,mv:["Impactrueno","Ataque rápido","Voltio cruel","Trueno"]},
-  {n:"Eevee",s:"🦊",t:"normal",hp:55,atk:45,mv:["Placaje","Mordisco","Velocidad extrema","Cabezazo"]},
 ];
 
 const WILD=[
@@ -1005,9 +1003,12 @@ function maxLv(){return G.team.length?Math.max(...G.team.map(p=>p.level)):5;}
 function mkPoke(d,lv){
   lv=lv||5;
   const bH=d.hp||50,bA=d.atk||50;
-  return{name:d.n||d.name,s:d.s||"❓",type:d.t||d.type||"normal",
+  const pokeName=d.n||d.name;
+  const maxMoves=lv<10?2:lv<20?3:4;
+  const moves=getRandomMovesForLevel(pokeName, lv, maxMoves);
+  return{name:pokeName,s:d.s||"❓",type:d.t||d.type||"normal",
     level:lv,maxHp:Math.floor(bH*lv/8+lv/2+5),hp:0,atk:Math.floor(bA*lv/5+5),
-    moves:[...(d.mv||d.moves||["Placaje"])],baseHp:bH,baseAtk:bA};
+    moves:moves,baseHp:bH,baseAtk:bA};
 }
 
 function ss(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById("s-"+id).classList.add("active");}
@@ -1130,48 +1131,60 @@ function advance(){
 
 function processLearnQueue(cb){
   if(G.pendingLearnQueue.length===0){cb();return;}
-  const item=G.pendingLearnQueue.shift();
+  const item=G.pendingLearnQueue[0];
   showLearnScreen(item,()=>processLearnQueue(cb));
 }
 
 function showLearnScreen(item,cb){
   Screens.render("learn",renderLearnScreen());
-  document.getElementById("learn-title").textContent=item.poke.name+" puede aprender un movimiento (Nv."+item.poke.level+")";
-  document.getElementById("learn-sub").textContent="Elige qué movimiento aprender. Si ya tiene 4 reemplazará uno al azar.";
-  const pool=buildMovePool(item.poke);
+  const moveToLearn=item.move;
+  document.getElementById("learn-title").textContent=item.poke.name+" puede aprender "+moveToLearn+" (Nv."+item.level+")";
+  document.getElementById("learn-sub").textContent="¿Quieres que aprenda este movimiento?";
   const opts=document.getElementById("learn-opts");
-  opts.innerHTML=pool.map((mv,i)=>`<div class="rnode" onclick="learnMove(${i},this)" data-mv="${mv}" data-poke="${item.poke.name}"><div class="nd"><div class="nn">${mv}</div><div class="ns">Nuevo movimiento</div></div></div>`).join("");
-  opts.innerHTML+=`<button onclick="skipLearn()" style="margin-top:8px">Saltar</button>`;
+  opts.innerHTML=`
+    <div class="rnode" onclick="learnMove('${moveToLearn}')" data-mv="${moveToLearn}" data-poke="${item.poke.name}">
+      <div class="nd"><div class="nn">${moveToLearn}</div><div class="ns">Aprender movimiento</div></div>
+    </div>
+    <button onclick="skipLearn()" style="margin-top:8px">No aprender</button>
+  `;
   G._learnCb=cb;Screens.show("learn");
 }
 
-function buildMovePool(p){
-  const typeMoves=MOVES_BY_TYPE[p.type]||MOVES_BY_TYPE["normal"];
-  const existing=new Set(p.moves);
-  const pool=[];
-  const shuffled=[...typeMoves].sort(()=>Math.random()-0.5);
-  for(const m of shuffled){if(!existing.has(m)){pool.push(m);if(pool.length>=3)break;}}
-  if(pool.length===0)pool.push(shuffled[0]);
-  return pool;
-}
-function learnMove(idx,el){
-  const mv=el.getAttribute("data-mv"),pokeName=el.getAttribute("data-poke");
+function learnMove(mv){
+  const pokeName=G.pendingLearnQueue[0]?.poke?.name;
   const poke=G.team.find(p=>p.name===pokeName);
-  if(poke){if(poke.moves.length<4)poke.moves.push(mv);else poke.moves[Math.floor(Math.random()*4)]=mv;}
+  if(poke){
+    if(poke.moves.length<4){
+      poke.moves.push(mv);
+    }else{
+      poke.moves[Math.floor(Math.random()*4)]=mv;
+    }
+  }
+  G.pendingLearnQueue.shift();
   const cb=G._learnCb;G._learnCb=null;if(cb)cb();
 }
-function skipLearn(){const cb=G._learnCb;G._learnCb=null;if(cb)cb();}
+function skipLearn(){
+  G.pendingLearnQueue.shift();
+  const cb=G._learnCb;G._learnCb=null;if(cb)cb();
+}
 
 function grantXP(poke,amount){
   const newLv=Math.min(100,poke.level+amount);
-  const milestones=[];
-  for(let lv=poke.level+1;lv<=newLv;lv++)if(lv%5===0)milestones.push(lv);
+  const movesToLearn=[];
+  for(let lv=poke.level+1;lv<=newLv;lv++){
+    const available=getMovesAtLevel(poke.name, lv);
+    for(const move of available){
+      if(!poke.moves.includes(move)){
+        movesToLearn.push({poke,move,level:lv});
+      }
+    }
+  }
   poke.level=newLv;
   poke.maxHp=Math.floor(poke.baseHp*poke.level/8+poke.level/2+5);
   poke.atk=Math.floor(poke.baseAtk*poke.level/5+5);
   if(poke.hp>poke.maxHp)poke.hp=poke.maxHp;
-  milestones.forEach(()=>{G.pendingLearnQueue.push({poke});});
-  return milestones.length>0;
+  movesToLearn.forEach(item=>{G.pendingLearnQueue.push(item);});
+  return movesToLearn.length>0;
 }
 
 const RSEG=[
@@ -1226,18 +1239,23 @@ function spinRoulette(){
 function resolveRoulette(type){
   const ri=rRi,ni=rNi,lv=Math.max(2,maxLv()+rnd(-2,2));
   if(type==="wild"){
-    const wd=WILD[Math.floor(Math.random()*WILD.length)];
+    const validWild=WILD.filter(w=>canAppearAtLevel(w.n,lv));
+    const wd=validWild.length>0?validWild[Math.floor(Math.random()*validWild.length)]:WILD[0];
     const e=mkPoke(wd,lv);e.hp=e.maxHp;
     G.battle={e,ri,ni,type:"wild",canCatch:true,queue:[]};
     initBattle("¡Un "+wd.n+" salvaje Nv."+lv+" apareció!");
   }else if(type==="fish"){
-    const fd=FISH[Math.floor(Math.random()*FISH.length)];
+    const validFish=FISH.filter(f=>canAppearAtLevel(f.n,lv));
+    const fd=validFish.length>0?validFish[Math.floor(Math.random()*validFish.length)]:FISH[0];
     const e=mkPoke(fd,lv);e.hp=e.maxHp;
     G.battle={e,ri,ni,type:"fish",canCatch:true,queue:[]};
     initBattle("🎣 ¡Pescaste un "+fd.n+" Nv."+lv+"!");
   }else if(type==="trainer"){
     const tname=TRAINER_NAMES[Math.floor(Math.random()*TRAINER_NAMES.length)];
-    const w1=WILD[Math.floor(Math.random()*WILD.length)],w2=WILD[Math.floor(Math.random()*WILD.length)];
+    const validWild1=WILD.filter(w=>canAppearAtLevel(w.n,lv));
+    const validWild2=WILD.filter(w=>canAppearAtLevel(w.n,Math.max(2,lv+rnd(-1,1))));
+    const w1=validWild1.length>0?validWild1[Math.floor(Math.random()*validWild1.length)]:WILD[0];
+    const w2=validWild2.length>0?validWild2[Math.floor(Math.random()*validWild2.length)]:WILD[0];
     const e1=mkPoke(w1,lv);e1.hp=e1.maxHp;e1.name=w1.n+" ("+tname+")";
     const e2=mkPoke(w2,Math.max(2,lv+rnd(-1,1)));e2.hp=e2.maxHp;e2.name=w2.n+" ("+tname+")";
     G.battle={e:e1,ri,ni,type:"trainer",canCatch:false,queue:[e2]};
