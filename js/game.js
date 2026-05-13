@@ -1194,9 +1194,11 @@ const RSEG=[
   {label:"Objeto",color:"#FAC775",pct:10,type:"item"},
 ];
 let rRi,rNi;
+let _rouSpinning=false;
 function showRoulette(ri,ni){
   Screens.render("roulette",renderRouletteScreen());
   rRi=ri;rNi=ni;
+  _rouSpinning=false;
   document.getElementById("rou-result").textContent="";
   document.getElementById("rou-btn").style.display="block";
   drawWheel();Screens.show("roulette");
@@ -1204,14 +1206,15 @@ function showRoulette(ri,ni){
 function drawWheel(){
   const w=document.getElementById("rou-wheel");
   w.style.transition="none";w.style.transform="rotate(0deg)";
-  const c=document.createElement("canvas");c.width=172;c.height=172;
-  const ctx=c.getContext("2d");const cx=86,cy=86,r=83;
+  const size=172;
+  const c=document.createElement("canvas");c.width=size;c.height=size;
+  const ctx=c.getContext("2d");const cx=size/2,cy=size/2,r=size/2-3;
   let a=-Math.PI/2;
   RSEG.forEach(seg=>{
     const ang=(seg.pct/100)*2*Math.PI;
     ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a,a+ang);ctx.closePath();
     ctx.fillStyle=seg.color;ctx.fill();ctx.strokeStyle="#fff";ctx.lineWidth=2;ctx.stroke();
-    const ma=a+ang/2,tx=cx+Math.cos(ma)*52,ty=cy+Math.sin(ma)*52;
+    const ma=a+ang/2,tx=cx+Math.cos(ma)*(r*0.62),ty=cy+Math.sin(ma)*(r*0.62);
     ctx.fillStyle="#2C2C2A";ctx.font="bold 9px sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";
     seg.label.split(" ").forEach((wd,i,arr)=>ctx.fillText(wd,tx,ty+(i-(arr.length-1)/2)*12));
     a+=ang;
@@ -1220,6 +1223,8 @@ function drawWheel(){
   w.style.backgroundSize="cover";w.style.borderRadius="50%";
 }
 function spinRoulette(){
+  if(_rouSpinning)return;
+  _rouSpinning=true;
   document.getElementById("rou-btn").style.display="none";
   const rand=Math.random()*100;
   let acc=0,resultIdx=0;
@@ -1229,6 +1234,7 @@ function spinRoulette(){
   stopAngle+=RSEG[resultIdx].pct/100*180;
   const totalAngle=(5+Math.floor(Math.random()*4))*360+(360-stopAngle);
   const w=document.getElementById("rou-wheel");
+  w.style.cursor="default";
   w.style.transition="transform 1.8s cubic-bezier(0.17,0.67,0.21,1)";
   w.style.transform=`rotate(${totalAngle}deg)`;
   setTimeout(()=>{

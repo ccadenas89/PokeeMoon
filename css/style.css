@@ -99,7 +99,8 @@ button{cursor:pointer}
 @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .fadeup{animation:fadeup 0.5s ease forwards}
 .roulette-wrap{text-align:center;padding:1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;min-height:0}
-.rou-wheel{width:176px;height:176px;border-radius:50%;margin:0 auto 14px;border:3px solid var(--color-border-secondary);position:relative;transition:transform 1.8s cubic-bezier(0.17,0.67,0.21,1)}
+.rou-wheel{width:176px;height:176px;border-radius:50%;margin:0 auto 14px;border:3px solid var(--color-border-secondary);position:relative;transition:transform 1.8s cubic-bezier(0.17,0.67,0.21,1);cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.rou-wheel:hover{box-shadow:0 0 0 4px rgba(55,138,221,0.25)}
 .rou-ptr{font-size:22px;margin-bottom:3px}
 .rou-result{font-size:15px;font-weight:500;color:var(--color-text-primary);min-height:22px;margin-bottom:10px}
 .route-map{display:flex;flex-direction:column;gap:2px;margin:8px 0}
@@ -285,6 +286,7 @@ button{cursor:pointer}
   .pokedex-grid-full{grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:4px}
   .pokedex-entry{padding:6px 4px}
   .pokedex-sprite{width:40px;height:40px}
+  .rou-wheel{width:140px;height:140px}
 }
 
 /* Normal phones (380-480px) */
