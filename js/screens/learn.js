@@ -1,6 +1,6 @@
 function renderLearnScreen(){
   return `
-    <div style="display:flex;align-items:center;justify-content:center;height:100%">
+    <div style="display:flex;align-items:center;justify-content:center">
       <div class="learn-modal" style="text-align:center">
         <h2 id="learn-title"></h2>
         <p id="learn-sub" style="font-size:13px"></p>

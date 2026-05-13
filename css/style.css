@@ -45,15 +45,12 @@ body::before{
   100%{transform:translateY(-120px) rotate(360deg);}
 }
 
-/* ── APP CONTAINER (RESPONSIVE) ── */
+/* ── APP CONTAINER ── */
 #app{
   font-family:var(--font-sans);
   padding:10px;
   width:100%;
   max-width:520px;
-  height:100vh;
-  height:100dvh;
-  max-height:640px;
   margin:0 auto;
   position:relative;
   z-index:1;
@@ -61,14 +58,13 @@ body::before{
   border-radius:16px;
   box-shadow:0 4px 24px rgba(0,0,0,0.15);
   color-scheme:light;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
+  overflow-x:hidden;
+  overflow-y:auto;
 }
 
 /* ── SCREEN VISIBILITY ── */
 #app .screen{display:none!important}
-#app .screen.active{display:flex!important;flex-direction:column;flex:1;overflow-y:auto;overflow-x:hidden;min-height:0}
+#app .screen.active{display:block!important}
 
 /* ── SPRITE IMG HELPERS ── */
 .pk-sprite{image-rendering:pixelated;display:inline-block}
@@ -81,9 +77,9 @@ body::before{
 h2{font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px}
 p{font-size:14px;color:var(--color-text-secondary);line-height:1.6}
 button{cursor:pointer}
-.pb-wrap{display:flex;flex-direction:column;align-items:center;padding:1rem;justify-content:center;flex:1;min-height:0}
+.pb-wrap{display:flex;flex-direction:column;align-items:center;padding:1rem;justify-content:center}
 #intro-menu{width:100%;text-align:center}
-#intro-pokeball{width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1}
+#intro-pokeball{width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
 #intro-menu button{border-radius:var(--border-radius-lg);font-weight:500;transition:all 0.15s}
 #intro-menu button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
 #btn-continue{background:var(--color-background-secondary);border:1px solid var(--color-border-secondary);color:var(--color-text-primary)}
@@ -98,7 +94,7 @@ button{cursor:pointer}
 @keyframes pbtop{to{transform:translateY(-38px) rotate(-25deg);opacity:0}}
 @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .fadeup{animation:fadeup 0.5s ease forwards}
-.roulette-wrap{text-align:center;padding:1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;min-height:0}
+.roulette-wrap{text-align:center;padding:1rem}
 .rou-wheel{width:176px;height:176px;border-radius:50%;margin:0 auto 14px;border:3px solid var(--color-border-secondary);position:relative;transition:transform 1.8s cubic-bezier(0.17,0.67,0.21,1);cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
 .rou-wheel:hover{box-shadow:0 0 0 4px rgba(55,138,221,0.25)}
 .rou-ptr{font-size:22px;margin-bottom:3px}
@@ -146,12 +142,12 @@ button{cursor:pointer}
 .lvup-banner{background:#EAF3DE;border:0.5px solid #97C459;border-radius:var(--border-radius-md);padding:8px 12px;font-size:13px;color:#27500A;margin-bottom:8px;display:none}
 .learn-modal{background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:16px;margin-bottom:10px;text-align:center}
 .learn-modal .rnode{text-align:left;max-width:300px;width:100%}
-.item-found-card{background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:20px;text-align:center;margin:auto;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;min-height:0}
+.item-found-card{background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:20px;text-align:center;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .item-rarity{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500;margin-bottom:6px}
 .rc{background:#EAF3DE;color:#3B6D11}.ru{background:#E6F1FB;color:#185FA5}
 .rr{background:#EEEDFE;color:#534AB7}.re{background:#FAEEDA;color:#854F0B}
 .rl{background:#FCEBEB;color:#A32D2D}
-.gym-preview{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1}
+.gym-preview{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .gym-preview h3{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px}
 .gym-team{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .gym-mon{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:6px 10px;text-align:center;font-size:12px;min-width:70px}
@@ -258,12 +254,9 @@ button{cursor:pointer}
 .pkcard.drag-over{border:2px dashed #378ADD;background:#E6F1FB}
 .pkcard.dragging{opacity:0.4;transform:scale(0.95)}
 
-/* ── RESPONSIVE BREAKPOINTS ── */
-
-/* Small phones (<380px) */
-@media(max-width:380px){
-  #app{padding:6px;border-radius:12px;max-height:none;height:100vh;height:100dvh}
-  .team-grid{grid-template-columns:repeat(6,1fr)!important;gap:2px!important}
+/* ── RESPONSIVE ── */
+@media(max-width:480px){
+  #app{padding:6px;border-radius:12px}
   .team-grid .pkcard .ps{font-size:14px}
   .team-grid .pkcard .pn{font-size:7px}
   .team-grid .pkcard .pt{font-size:6px}
@@ -276,9 +269,9 @@ button{cursor:pointer}
   .rnode .ni{font-size:16px;min-width:22px}
   .rnode .nn{font-size:12px}
   .rnode .ns{font-size:10px}
-  .pkgrid{grid-template-columns:repeat(3,1fr);gap:3px}
+  .pkgrid{gap:3px}
   .pc-grid{grid-template-columns:repeat(4,1fr)!important}
-  .mgrid{grid-template-columns:1fr 1fr;gap:4px}
+  .mgrid{gap:4px}
   .mbtn{padding:6px 8px;font-size:11px}
   .ftr .sp{font-size:32px}
   .fi .fn{font-size:12px}
@@ -289,29 +282,16 @@ button{cursor:pointer}
   .rou-wheel{width:140px;height:140px}
 }
 
-/* Normal phones (380-480px) */
-@media(min-width:381px) and (max-width:480px){
-  #app{padding:8px;border-radius:14px;max-height:none;height:100vh;height:100dvh}
-  .team-grid .pkcard .ps{font-size:16px}
-  .team-grid .pkcard .pn{font-size:8px}
-  .team-grid .pkcard .pk-sprite-lg{width:42px;height:42px}
-  .pc-grid{grid-template-columns:repeat(5,1fr)!important}
-}
-
-/* Tablets (481-768px) */
 @media(min-width:481px) and (max-width:768px){
-  #app{max-width:560px;max-height:none;height:100vh;height:100dvh;padding:12px}
-  .team-grid .pkcard .ps{font-size:20px}
+  #app{max-width:560px;padding:12px}
   .team-grid .pkcard .pk-sprite-lg{width:52px;height:52px}
   .pokedex-grid-full{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
 }
 
-/* Desktop (769px+) */
 @media(min-width:769px){
   #app{max-width:520px;margin:1rem auto}
 }
 
-/* ── TOUCH / MOBILE DRAG HELPERS ── */
 @media(hover:none) and (pointer:coarse){
   .pkcard[draggable="true"]:hover{transform:none;box-shadow:none}
   .pkcard[draggable="true"]{cursor:pointer}

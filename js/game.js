@@ -1201,7 +1201,12 @@ function showRoulette(ri,ni){
   _rouSpinning=false;
   document.getElementById("rou-result").textContent="";
   document.getElementById("rou-btn").style.display="block";
-  drawWheel();Screens.show("roulette");
+  drawWheel();
+  Screens.show("roulette");
+  const wheel=document.getElementById("rou-wheel");
+  const btn=document.getElementById("rou-btn");
+  if(wheel)wheel.addEventListener("click",spinRoulette);
+  if(btn)btn.addEventListener("click",spinRoulette);
 }
 function drawWheel(){
   const w=document.getElementById("rou-wheel");
