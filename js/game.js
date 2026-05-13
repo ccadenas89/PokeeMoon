@@ -196,10 +196,109 @@ const ITEM_POOL=[
 ];
 
 const USABLE_IN_BATTLE=[
-  {k:"pocion",n:"Poción",heal:20},{k:"superpocion",n:"Superpoción",heal:50},
+  {k:"pocion",n:"Poción",heal:20,inf:true},{k:"superpocion",n:"Superpoción",heal:50},
   {k:"hiper_pocion",n:"Híper Poción",heal:100},{k:"full_restore",n:"Cura Total",heal:9999},
   {k:"fruta_frambu",n:"Fruta Frambu",heal:10},{k:"revivir",n:"Revivir",sp:"revive"},
 ];
+
+/* ── SHOP SYSTEM ── */
+const SHOP_CATALOG=[
+  {k:"superpocion",n:"Superpoción",ico:"💊",desc:"Restaura 50 HP",price:200},
+  {k:"hiper_pocion",n:"Híper Poción",ico:"💉",desc:"Restaura 100 HP",price:500},
+  {k:"full_restore",n:"Cura Total",ico:"✨",desc:"Restaura todo HP y cura estados",price:1200},
+  {k:"revivir",n:"Revivir",ico:"💫",desc:"Revive con 50% HP",price:800},
+  {k:"antidoto",n:"Antídoto",ico:"💉",desc:"Cura envenenamiento",price:100},
+  {k:"despertar",n:"Despertar",ico:"☕",desc:"Despierta dormido",price:100},
+  {k:"super_ball",n:"Super Ball",ico:"🔵",desc:"Mayor captura",price:300},
+  {k:"ultra_ball",n:"Ultra Ball",ico:"⚫",desc:"Alta captura",price:600},
+  {k:"fruta_frambu",n:"Fruta Frambu",ico:"🍓",desc:"Cura 10 HP en batalla",price:150},
+  {k:"caramelo_exp",n:"Caramelo Exp.",ico:"🍬",desc:"+1 nivel al líder",price:400},
+  {k:"caramelo_raro",n:"Caramelo Raro",ico:"🍭",desc:"+3 niveles al líder",price:1000},
+  {k:"caramelo_gordo",n:"Caramelo Gordo",ico:"🍰",desc:"+5 niveles al líder",price:2000},
+  {k:"caramelo_maximo",n:"Caramelo Máximo",ico:"🌟",desc:"+10 niveles al líder",price:4000},
+  {k:"piedra_fuego",n:"Piedra Fuego",ico:"🔥",desc:"Evoluciona fuego",price:1500},
+  {k:"piedra_agua",n:"Piedra Agua",ico:"💧",desc:"Evoluciona agua",price:1500},
+  {k:"piedra_trueno",n:"Piedra Trueno",ico:"⚡",desc:"Evoluciona eléctrico",price:1500},
+  {k:"piedra_hoja",n:"Piedra Hoja",ico:"🍃",desc:"Evoluciona planta",price:1500},
+  {k:"piedra_luna",n:"Piedra Luna",ico:"🌙",desc:"Evoluciona Clefairy",price:1800},
+  {k:"piedra_sol",n:"Piedra Solar",ico:"☀️",desc:"Evoluciona Gloom",price:1800},
+  {k:"master_ball",n:"Master Ball",ico:"💜",desc:"Captura sin fallo",price:10000},
+  {k:"tm_hiperrayo",n:"MT Hiperrayo",ico:"📀",desc:"Enseña Hiperrayo",price:3000},
+  {k:"tm_esfera",n:"MT Esfera Aural",ico:"📀",desc:"Enseña Esfera Aural",price:5000},
+];
+
+let _shopItems=[];
+function generateShop(){
+  const pool=[...SHOP_CATALOG];
+  const items=[];
+  for(let i=0;i<5&&pool.length>0;i++){
+    const idx=Math.floor(Math.random()*pool.length);
+    const item={...pool.splice(idx,1)[0]};
+    if(Math.random()<0.35){
+      const disc=rnd(10,30);
+      item.discount=disc;
+      item.salePrice=Math.floor(item.price*(1-disc/100));
+    }
+    items.push(item);
+  }
+  _shopItems=items;
+}
+
+function renderShopScreen(){
+  let html=`<div style="padding:10px 0">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <h2 style="margin:0">🏪 Tienda</h2>
+      <span style="font-size:14px;font-weight:600">💰 ${G.money}</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">`;
+  _shopItems.forEach((it,i)=>{
+    const hasDiscount=it.discount>0;
+    const finalPrice=hasDiscount?it.salePrice:it.price;
+    const canBuy=G.money>=finalPrice;
+    html+=`<div class="rnode" style="${canBuy?'':'opacity:0.5'}" onclick="${canBuy?'buyItem('+i+')':''}">
+      <div class="ni">${it.ico}</div>
+      <div class="nd">
+        <div class="nn">${it.n}</div>
+        <div class="ns">${it.desc}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+        ${hasDiscount?`<span style="font-size:9px;text-decoration:line-through;color:#999">${it.price}💰</span>
+        <span style="font-size:11px;color:#E24B4A;font-weight:600">-${it.discount}%</span>`:''}
+        <span class="nb ${hasDiscount?'rl':'rc'}" style="font-size:12px;cursor:pointer">${finalPrice} 💰</span>
+      </div>
+    </div>`;
+  });
+  html+=`</div>
+    <div style="display:flex;gap:7px;justify-content:center;margin-top:14px">
+      <button onclick="shopContinue()">Continuar →</button>
+    </div>
+  </div>`;
+  return html;
+}
+
+function buyItem(idx){
+  const it=_shopItems[idx];
+  if(!it)return;
+  const price=it.discount>0?it.salePrice:it.price;
+  if(G.money<price)return;
+  G.money-=price;
+  G.bag[it.k]=(G.bag[it.k]||0)+1;
+  saveGame();
+  Screens.render("shop",renderShopScreen());
+  Screens.show("shop");
+}
+
+let _shopContinueCb=null;
+function showShop(ri,ni,cb){
+  generateShop();
+  _shopContinueCb=cb||(()=>{nextNode(ri,ni);});
+  Screens.render("shop",renderShopScreen());
+  Screens.show("shop");
+}
+
+function shopContinue(){
+  if(_shopContinueCb)_shopContinueCb();
+}
 
 // ── WORLD DATA con equipos y niveles CANÓNICOS ──────────────────────────────
 const WORLD=[
@@ -1090,9 +1189,9 @@ function enterNode(ri,ni){
       savePokedex();saveGame();
       const tc={planta:"#EAF3DE",fuego:"#FAEEDA",agua:"#E6F1FB",eléctrico:"#FAEEDA",normal:"#F1EFE8"};
       const giftMsg=`Tu madre te regala un ${giftData.n} para tu largo viaje. ¡Cuídalo!`;
-      showResult(giftData.s,"¡Regalo de tu mamá!",giftMsg,ri,ni,false);
+      showResult(giftData.s,"¡Regalo de tu mamá!",giftMsg,ri,ni,false,true);
       setTimeout(()=>loadSpriteForResult(giftData.n,giftData.s),100);
-    } else{saveGame();showResult("🏡",node.n,"Equipo curado. ¡Sigue adelante!",ri,ni,false);}
+    } else{saveGame();showResult("🏡",node.n,"Equipo curado. ¡Sigue adelante!",ri,ni,false,true);}
   }
   else if(node.t==="route"||node.t==="cave")showRoulette(ri,ni);
   else if(node.t==="gym")showGymPreview(node.gd,ri,ni);
@@ -1395,10 +1494,9 @@ function bAct(a){
     if(G.bag.master_ball>0)bk="master_ball";
     else if(G.bag.ultra_ball>0)bk="ultra_ball";
     else if(G.bag.super_ball>0)bk="super_ball";
-    else if(G.bag.pokeball>0)bk="pokeball";
-    else{document.getElementById("blog").textContent="¡Sin Poké Balls!";return;}
+    else bk="pokeball";
     setBattleLock(true);
-    G.bag[bk]--;
+    if(bk!=="pokeball")G.bag[bk]--;
     const bnames={pokeball:"Poké Ball",super_ball:"Super Ball",ultra_ball:"Ultra Ball",master_ball:"Master Ball"};
     const ratio=1-b.e.hp/b.e.maxHp;
     if(Math.random()<getCatchRate(bk,ratio)){document.getElementById("blog").textContent="¡Capturado con "+bnames[bk]+"!";setTimeout(()=>endBattle("catch"),700);}
@@ -1408,8 +1506,11 @@ function bAct(a){
     document.getElementById("b-main").style.display="none";
     document.getElementById("b-bag-panel").style.display="block";
     const bl=document.getElementById("b-bag-items");
-    const usable=USABLE_IN_BATTLE.filter(it=>(G.bag[it.k]||0)>0);
-    bl.innerHTML=usable.length?usable.map(it=>`<div class="rnode" onclick="useBagItem('${it.k}')"><div class="nd"><div class="nn">${it.n}</div></div><span style="font-size:12px;color:var(--color-text-secondary)">x${G.bag[it.k]}</span></div>`).join(""):"<p style='font-size:12px'>Sin objetos curadores.</p>";
+    const usable=USABLE_IN_BATTLE.filter(it=>it.inf||(G.bag[it.k]||0)>0);
+    bl.innerHTML=usable.length?usable.map(it=>{
+      const qty=it.inf?"∞":"x"+G.bag[it.k];
+      return`<div class="rnode" onclick="useBagItem('${it.k}')"><div class="nd"><div class="nn">${it.n}</div></div><span style="font-size:12px;color:var(--color-text-secondary)">${qty}</span></div>`;
+    }).join(""):"<p style='font-size:12px'>Sin objetos curadores.</p>";
   }
   if(a==="team"){
     document.getElementById("b-main").style.display="none";
@@ -1442,9 +1543,11 @@ function switchPokemon(i){
 }
 function useBagItem(k){
   if(battleLocked) return;
-  if((G.bag[k]||0)<=0)return;
+  const inf=(k==="pocion");
+  if(!inf&&(G.bag[k]||0)<=0)return;
   setBattleLock(true);
-  G.bag[k]--;showBMain();
+  if(!inf)G.bag[k]--;
+  showBMain();
   const player=G.team.find(p=>p.hp>0);
   const item=USABLE_IN_BATTLE.find(i=>i.k===k);
   if(!item){setBattleLock(false);return;}
@@ -1483,7 +1586,7 @@ function endBattle(result){
     banner.textContent="¡"+G.team.map(p=>p.name+" Nv."+p.level).join(" · ")+"!";
     banner.style.display="block";
     saveGame();
-    showResult("✨","¡Victoria!","+"+reward+" monedas."+extraMsg,ri,ni,false);
+    showResult("✨","¡Victoria!","+"+reward+" monedas."+extraMsg,ri,ni,false,true);
   }else if(result==="catch"){
     const caughtPoke={...b.e,hp:b.e.hp,moves:[...b.e.moves]};
     let wentToPC=false;
@@ -1529,14 +1632,19 @@ function startLeague(ld,ri,ni){
   G.battle={e:allPokes[0],queue:allPokes.slice(1),ri,ni,type:"league",canCatch:false,_ld_name:ld.n};
   initBattle("¡Liga "+ld.n+"! "+ld.tr.length+" entrenadores. ¡"+ld.tr[0].n+" te desafía!");
 }
-function showResult(ico,title,msg,ri,ni,lost){
+function showResult(ico,title,msg,ri,ni,lost,hasShop){
   Screens.render("result",renderResultScreen());
   document.getElementById("res-ico").textContent=ico;
   document.getElementById("res-title").textContent=title;
   document.getElementById("res-msg").textContent=msg;
   const acts=document.getElementById("res-acts");
-  acts.innerHTML=lost?`<button onclick="backWorld(${ri},${ni})">← Mapa</button>`:
-    `<button onclick="nextNode(${ri},${ni})">Siguiente →</button><button onclick="backWorld(${ri},${ni})">Ver mapa</button>`;
+  if(lost){
+    acts.innerHTML=`<button onclick="backWorld(${ri},${ni})">← Mapa</button>`;
+  }else if(hasShop){
+    acts.innerHTML=`<button onclick="showShop(${ri},${ni},()=>nextNode(${ri},${ni}))">🏪 Tienda</button><button onclick="nextNode(${ri},${ni})">Siguiente →</button><button onclick="backWorld(${ri},${ni})">Ver mapa</button>`;
+  }else{
+    acts.innerHTML=`<button onclick="nextNode(${ri},${ni})">Siguiente →</button><button onclick="backWorld(${ri},${ni})">Ver mapa</button>`;
+  }
   Screens.show("result");
 }
 
@@ -1808,11 +1916,20 @@ function releaseFromPC(pcIdx){
   renderPC();
 }
 function renderBag(){
+  const INF_ITEMS=new Set(["pokeball","pocion"]);
   const rendered=new Set();
-  document.getElementById("bagui").innerHTML=ITEM_POOL.filter(it=>{
+  let html="";
+  INF_ITEMS.forEach(k=>{
+    const it=ITEM_POOL.find(x=>x.k===k);
+    if(!it||rendered.has(it.k))return;
+    rendered.add(it.k);
+    html+=`<div class="rnode"><div class="ni">${it.ico}</div><div class="nd"><div class="nn">${it.n}</div><div class="ns">${it.desc}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px"><span class="nb ${it.cls}">${it.rarity}</span><span style="font-size:12px;color:var(--color-text-secondary)">∞</span></div></div>`;
+  });
+  html+=ITEM_POOL.filter(it=>{
     if(rendered.has(it.k))return false;rendered.add(it.k);return(G.bag[it.k]||0)>0;
   }).map(it=>`<div class="rnode"><div class="ni">${it.ico}</div><div class="nd"><div class="nn">${it.n}</div><div class="ns">${it.desc}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px"><span class="nb ${it.cls}">${it.rarity}</span><span style="font-size:12px;color:var(--color-text-secondary)">x${G.bag[it.k]}</span></div></div>`
-  ).join("")||"<p style='font-size:13px;padding:8px'>Mochila vacía.</p>";
+  ).join("");
+  document.getElementById("bagui").innerHTML=html||"<p style='font-size:13px;padding:8px'>Mochila vacía.</p>";
 }
 function finalScreen(){
   savePokedex();saveGame();
