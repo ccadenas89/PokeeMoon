@@ -2028,8 +2028,8 @@ openBall=function(){
   document.getElementById("pb").classList.add("opening");
   setTimeout(()=>{
     const sd=STARTERS[Math.floor(Math.random()*STARTERS.length)];
-    const p=mkPoke(sd,5);p.hp=p.maxHp;G.team=[p];G.caught.add(sd.n);
-    savePokedex();saveGame();
+    const p=mkPoke(sd,5);p.hp=p.maxHp;G.team=[p];
+    saveGame();
     const tc={planta:"#EAF3DE",fuego:"#FAEEDA",agua:"#E6F1FB",electrico:"#FAEEDA",normal:"#F1EFE8"};
     const id=PKID[sd.n];
     const revealId="rspr"+Date.now();
@@ -2040,7 +2040,7 @@ openBall=function(){
       <span style="display:inline-block;font-size:11px;padding:3px 10px;border-radius:12px;background:${tc[sd.t]||"#F1EFE8"};color:#444;margin:4px">${sd.t}</span>
       <p style="margin:10px 0 5px">Nv.5 · HP: ${p.maxHp} · Ataque: ${p.atk}</p>
       <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:18px">Movimientos: ${sd.mv.join(" · ")}</p>
-      <button onclick="startWorld()" style="font-size:14px;padding:9px 22px">¡Comenzar aventura! →</button>
+      <button onclick="confirmStarter('${sd.n}')" style="font-size:14px;padding:9px 22px">¡Comenzar aventura! →</button>
     </div>`;
     if(id){
       const el=document.getElementById(revealId);
@@ -2063,3 +2063,8 @@ openBall=function(){
     Screens.show("reveal");
   },500);
 };
+function confirmStarter(name){
+  G.caught.add(name);
+  savePokedex();
+  startWorld();
+}

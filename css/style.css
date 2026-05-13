@@ -50,7 +50,7 @@ body::before{
   font-family:var(--font-sans);
   padding:10px;
   width:100%;
-  max-width:520px;
+  max-width:600px;
   margin:0 auto;
   position:relative;
   z-index:1;
@@ -256,12 +256,13 @@ button{cursor:pointer}
 
 /* ── RESPONSIVE ── */
 @media(max-width:480px){
-  #app{padding:6px;border-radius:12px}
+  #app{padding:6px;border-radius:12px;max-width:100%}
   .team-grid .pkcard .ps{font-size:14px}
   .team-grid .pkcard .pn{font-size:7px}
   .team-grid .pkcard .pt{font-size:6px}
-  .team-grid .pkcard .pk-sprite-lg{width:36px;height:36px}
+  .team-grid .pkcard .pk-sprite-lg{width:32px;height:32px}
   .team-grid .pkcard{padding:3px 1px}
+  .team-grid{gap:2px!important}
   .tabs{gap:2px}
   .tab{font-size:10px;padding:3px 7px}
   .hud{font-size:10px;padding:4px 8px;gap:6px}
@@ -283,13 +284,13 @@ button{cursor:pointer}
 }
 
 @media(min-width:481px) and (max-width:768px){
-  #app{max-width:560px;padding:12px}
+  #app{max-width:600px;padding:12px}
   .team-grid .pkcard .pk-sprite-lg{width:52px;height:52px}
   .pokedex-grid-full{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
 }
 
 @media(min-width:769px){
-  #app{max-width:520px;margin:1rem auto}
+  #app{max-width:600px;margin:1rem auto}
 }
 
 @media(hover:none) and (pointer:coarse){
