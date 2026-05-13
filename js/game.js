@@ -228,6 +228,9 @@ const SHOP_CATALOG=[
 ];
 
 let _shopItems=[];
+let _shopMsg="";
+let _shopSpriteId=null;
+
 function generateShop(){
   const pool=[...SHOP_CATALOG];
   const items=[];
@@ -249,8 +252,14 @@ function renderShopScreen(){
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
       <h2 style="margin:0">🏪 Tienda</h2>
       <span style="font-size:14px;font-weight:600">💰 ${G.money}</span>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:6px">`;
+    </div>`;
+  if(_shopMsg){
+    html+=`<div style="text-align:center;margin-bottom:12px;padding:10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)">
+      <div id="shop-sprite" style="font-size:32px;margin-bottom:4px"></div>
+      <p style="font-size:13px;margin:0">${_shopMsg}</p>
+    </div>`;
+  }
+  html+=`<div style="display:flex;flex-direction:column;gap:6px">`;
   _shopItems.forEach((it,i)=>{
     const hasDiscount=it.discount>0;
     const finalPrice=hasDiscount?it.salePrice:it.price;
@@ -286,17 +295,38 @@ function buyItem(idx){
   saveGame();
   Screens.render("shop",renderShopScreen());
   Screens.show("shop");
+  if(_shopSpriteId)loadSpriteForShop(_shopSpriteId.n,_shopSpriteId.s);
 }
 
 let _shopContinueCb=null;
-function showShop(ri,ni,cb){
+function showShop(ri,ni,cb,msg){
   generateShop();
-  _shopContinueCb=cb||(()=>{nextNode(ri,ni);});
+  _shopContinueCb=cb||function(){nextNode(ri,ni);};
+  _shopMsg=msg||"";
+  _shopSpriteId=null;
   Screens.render("shop",renderShopScreen());
   Screens.show("shop");
 }
 
+function loadSpriteForShop(name,emoji){
+  const el=document.getElementById("shop-sprite");
+  if(!el)return;
+  const id=PKID[name];
+  if(!id){el.textContent=emoji||"❓";return;}
+  _shopSpriteId={n:name,s:emoji};
+  const url=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+  const img=document.createElement("img");
+  img.style.cssText="width:64px;height:64px;image-rendering:pixelated;display:none";
+  el.innerHTML=`<span style="font-size:32px">${emoji||"❓"}</span>`;
+  el.appendChild(img);
+  img.onload=function(){el.querySelector("span").style.display="none";img.style.display="block";};
+  img.onerror=function(){img.remove();};
+  img.src=url;
+}
+
 function shopContinue(){
+  _shopMsg="";
+  _shopSpriteId=null;
   if(_shopContinueCb)_shopContinueCb();
 }
 
@@ -1188,10 +1218,13 @@ function enterNode(ri,ni){
       G.caught.add(giftData.n);
       savePokedex();saveGame();
       const tc={planta:"#EAF3DE",fuego:"#FAEEDA",agua:"#E6F1FB",eléctrico:"#FAEEDA",normal:"#F1EFE8"};
-      const giftMsg=`Tu madre te regala un ${giftData.n} para tu largo viaje. ¡Cuídalo!`;
-      showResult(giftData.s,"¡Regalo de tu mamá!",giftMsg,ri,ni,false,true);
-      setTimeout(()=>loadSpriteForResult(giftData.n,giftData.s),100);
-    } else{saveGame();showResult("🏡",node.n,"Equipo curado. ¡Sigue adelante!",ri,ni,false,true);}
+      const giftMsg=`Tu madre te regala un ${giftData.n} para tu largo viaje.`;
+      showShop(ri,ni,function(){nextNode(ri,ni);},"🎁 "+giftMsg);
+      setTimeout(()=>loadSpriteForShop(giftData.n,giftData.s),100);
+    } else{
+      saveGame();
+      showShop(ri,ni,function(){nextNode(ri,ni);},"🏡 Equipo curado.");
+    }
   }
   else if(node.t==="route"||node.t==="cave")showRoulette(ri,ni);
   else if(node.t==="gym")showGymPreview(node.gd,ri,ni);
@@ -1586,7 +1619,7 @@ function endBattle(result){
     banner.textContent="¡"+G.team.map(p=>p.name+" Nv."+p.level).join(" · ")+"!";
     banner.style.display="block";
     saveGame();
-    showResult("✨","¡Victoria!","+"+reward+" monedas."+extraMsg,ri,ni,false,true);
+    showShop(ri,ni,function(){nextNode(ri,ni);},"✨ ¡Victoria! +" + reward + " monedas." + extraMsg);
   }else if(result==="catch"){
     const caughtPoke={...b.e,hp:b.e.hp,moves:[...b.e.moves]};
     let wentToPC=false;
@@ -1632,6 +1665,7 @@ function startLeague(ld,ri,ni){
   G.battle={e:allPokes[0],queue:allPokes.slice(1),ri,ni,type:"league",canCatch:false,_ld_name:ld.n};
   initBattle("¡Liga "+ld.n+"! "+ld.tr.length+" entrenadores. ¡"+ld.tr[0].n+" te desafía!");
 }
+let _pendingShopRi,_pendingShopNi;
 function showResult(ico,title,msg,ri,ni,lost,hasShop){
   Screens.render("result",renderResultScreen());
   document.getElementById("res-ico").textContent=ico;
@@ -1641,11 +1675,15 @@ function showResult(ico,title,msg,ri,ni,lost,hasShop){
   if(lost){
     acts.innerHTML=`<button onclick="backWorld(${ri},${ni})">← Mapa</button>`;
   }else if(hasShop){
-    acts.innerHTML=`<button onclick="showShop(${ri},${ni},()=>nextNode(${ri},${ni}))">🏪 Tienda</button><button onclick="nextNode(${ri},${ni})">Siguiente →</button><button onclick="backWorld(${ri},${ni})">Ver mapa</button>`;
+    _pendingShopRi=ri;_pendingShopNi=ni;
+    acts.innerHTML=`<button onclick="openShopFromResult()">🏪 Tienda</button><button onclick="nextNode(${ri},${ni})">Siguiente →</button><button onclick="backWorld(${ri},${ni})">Ver mapa</button>`;
   }else{
     acts.innerHTML=`<button onclick="nextNode(${ri},${ni})">Siguiente →</button><button onclick="backWorld(${ri},${ni})">Ver mapa</button>`;
   }
   Screens.show("result");
+}
+function openShopFromResult(){
+  showShop(_pendingShopRi,_pendingShopNi);
 }
 
 function loadSpriteForResult(pokeName,fallbackEmoji){
