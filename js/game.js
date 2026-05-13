@@ -1625,9 +1625,28 @@ function switchPCBox(idx){
 }
 
 let _dragData=null;
+let _touchDragEl=null;
+let _touchClone=null;
+let _touchStartX=0;
+let _touchStartY=0;
+
 function dragStart(e){
   _dragData={src:e.currentTarget.dataset.src,idx:parseInt(e.currentTarget.dataset.idx)};
   e.dataTransfer.effectAllowed="move";
+  e.currentTarget.classList.add("dragging");
+}
+function dragEnd(e){
+  e.currentTarget.classList.remove("dragging");
+  document.querySelectorAll(".pkcard.drag-over").forEach(el=>el.classList.remove("drag-over"));
+}
+function dragEnter(e){
+  e.preventDefault();
+  if(e.currentTarget.dataset.src||e.currentTarget.classList.contains("pkcard")){
+    e.currentTarget.classList.add("drag-over");
+  }
+}
+function dragLeave(e){
+  e.currentTarget.classList.remove("drag-over");
 }
 function dragOver(e){
   e.preventDefault();
@@ -1635,9 +1654,11 @@ function dragOver(e){
 }
 function drop(e){
   e.preventDefault();
+  e.currentTarget.classList.remove("drag-over");
   if(!_dragData)return;
   const targetSrc=e.currentTarget.dataset.src;
   const targetIdx=parseInt(e.currentTarget.dataset.idx);
+  if(isNaN(targetIdx))return;
   if(_dragData.src===targetSrc){
     if(_dragData.src==="team"){
       if(_dragData.idx===targetIdx)return;
@@ -1666,6 +1687,91 @@ function drop(e){
   renderTeam();
   renderPC();
 }
+
+/* ── TOUCH DRAG SUPPORT (mobile) ── */
+function _findCardAtPoint(x,y){
+  const els=document.elementsFromPoint(x,y);
+  for(const el of els){
+    if(el.classList&&el.classList.contains("pkcard")&&el.dataset.src){
+      return el;
+    }
+  }
+  return null;
+}
+
+document.addEventListener("touchstart",function(e){
+  const card=e.target.closest('.pkcard[draggable="true"]');
+  if(!card)return;
+  _touchStartX=e.touches[0].clientX;
+  _touchStartY=e.touches[0].clientY;
+  _touchDragEl=card;
+},{passive:true});
+
+document.addEventListener("touchmove",function(e){
+  if(!_touchDragEl)return;
+  const dx=e.touches[0].clientX-_touchStartX;
+  const dy=e.touches[0].clientY-_touchStartY;
+  if(Math.abs(dx)<8&&Math.abs(dy)<8)return;
+
+  if(!_touchClone){
+    _dragData={src:_touchDragEl.dataset.src,idx:parseInt(_touchDragEl.dataset.idx)};
+    _touchClone=_touchDragEl.cloneNode(true);
+    _touchClone.style.cssText="position:fixed;pointer-events:none;z-index:9999;opacity:0.8;transform:scale(0.9);width:"+_touchDragEl.offsetWidth+"px;";
+    document.body.appendChild(_touchClone);
+    _touchDragEl.classList.add("dragging");
+  }
+  _touchClone.style.left=(e.touches[0].clientX-_touchDragEl.offsetWidth/2)+"px";
+  _touchClone.style.top=(e.touches[0].clientY-_touchDragEl.offsetHeight/2)+"px";
+
+  document.querySelectorAll(".pkcard.drag-over").forEach(el=>el.classList.remove("drag-over"));
+  const target=_findCardAtPoint(e.touches[0].clientX,e.touches[0].clientY);
+  if(target&&target!==_touchDragEl)target.classList.add("drag-over");
+
+  e.preventDefault();
+},{passive:false});
+
+document.addEventListener("touchend",function(e){
+  if(!_touchDragEl)return;
+  if(_touchClone){
+    const target=_findCardAtPoint(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+    if(target&&target.dataset.src&&target!==_touchDragEl){
+      const targetSrc=target.dataset.src;
+      const targetIdx=parseInt(target.dataset.idx);
+      if(_dragData.src===targetSrc){
+        if(_dragData.src==="team"){
+          if(_dragData.idx!==targetIdx){
+            const temp=G.team[_dragData.idx];
+            G.team[_dragData.idx]=G.team[targetIdx];
+            G.team[targetIdx]=temp;
+          }
+        }else{
+          if(_dragData.idx!==targetIdx){
+            const temp=G.pc[_dragData.idx];
+            G.pc[_dragData.idx]=G.pc[targetIdx];
+            G.pc[targetIdx]=temp;
+          }
+        }
+      }else{
+        if(_dragData.src==="team"&&targetSrc==="pc"&&G.team.length>1){
+          const poke=G.team.splice(_dragData.idx,1)[0];
+          G.pc.splice(targetIdx,0,poke);
+        }else if(_dragData.src==="pc"&&targetSrc==="team"&&G.team.length<6){
+          const poke=G.pc.splice(_dragData.idx,1)[0];
+          G.team.splice(targetIdx,0,poke);
+        }
+      }
+      saveGame();
+      renderTeam();
+      renderPC();
+    }
+    _touchClone.remove();
+    _touchClone=null;
+  }
+  _touchDragEl.classList.remove("dragging");
+  document.querySelectorAll(".pkcard.drag-over").forEach(el=>el.classList.remove("drag-over"));
+  _touchDragEl=null;
+  _dragData=null;
+},{passive:true});
 
 function moveToPC(idx){
   if(G.team.length<=1)return;
@@ -1864,11 +1970,21 @@ renderBattle=function(msg){
 
 const _origRenderTeam=renderTeam;
 renderTeam=function(){
-  document.getElementById("tgrid").innerHTML=G.team.map(p=>{
-    const r=p.hp/p.maxHp;
-    const spr=spriteImg(p.name,"pk-sprite-lg",p.s);
-    return`<div class="pkcard"><span class="ps">${spr}</span><div class="pn">${p.name}</div><div class="pt">Nv.${p.level} · ${p.type}</div><div class="pt">${p.hp}/${p.maxHp} HP</div><div style="height:3px;background:var(--color-background-secondary);border-radius:2px;margin:4px 0;overflow:hidden"><div style="height:100%;width:${Math.max(0,r*100)}%;background:${HPcolor(r)}"></div></div><div class="pt" style="font-size:10px">${p.moves.join(" · ")}</div></div>`;
-  }).join("")||"<p style='font-size:13px'>Sin equipo.</p>";
+  const grid=document.getElementById("tgrid");
+  const count=document.getElementById("team-count");
+  if(count)count.textContent=G.team.length+"/6";
+  let html="";
+  for(let i=0;i<6;i++){
+    if(i<G.team.length){
+      const p=G.team[i];
+      const r=p.hp/p.maxHp;
+      const spr=spriteImg(p.name,"pk-sprite-lg",p.s);
+      html+=`<div class="pkcard" draggable="true" data-src="team" data-idx="${i}" ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)" ondragend="dragEnd(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)"><span class="ps">${spr}</span><div class="pn">${p.name}</div><div class="pt">Nv.${p.level} · ${p.type}</div><div class="pt">${p.hp}/${p.maxHp} HP</div><div class="tcard-hp" style="height:3px;background:var(--color-background-secondary);border-radius:2px;margin:2px 0;overflow:hidden"><div style="height:100%;width:${Math.max(0,r*100)}%;background:${HPcolor(r)}"></div></div><div class="tcard-moves">${p.moves.join(" · ")}</div><button class="pc-btn" onclick="event.stopPropagation();moveToPC(${i})" title="Enviar al PC">📦</button></div>`;
+    }else{
+      html+=`<div class="pkcard pkcard-empty"><span class="empty-icon">—</span></div>`;
+    }
+  }
+  grid.innerHTML=html;
   renderPokedex();
 };
 function renderPokedex(){
