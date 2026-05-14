@@ -1459,14 +1459,32 @@ function showGiftScreen(giftData,ri,ni){
     <h2 style="margin:0 0 8px">¡Regalo de mamá!</h2>
     <p style="font-size:14px;color:var(--color-text-secondary);margin-bottom:16px">Tu madre te regala un Pokémon para tu largo viaje.</p>
     <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:20px;margin-bottom:16px">
-      ${spriteUrl?`<img src="${spriteUrl}" style="width:96px;height:96px;image-rendering:pixelated" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="font-size:64px;display:none">${giftData.s}</span>`:`<span style="font-size:64px">${giftData.s}</span>`}
-      <div style="font-size:18px;font-weight:600;margin-top:8px">${giftData.n}</div>
-      <div style="font-size:13px;color:var(--color-text-secondary)">${giftData.t}</div>
+      <div id="gift-sprite" style="font-size:64px">❓</div>
+      <div id="gift-name" style="font-size:18px;font-weight:600;margin-top:8px">???</div>
+      <div style="font-size:13px;color:var(--color-text-secondary)">???</div>
     </div>
     <button onclick="closeGiftScreen()" style="font-size:14px;padding:10px 24px">¡Gracias mamá! →</button>
   </div>`;
   Screens.render("gift",html);
   Screens.show("gift");
+  // Animación de revelación
+  setTimeout(() => {
+    const spriteEl = document.getElementById("gift-sprite");
+    const nameEl = document.getElementById("gift-name");
+    const typeEl = nameEl.nextElementSibling;
+    spriteEl.style.transition = "all 0.5s ease";
+    spriteEl.style.transform = "scale(1.2)";
+    setTimeout(() => {
+      spriteEl.style.transform = "scale(1)";
+      if (spriteUrl) {
+        spriteEl.innerHTML = `<img src="${spriteUrl}" style="width:96px;height:96px;image-rendering:pixelated" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="font-size:64px;display:none">${giftData.s}</span>`;
+      } else {
+        spriteEl.textContent = giftData.s;
+      }
+      nameEl.textContent = giftData.n;
+      typeEl.textContent = giftData.t;
+    }, 500);
+  }, 1000);
 }
 
 function closeGiftScreen(){
@@ -2064,31 +2082,42 @@ function loadSpriteForResult(pokeName,fallbackEmoji){
     return;
   }
   console.log("Loading sprite for:",pokeName,"ID:",_pokeId);
-  _rIco.style.fontSize="0";
-  _rIco.innerHTML="";
-  const _artUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${_pokeId}.png`;
-  const _smlUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${_pokeId}.png`;
-  const _img=document.createElement("img");
-  _img.style.cssText="width:120px;height:120px;object-fit:contain;image-rendering:pixelated;display:block;margin:0 auto;";
-  _img.alt=pokeName;
-  _rIco.appendChild(_img);
-  let _tried=0;
-  const _urls=[_artUrl,_smlUrl];
-  _img.onload=function(){
-    console.log("Sprite loaded:",_img.src);
-    _img.style.display="block";
-  };
-  _img.onerror=function(){
-    console.warn("Failed to load:",_img.src);
-    if(++_tried<_urls.length){
-      _img.src=_urls[_tried];
-    }else{
-      console.warn("All sprite URLs failed, showing emoji fallback");
-      _rIco.style.fontSize="56px";
-      _rIco.textContent=fallbackEmoji||"❓";
-    }
-  };
-  _img.src=_urls[0];
+  // Empezar con ?
+  _rIco.style.fontSize="56px";
+  _rIco.textContent="❓";
+  // Animación después de 1 segundo
+  setTimeout(() => {
+    _rIco.style.transition = "all 0.5s ease";
+    _rIco.style.transform = "scale(1.2)";
+    setTimeout(() => {
+      _rIco.style.transform = "scale(1)";
+      _rIco.style.fontSize="0";
+      _rIco.innerHTML="";
+      const _artUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${_pokeId}.png`;
+      const _smlUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${_pokeId}.png`;
+      const _img=document.createElement("img");
+      _img.style.cssText="width:120px;height:120px;object-fit:contain;image-rendering:pixelated;display:block;margin:0 auto;";
+      _img.alt=pokeName;
+      _rIco.appendChild(_img);
+      let _tried=0;
+      const _urls=[_artUrl,_smlUrl];
+      _img.onload=function(){
+        console.log("Sprite loaded:",_img.src);
+        _img.style.display="block";
+      };
+      _img.onerror=function(){
+        console.warn("Failed to load:",_img.src);
+        if(++_tried<_urls.length){
+          _img.src=_urls[_tried];
+        }else{
+          console.warn("All sprite URLs failed, showing emoji fallback");
+          _rIco.style.fontSize="56px";
+          _rIco.textContent=fallbackEmoji||"❓";
+        }
+      };
+      _img.src=_urls[0];
+    }, 500);
+  }, 1000);
 }
 function nextNode(ri,ni){G.wi=ri;G.ni=ni;advance();}
 function backWorld(ri,ni){G.wi=ri;G.ni=ni;processLearnQueue(()=>{ss("world");renderWorld();wTab("map");});}
