@@ -1463,7 +1463,7 @@ function showGiftScreen(giftData,ri,ni){
       <div id="gift-name" style="font-size:18px;font-weight:600;margin-top:8px">???</div>
       <div style="font-size:13px;color:var(--color-text-secondary)">???</div>
     </div>
-    <button onclick="closeGiftScreen()" style="font-size:14px;padding:10px 24px">¡Gracias mamá! →</button>
+    <button id="gift-btn" onclick="closeGiftScreen()" disabled style="font-size:14px;padding:10px 24px">¡Gracias mamá! →</button>
   </div>`;
   Screens.render("gift",html);
   Screens.show("gift");
@@ -1483,6 +1483,8 @@ function showGiftScreen(giftData,ri,ni){
       }
       nameEl.textContent = giftData.n;
       typeEl.textContent = giftData.t;
+      // Habilitar botón
+      document.getElementById("gift-btn").disabled = false;
     }, 500);
   }, 1000);
 }
@@ -2059,6 +2061,7 @@ function showResult(ico,title,msg,ri,ni,lost,hasShop){
   document.getElementById("res-title").textContent=title;
   document.getElementById("res-msg").textContent=msg;
   const acts=document.getElementById("res-acts");
+  let isCatch = title === "¡Capturado!";
   if(lost){
     acts.innerHTML=`<button onclick="backWorld(${ri},${ni})">← Mapa</button>`;
   }else if(hasShop){
@@ -2066,6 +2069,11 @@ function showResult(ico,title,msg,ri,ni,lost,hasShop){
     acts.innerHTML=`<button onclick="openShopFromResult()">🏪 Tienda</button><button onclick="nextNode(${ri},${ni})">Siguiente →</button><button onclick="backWorld(${ri},${ni})">Ver mapa</button>`;
   }else{
     acts.innerHTML=`<button onclick="nextNode(${ri},${ni})">Siguiente →</button><button onclick="backWorld(${ri},${ni})">Ver mapa</button>`;
+  }
+  // Deshabilitar botones si es captura
+  if(isCatch){
+    const buttons = acts.querySelectorAll("button");
+    buttons.forEach(btn => btn.disabled = true);
   }
   Screens.show("result");
 }
@@ -2104,6 +2112,12 @@ function loadSpriteForResult(pokeName,fallbackEmoji){
       _img.onload=function(){
         console.log("Sprite loaded:",_img.src);
         _img.style.display="block";
+        // Habilitar botones después de cargar
+        const acts = document.getElementById("res-acts");
+        if(acts){
+          const buttons = acts.querySelectorAll("button");
+          buttons.forEach(btn => btn.disabled = false);
+        }
       };
       _img.onerror=function(){
         console.warn("Failed to load:",_img.src);
@@ -2113,6 +2127,12 @@ function loadSpriteForResult(pokeName,fallbackEmoji){
           console.warn("All sprite URLs failed, showing emoji fallback");
           _rIco.style.fontSize="56px";
           _rIco.textContent=fallbackEmoji||"❓";
+          // Habilitar botones en fallback
+          const acts = document.getElementById("res-acts");
+          if(acts){
+            const buttons = acts.querySelectorAll("button");
+            buttons.forEach(btn => btn.disabled = false);
+          }
         }
       };
       _img.src=_urls[0];
