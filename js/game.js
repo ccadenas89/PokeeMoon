@@ -181,13 +181,13 @@ const ITEM_POOL=[
   {k:"caramelo_raro",n:"Caramelo Raro",ico:"🍭",desc:"Sube 3 niveles al Pokémon líder",rarity:"raro",cls:"rr",pct:2,qty:()=>1,sp:"candy_rare"},
   {k:"revivir",n:"Revivir",ico:"💫",desc:"Revive con 50% HP",rarity:"raro",cls:"rr",pct:1,qty:()=>1},
   {k:"caramelo_gordo",n:"Caramelo Gordo",ico:"🍰",desc:"Sube 5 niveles al Pokémon líder",rarity:"épico",cls:"re",pct:0.4,qty:()=>1,sp:"candy_big"},
-  {k:"tm_hiperrayo",n:"MT Hiperrayo",ico:"📀",desc:"Enseña Hiperrayo al líder",rarity:"legendario",cls:"rl",pct:0.8,qty:()=>1,sp:"tm_hyper"},
-  {k:"tm_esfera",n:"MT Esfera Aural",ico:"📀",desc:"Enseña Esfera Aural al líder",rarity:"legendario",cls:"rl",pct:0.5,qty:()=>1,sp:"tm_aura"},
   {k:"caramelo_maximo",n:"Caramelo Máximo",ico:"🌟",desc:"Sube 10 niveles al Pokémon líder",rarity:"legendario",cls:"rl",pct:0.5,qty:()=>1,sp:"candy_max"},
   {k:"master_ball",n:"Master Ball",ico:"💜",desc:"¡Captura cualquier Pokémon sin fallo!",rarity:"legendario",cls:"rl",pct:0.2,qty:()=>1},
 ];
 
 const USABLE_IN_BATTLE=[
+
+
   {k:"pocion",n:"Poción",heal:20,inf:true},{k:"superpocion",n:"Superpoción",heal:50},
   {k:"hiper_pocion",n:"Híper Poción",heal:100},{k:"full_restore",n:"Cura Total",heal:9999},
   {k:"fruta_frambu",n:"Fruta Frambu",heal:10},{k:"revivir",n:"Revivir",sp:"revive"},
@@ -1729,7 +1729,7 @@ function initBattle(msg){
   renderBattle(msg);
   const b=G.battle;
   document.getElementById("b-catch-btn").style.display=b.canCatch?"inline":"none";
-  document.getElementById("b-run-btn").style.display=(b.type==="gym"||b.type==="league")?"none":"inline";
+  document.getElementById("b-run-btn").style.display=(b.type==="gym"||b.type==="league"||b.type==="trainer")?"none":"inline";
 }
 function renderBattle(msg){
   const b=G.battle,player=G.team.find(p=>p.hp>0);
@@ -1972,8 +1972,13 @@ function endBattle(result){
     }
   }else{
     G.team.forEach(p=>{p.hp=Math.floor(p.maxHp*0.25);});
-    saveGame();
-    showResult("😵","Derrota","Tu equipo fue derrotado. Se ha recuperado parcialmente.",ri,ni,true);
+    savePokedex();
+    ss("intro");
+    checkIntroSave();
+    const menu=document.getElementById("intro-menu");
+    const pokeball=document.getElementById("intro-pokeball");
+    if(menu)menu.style.display="block";
+    if(pokeball)pokeball.style.display="none";
   }
 }
 function resetForNextRegion(){
