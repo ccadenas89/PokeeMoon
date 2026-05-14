@@ -1868,7 +1868,8 @@ function itemContinue(){
 }
 function initBattle(msg){
   Screens.render("battle",renderBattleScreen());
-  playBattleMusic();
+  const btype=G.battle.type;
+  if(btype==="wild"||btype==="fish"||btype==="trainer") playBattleMusic();
   setBattleLock(false);
   document.getElementById("lvup-banner").style.display="none";
   Screens.show("battle");
