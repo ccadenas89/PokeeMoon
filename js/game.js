@@ -1344,10 +1344,10 @@ function showGiftScreen(giftData,ri,ni){
 }
 
 function closeGiftScreen(){
-  const nextNode=_giftNi+1<WORLD[_giftRi].nodes.length?WORLD[_giftRi].nodes[_giftNi+1]:null;
-  const isGymTown=nextNode&&nextNode.t==="gym";
-  const needsTraining=isGymTown&&isUnderleveledForGym(nextNode.gd);
-  showShop(_giftRi,_giftNi,function(){nextNode(_giftRi,_giftNi);},"🎁 ¡"+_giftData.n+" se unió a tu equipo!",needsTraining,isGymTown?nextNode:null);
+  const nextNd=_giftNi+1<WORLD[_giftRi].nodes.length?WORLD[_giftRi].nodes[_giftNi+1]:null;
+  const isGymTown=nextNd&&nextNd.t==="gym";
+  const needsTraining=isGymTown&&isUnderleveledForGym(nextNd.gd);
+  showShop(_giftRi,_giftNi,function(){nextNode(_giftRi,_giftNi);},"🎁 ¡"+_giftData.n+" se unió a tu equipo!",needsTraining,isGymTown?nextNd:null);
 }
 
 function showGymPreview(gd,ri,ni){
