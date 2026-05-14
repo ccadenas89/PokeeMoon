@@ -1305,13 +1305,20 @@ function getRemainingProgress(cur){
   return {badges,leagues};
 }
 function calcMaxHp(baseHp,level){
-  const perLevel=Math.max(2,Math.round(baseHp/20));
-  return Math.max(1,Math.floor(baseHp + perLevel*(level-1)));
+  if(level===1)return baseHp;
+  const hp100=Math.floor(2*baseHp+31)+110;
+  return Math.floor(baseHp+(hp100-baseHp)*(level-1)/99);
 }
 function calcAtk(baseAtk,level){
-  const perLevel=Math.max(1,Math.round(baseAtk/15));
-  return Math.max(1,Math.floor(baseAtk + perLevel*(level-1)));
+  if(level===1)return baseAtk;
+  const atk100=Math.floor(2*baseAtk+31)+5;
+  return Math.floor(baseAtk+(atk100-baseAtk)*(level-1)/99);
 }
+// Las funciones calcMaxHp y calcAtk ahora usan cálculos basados en las fórmulas oficiales de Pokémon
+// de Bulbapedia, asumiendo IV=31 (máximo) y EV=0, para un crecimiento preciso por nivel.
+// HP a nivel 100 = floor(2*baseHp + 31) + 110
+// Atk a nivel 100 = floor(2*baseAtk + 31) + 5
+// Incremento por nivel: (stat100 - baseStat) / 99
 function renderMap(){
   const m=document.getElementById("rmap");m.innerHTML="";
   const cur=gIdx(G.wi,G.ni);
