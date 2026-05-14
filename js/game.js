@@ -1260,29 +1260,64 @@ function enterNode(ri,ni){
       showGiftScreen(giftData,ri,ni);
     } else{
       saveGame();
-      const isGymTown=hasGymAhead(ri,ni);
-      const nextGymNode=isGymTown?findNextGym(ri,ni):null;
-      const needsTraining=nextGymNode&&isUnderleveledForGym(nextGymNode.gd);
-      const msg=needsTraining?"🏋️ Equipo curado. ¡Entrena antes del gimnasio!":"🏡 Equipo curado.";
-      showShop(ri,ni,function(){nextNode(ri,ni);},msg,needsTraining,nextGymNode);
+      showShop(ri,ni,function(){nextNode(ri,ni);},"🏡 Equipo curado.");
     }
   }
   else if(node.t==="route"||node.t==="cave")showRoulette(ri,ni);
-  else if(node.t==="gym")showGymPreview(node.gd,ri,ni);
+  else if(node.t==="gym"){
+    const needsTraining=isUnderleveledForGym(node.gd);
+    if(needsTraining){
+      showGymTraining(node,ri,ni);
+    }else{
+      showGymPreview(node.gd,ri,ni);
+    }
+  }
   else if(node.t==="league")startLeague(node.ld,ri,ni);
+}
+
+let _gymTrainingNode=null,_gymTrainingRi=0,_gymTrainingNi=0;
+function showGymTraining(node,ri,ni){
+  _gymTrainingNode=node;
+  _gymTrainingRi=ri;
+  _gymTrainingNi=ni;
+  const gymPk=node.gd.pk;
+  const gymAvgLv=Math.round(gymPk.reduce((s,p)=>s+(p.lv||20),0)/gymPk.length);
+  let html=`<div style="padding:20px;text-align:center">
+    <div style="font-size:48px;margin-bottom:16px">⚔️</div>
+    <h2 style="margin:0 0 8px">Gimnasio ${node.gd.l}</h2>
+    <p style="font-size:14px;color:var(--color-text-secondary);margin-bottom:16px">Nivel medio del gimnasio: <strong>Nv.${gymAvgLv}</strong></p>
+    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px">Tu equipo está bajo de nivel. ¡Entrena antes de combatir!</p>
+    <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+      <button onclick="startGymTraining()" style="background:#E24B4A;color:white;border:none;padding:10px 20px;border-radius:8px;font-size:14px;cursor:pointer;width:200px">🏋️ Entrenar contra Pokémon</button>
+      <button onclick="startGymBattle()" style="background:#639922;color:white;border:none;padding:10px 20px;border-radius:8px;font-size:14px;cursor:pointer;width:200px">⚔️ Combatir gimnasio</button>
+    </div>
+  </div>`;
+  Screens.render("gym-preview",html);
+  Screens.show("gym-preview");
+}
+
+function startGymTraining(){
+  const node=_gymTrainingNode;
+  if(!node||!node.gd)return;
+  const gymPk=node.gd.pk;
+  const gymAvgLv=Math.round(gymPk.reduce((s,p)=>s+(p.lv||20),0)/gymPk.length);
+  const validWild=WILD.filter(w=>canAppearAtLevel(w.n,gymAvgLv));
+  const wd=validWild.length>0?validWild[Math.floor(Math.random()*validWild.length)]:WILD[0];
+  const lv=Math.max(2,gymAvgLv-2+rnd(0,4));
+  const e=mkPoke(wd,lv);e.hp=e.maxHp;
+  G.battle={e,ri:_gymTrainingRi,ni:_gymTrainingNi,type:"wild",canCatch:true,queue:[],_training:true,_gymNode:node};
+  ss("battle");
+  initBattle("🏋️ ¡Entrenando! Un "+wd.n+" salvaje Nv."+lv+" apareció!");
+}
+
+function startGymBattle(){
+  showGymPreview(_gymTrainingNode.gd,_gymTrainingRi,_gymTrainingNi);
 }
 
 function hasGymAhead(ri,ni){
   const world=WORLD[ri];
   if(!world)return false;
-  for(let i=ni+1;i<world.nodes.length;i++){
-    if(world.nodes[i].t==="gym")return true;
-  }
-  if(ri+1<WORLD.length){
-    for(let i=0;i<WORLD[ri+1].nodes.length;i++){
-      if(WORLD[ri+1].nodes[i].t==="gym")return true;
-    }
-  }
+  if(ni+1<world.nodes.length&&world.nodes[ni+1].t==="gym")return true;
   return false;
 }
 
@@ -1309,10 +1344,10 @@ function showGiftScreen(giftData,ri,ni){
 }
 
 function closeGiftScreen(){
-  const isGymTown=hasGymAhead(_giftRi,_giftNi);
-  const nextGymNode=isGymTown?findNextGym(_giftRi,_giftNi):null;
-  const needsTraining=nextGymNode&&isUnderleveledForGym(nextGymNode.gd);
-  showShop(_giftRi,_giftNi,function(){nextNode(_giftRi,_giftNi);},"🎁 ¡"+_giftData.n+" se unió a tu equipo!",needsTraining,nextGymNode);
+  const nextNode=_giftNi+1<WORLD[_giftRi].nodes.length?WORLD[_giftRi].nodes[_giftNi+1]:null;
+  const isGymTown=nextNode&&nextNode.t==="gym";
+  const needsTraining=isGymTown&&isUnderleveledForGym(nextNode.gd);
+  showShop(_giftRi,_giftNi,function(){nextNode(_giftRi,_giftNi);},"🎁 ¡"+_giftData.n+" se unió a tu equipo!",needsTraining,isGymTown?nextNode:null);
 }
 
 function showGymPreview(gd,ri,ni){
@@ -1707,8 +1742,8 @@ function endBattle(result){
     banner.textContent="¡"+G.team.map(p=>p.name+" Nv."+p.level).join(" · ")+"!";
     banner.style.display="block";
     saveGame();
-    if(isTraining){
-      showShop(ri,ni,function(){nextNode(ri,ni);},"✨ ¡Victoria! +" + reward + " monedas. ¡Sigue entrenando!",true,gymNode);
+    if(isTraining&&gymNode){
+      showGymTraining(gymNode,ri,ni);
     }else{
       showShop(ri,ni,function(){nextNode(ri,ni);},"✨ ¡Victoria! +" + reward + " monedas." + extraMsg);
     }
@@ -1723,9 +1758,8 @@ function endBattle(result){
     savePokedex();saveGame();
     const _catchName=b.e.name,_catchS=b.e.s;
     const catchMsg=wentToPC?"¡"+_catchName+" fue enviado a la PC!":"¡"+_catchName+" se unió a tu equipo!";
-    if(isTraining){
-      showResult(_catchS,"¡Capturado!",catchMsg+"\n¡Sigue entrenando!",ri,ni,false);
-      setTimeout(()=>loadSpriteForResult(_catchName,_catchS),100);
+    if(isTraining&&gymNode){
+      showGymTraining(gymNode,ri,ni);
     }else{
       showResult(_catchS,"¡Capturado!",catchMsg,ri,ni,false);
       setTimeout(()=>loadSpriteForResult(_catchName,_catchS),100);
@@ -1733,8 +1767,8 @@ function endBattle(result){
   }else if(result==="run"){
     healTeam();
     saveGame();
-    if(isTraining){
-      showShop(ri,ni,function(){nextNode(ri,ni);},"🏃 Escapaste. ¿Seguir entrenando?",true,gymNode);
+    if(isTraining&&gymNode){
+      showGymTraining(gymNode,ri,ni);
     }else{
       ss("world");renderWorld();
     }
