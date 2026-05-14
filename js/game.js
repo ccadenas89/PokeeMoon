@@ -1113,6 +1113,13 @@ function setBattleLock(state){
 
 const HPcolor=r=>r>.5?"#639922":r>.25?"#EF9F27":"#E24B4A";
 function maxLv(){return G.team.length?Math.max(...G.team.map(p=>p.level)):5;}
+function avgLv(){return G.team.length?Math.round(G.team.reduce((s,p)=>s+p.level,0)/G.team.length):5;}
+function getWildLevel(){
+  if(!G.team.length)return 5;
+  const min=Math.max(2,avgLv()-1);
+  const max=maxLv()+1;
+  return Math.floor(Math.random()*(max-min+1))+min;
+}
 
 function mkPoke(d,lv){
   lv=lv||5;
@@ -1365,7 +1372,7 @@ function spinRoulette(){
   },2000);
 }
 function resolveRoulette(type){
-  const ri=rRi,ni=rNi,lv=Math.max(2,maxLv()+rnd(-2,2));
+  const ri=rRi,ni=rNi,lv=getWildLevel();
   if(type==="wild"){
     const validWild=WILD.filter(w=>canAppearAtLevel(w.n,lv));
     const wd=validWild.length>0?validWild[Math.floor(Math.random()*validWild.length)]:WILD[0];
@@ -1380,12 +1387,13 @@ function resolveRoulette(type){
     initBattle("🎣 ¡Pescaste un "+fd.n+" Nv."+lv+"!");
   }else if(type==="trainer"){
     const tname=TRAINER_NAMES[Math.floor(Math.random()*TRAINER_NAMES.length)];
+    const lv2=Math.max(2,lv+rnd(-1,1));
     const validWild1=WILD.filter(w=>canAppearAtLevel(w.n,lv));
-    const validWild2=WILD.filter(w=>canAppearAtLevel(w.n,Math.max(2,lv+rnd(-1,1))));
+    const validWild2=WILD.filter(w=>canAppearAtLevel(w.n,lv2));
     const w1=validWild1.length>0?validWild1[Math.floor(Math.random()*validWild1.length)]:WILD[0];
     const w2=validWild2.length>0?validWild2[Math.floor(Math.random()*validWild2.length)]:WILD[0];
     const e1=mkPoke(w1,lv);e1.hp=e1.maxHp;e1.name=w1.n+" ("+tname+")";
-    const e2=mkPoke(w2,Math.max(2,lv+rnd(-1,1)));e2.hp=e2.maxHp;e2.name=w2.n+" ("+tname+")";
+    const e2=mkPoke(w2,lv2);e2.hp=e2.maxHp;e2.name=w2.n+" ("+tname+")";
     G.battle={e:e1,ri,ni,type:"trainer",canCatch:false,queue:[e2]};
     initBattle("¡Entrenador "+tname+" quiere combatir! Tiene 2 Pokémon.");
   }else{showItemFound(ri,ni);}
