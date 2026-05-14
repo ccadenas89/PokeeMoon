@@ -18,7 +18,7 @@ const POKEMON_HP_GEN4 = [
   { id: 403, name: "Shinx", baseHP: 45, evolutionLevel: 15 },
   { id: 404, name: "Luxio", baseHP: 60, evolutionLevel: 30 },
   { id: 405, name: "Luxray", baseHP: 80, evolutionLevel: null },
-  { id: 406, name: "Budew", baseHP: 40, evolutionLevel: null },
+  { id: 406, name: "Budew", baseHP: 40, evolutionLevel: 20 },
   { id: 407, name: "Roserade", baseHP: 60, evolutionLevel: null },
   { id: 408, name: "Cranidos", baseHP: 67, evolutionLevel: 30 },
   { id: 409, name: "Rampardos", baseHP: 97, evolutionLevel: null },

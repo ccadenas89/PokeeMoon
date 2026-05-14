@@ -180,14 +180,6 @@ const ITEM_POOL=[
   {k:"caramelo_exp",n:"Caramelo Exp.",ico:"🍬",desc:"Sube 1 nivel al Pokémon líder",rarity:"raro",cls:"rr",pct:3,qty:()=>1,sp:"candy_exp"},
   {k:"caramelo_raro",n:"Caramelo Raro",ico:"🍭",desc:"Sube 3 niveles al Pokémon líder",rarity:"raro",cls:"rr",pct:2,qty:()=>1,sp:"candy_rare"},
   {k:"revivir",n:"Revivir",ico:"💫",desc:"Revive con 50% HP",rarity:"raro",cls:"rr",pct:1,qty:()=>1},
-  {k:"piedra_fuego",n:"Piedra Fuego",ico:"🔥",desc:"Evoluciona Pokémon de fuego",rarity:"épico",cls:"re",pct:1.2,qty:()=>1,sp:"stone"},
-  {k:"piedra_agua",n:"Piedra Agua",ico:"💧",desc:"Evoluciona Pokémon de agua",rarity:"épico",cls:"re",pct:1.2,qty:()=>1,sp:"stone"},
-  {k:"piedra_trueno",n:"Piedra Trueno",ico:"⚡",desc:"Evoluciona Pokémon eléctrico",rarity:"épico",cls:"re",pct:1.2,qty:()=>1,sp:"stone"},
-  {k:"piedra_hoja",n:"Piedra Hoja",ico:"🍃",desc:"Evoluciona Pokémon de planta",rarity:"épico",cls:"re",pct:1.2,qty:()=>1,sp:"stone"},
-  {k:"piedra_luna",n:"Piedra Luna",ico:"🌙",desc:"Evoluciona Clefairy y similares",rarity:"épico",cls:"re",pct:0.8,qty:()=>1,sp:"stone"},
-  {k:"piedra_sol",n:"Piedra Solar",ico:"☀️",desc:"Evoluciona Gloom y similares",rarity:"épico",cls:"re",pct:0.8,qty:()=>1,sp:"stone"},
-  {k:"piedra_hielo",n:"Piedra Hielo",ico:"🧊",desc:"Evoluciona Eevee a Glaceon",rarity:"épico",cls:"re",pct:0.6,qty:()=>1,sp:"stone"},
-  {k:"piedra_oscu",n:"Piedra Oscura",ico:"🌑",desc:"Evoluciona Pokémon siniestros",rarity:"épico",cls:"re",pct:0.6,qty:()=>1,sp:"stone"},
   {k:"caramelo_gordo",n:"Caramelo Gordo",ico:"🍰",desc:"Sube 5 niveles al Pokémon líder",rarity:"épico",cls:"re",pct:0.4,qty:()=>1,sp:"candy_big"},
   {k:"tm_hiperrayo",n:"MT Hiperrayo",ico:"📀",desc:"Enseña Hiperrayo al líder",rarity:"legendario",cls:"rl",pct:0.8,qty:()=>1,sp:"tm_hyper"},
   {k:"tm_esfera",n:"MT Esfera Aural",ico:"📀",desc:"Enseña Esfera Aural al líder",rarity:"legendario",cls:"rl",pct:0.5,qty:()=>1,sp:"tm_aura"},
@@ -216,12 +208,6 @@ const SHOP_CATALOG=[
   {k:"caramelo_raro",n:"Caramelo Raro",ico:"🍭",desc:"+3 niveles al líder",price:1000},
   {k:"caramelo_gordo",n:"Caramelo Gordo",ico:"🍰",desc:"+5 niveles al líder",price:2000},
   {k:"caramelo_maximo",n:"Caramelo Máximo",ico:"🌟",desc:"+10 niveles al líder",price:4000},
-  {k:"piedra_fuego",n:"Piedra Fuego",ico:"🔥",desc:"Evoluciona fuego",price:1500},
-  {k:"piedra_agua",n:"Piedra Agua",ico:"💧",desc:"Evoluciona agua",price:1500},
-  {k:"piedra_trueno",n:"Piedra Trueno",ico:"⚡",desc:"Evoluciona eléctrico",price:1500},
-  {k:"piedra_hoja",n:"Piedra Hoja",ico:"🍃",desc:"Evoluciona planta",price:1500},
-  {k:"piedra_luna",n:"Piedra Luna",ico:"🌙",desc:"Evoluciona Clefairy",price:1800},
-  {k:"piedra_sol",n:"Piedra Solar",ico:"☀️",desc:"Evoluciona Gloom",price:1800},
   {k:"master_ball",n:"Master Ball",ico:"💜",desc:"Captura sin fallo",price:10000},
   {k:"tm_hiperrayo",n:"MT Hiperrayo",ico:"📀",desc:"Enseña Hiperrayo",price:3000},
   {k:"tm_esfera",n:"MT Esfera Aural",ico:"📀",desc:"Enseña Esfera Aural",price:5000},
@@ -998,8 +984,7 @@ let G={
   bag:{pokeball:5,pocion:3,superpocion:1,super_ball:0,ultra_ball:0,master_ball:0,
        hiper_pocion:0,full_restore:0,revivir:0,pp_up:0,fruta_frambu:0,antidoto:0,despertar:0,
        caramelo_exp:0,caramelo_raro:0,caramelo_gordo:0,caramelo_maximo:0,
-       piedra_fuego:0,piedra_agua:0,piedra_trueno:0,piedra_hoja:0,piedra_luna:0,
-       piedra_sol:0,piedra_hielo:0,piedra_oscu:0,tm_hiperrayo:0,tm_esfera:0},
+       tm_hiperrayo:0,tm_esfera:0},
   money:500,badges:0,wi:0,ni:0,shakes:0,
   battle:null,pendingLearnQueue:[],
   _itemRi:null,_itemNi:null,_pendingGym:null,
@@ -1984,8 +1969,7 @@ function newGameKeepDex(){
   G.team=[];G.bag={pokeball:5,pocion:3,superpocion:1,super_ball:0,ultra_ball:0,master_ball:0,
     hiper_pocion:0,full_restore:0,revivir:0,pp_up:0,fruta_frambu:0,antidoto:0,despertar:0,
     caramelo_exp:0,caramelo_raro:0,caramelo_gordo:0,caramelo_maximo:0,
-    piedra_fuego:0,piedra_agua:0,piedra_trueno:0,piedra_hoja:0,piedra_luna:0,
-    piedra_sol:0,piedra_hielo:0,piedra_oscu:0,tm_hiperrayo:0,tm_esfera:0};
+    tm_hiperrayo:0,tm_esfera:0};
   G.money=500;G.badges=0;G.wi=0;G.ni=0;G.shakes=0;G._paletaGiftReceived=false;
   G.caught=new Set(savedDex);
   savePokedex();

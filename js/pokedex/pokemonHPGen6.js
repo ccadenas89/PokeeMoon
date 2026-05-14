@@ -19,7 +19,7 @@ const POKEMON_HP_GEN6 = [
   { id: 667, name: "Litleo", baseHP: 62, evolutionLevel: 35 },
   { id: 668, name: "Pyroar", baseHP: 86, evolutionLevel: null },
   { id: 669, name: "Flabébé", baseHP: 44, evolutionLevel: 19 },
-  { id: 670, name: "Floette", baseHP: 54, evolutionLevel: null },
+  { id: 670, name: "Floette", baseHP: 54, evolutionLevel: 40 },
   { id: 671, name: "Florges", baseHP: 78, evolutionLevel: null },
   { id: 672, name: "Skiddo", baseHP: 66, evolutionLevel: 32 },
   { id: 673, name: "Gogoat", baseHP: 123, evolutionLevel: null },
