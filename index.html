@@ -11,7 +11,8 @@
 
   
 <div id="bg-sprites"></div>
-<button id="music-toggle" onclick="toggleMusic()" style="position:fixed;top:12px;right:12px;z-index:1000;padding:8px 12px;font-size:14px;border-radius:999px;background:rgba(255,255,255,0.95);border:1px solid rgba(0,0,0,0.12);box-shadow:0 2px 10px rgba(0,0,0,0.1);cursor:pointer">🔇 Música off</button>
+<audio id="bg-music" src="assets/music/theme.mp3" preload="auto" loop></audio>
+<button id="music-toggle" onclick="toggleMusic()" style="position:fixed;bottom:12px;right:12px;z-index:1000;padding:8px 12px;font-size:14px;border-radius:999px;background:rgba(255,255,255,0.95);border:1px solid rgba(0,0,0,0.12);box-shadow:0 2px 10px rgba(0,0,0,0.1);cursor:pointer">🔇 Música off</button>
 <div id="app">
 <div id="s-intro" class="screen active">
   <div class="pb-wrap">

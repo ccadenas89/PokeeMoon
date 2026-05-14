@@ -1209,73 +1209,39 @@ function checkIntroSave(){
   }
 }
 
-let _musicContext=null;
-let _musicOsc=null;
-let _musicGain=null;
-let _musicTimer=null;
-let _musicNoteIndex=0;
-const _musicNotes=[
-  261.63, 0, 261.63, 0, 329.63, 0, 392.00, 0,
-  392.00, 0, 329.63, 0, 293.66, 0, 261.63, 0,
-  392.00, 0, 392.00, 0, 349.23, 0, 329.63, 0,
-  293.66, 0, 329.63, 0, 261.63, 0, 0, 0
-];
-
 function updateMusicButton(on){
   const btn=document.getElementById("music-toggle");
   if(!btn)return;
   btn.textContent = on ? "🔊 Música on" : "🔇 Música off";
 }
 
-function createMusic(){
-  if(_musicContext) return;
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  if(!AudioContext) return;
-  _musicContext = new AudioContext();
-  _musicGain = _musicContext.createGain();
-  _musicGain.gain.value = 0.12;
-  _musicGain.connect(_musicContext.destination);
-}
-
 function playMusic(){
-  if(!_musicContext) createMusic();
-  if(!_musicContext) return;
-  if(_musicContext.state === "suspended") _musicContext.resume();
-  if(_musicTimer) return;
-  _musicOsc = _musicContext.createOscillator();
-  _musicOsc.type = "triangle";
-  _musicOsc.connect(_musicGain);
-  _musicOsc.start();
-  _musicNoteIndex = 0;
-  _musicTimer = setInterval(() => {
-    const note = _musicNotes[_musicNoteIndex++];
-    if(_musicNoteIndex >= _musicNotes.length) _musicNoteIndex = 0;
-    if(note === 0) {
-      _musicGain.gain.setTargetAtTime(0, _musicContext.currentTime, 0.05);
-    } else {
-      _musicOsc.frequency.setTargetAtTime(note, _musicContext.currentTime, 0.02);
-      _musicGain.gain.setTargetAtTime(0.12, _musicContext.currentTime, 0.02);
-    }
-  }, 450);
+  const audio = document.getElementById("bg-music");
+  if(!audio) return;
+  audio.volume = 0.18;
+  const playPromise = audio.play();
+  if(playPromise && playPromise.catch){
+    playPromise.catch(()=>{});
+  }
   updateMusicButton(true);
 }
 
 function stopMusic(){
-  if(_musicTimer){
-    clearInterval(_musicTimer);
-    _musicTimer = null;
-  }
-  if(_musicOsc){
-    try{_musicOsc.stop();}catch(e){}
-    _musicOsc.disconnect();
-    _musicOsc = null;
-  }
+  const audio = document.getElementById("bg-music");
+  if(!audio) return;
+  audio.pause();
+  audio.currentTime = 0;
   updateMusicButton(false);
 }
 
 function toggleMusic(){
-  if(_musicTimer) stopMusic();
-  else playMusic();
+  const audio = document.getElementById("bg-music");
+  if(!audio) return;
+  if(audio.paused){
+    playMusic();
+  } else {
+    stopMusic();
+  }
 }
 
 function startNewGame(){
@@ -2689,7 +2655,6 @@ openBall=function(){
       <h2 style="margin-bottom:4px">¡${sd.n}!</h2>
       <span style="display:inline-block;font-size:11px;padding:3px 10px;border-radius:12px;background:${tc[sd.t]||"#F1EFE8"};color:#444;margin:4px">${sd.t}</span>
       <p style="margin:10px 0 5px">Nv.5 · HP: ${p.maxHp} · Ataque: ${p.atk}</p>
-      <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:18px">Movimientos: ${sd.mv.join(" · ")}</p>
       <button onclick="confirmStarter('${sd.n}')" style="font-size:14px;padding:9px 22px">¡Comenzar aventura! →</button>
     </div>`;
     if(id){
