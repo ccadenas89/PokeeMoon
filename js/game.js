@@ -1263,7 +1263,7 @@ function mkPoke(d,lv){
   const maxMoves=lv<10?2:lv<20?3:4;
   const moves=getRandomMovesForLevel(pokeName, lv, maxMoves);
   return{name:pokeName,s:d.s||"❓",type:d.t||d.type||"normal",
-    level:lv,maxHp:Math.floor(bH*lv/8+lv/2+5),hp:0,atk:Math.floor(bA*lv/5+5),
+    level:lv,maxHp:calcMaxHp(bH,lv),hp:0,atk:calcAtk(bA,lv),
     moves:moves,baseHp:bH,baseAtk:bA,offeredMoves:[]};
 }
 
@@ -1293,6 +1293,25 @@ function updateHUD(){
 }
 
 function gIdx(wi,ni){let x=0;for(let r=0;r<wi;r++)x+=WORLD[r].nodes.length;return x+ni;}
+function getRemainingProgress(cur){
+  const flat=[];WORLD.forEach(reg=>reg.nodes.forEach(node=>flat.push(node)));
+  let badges=0, leagues=0;
+  if(flat[cur]?.t==="gym")badges++;
+  else if(flat[cur]?.t==="league")leagues++;
+  for(let i=cur+1;i<flat.length;i++){
+    if(flat[i].t==="gym")badges++;
+    else if(flat[i].t==="league")leagues++;
+  }
+  return {badges,leagues};
+}
+function calcMaxHp(baseHp,level){
+  const perLevel=Math.max(2,Math.round(baseHp/20));
+  return Math.max(1,Math.floor(baseHp + perLevel*(level-1)));
+}
+function calcAtk(baseAtk,level){
+  const perLevel=Math.max(1,Math.round(baseAtk/15));
+  return Math.max(1,Math.floor(baseAtk + perLevel*(level-1)));
+}
 function renderMap(){
   const m=document.getElementById("rmap");m.innerHTML="";
   const cur=gIdx(G.wi,G.ni);
@@ -1319,7 +1338,8 @@ function renderMap(){
   });
   const prog=document.createElement("div");
   prog.style.cssText="font-size:11px;color:var(--color-text-secondary);text-align:center;padding:8px 0 2px;";
-  prog.textContent=`Nodo ${cur+1} de ${flat.length}`;
+  const progress=getRemainingProgress(cur);
+  prog.textContent=`Medallas restantes ${progress.badges} · Ligas restantes ${progress.leagues}`;
   m.appendChild(prog);
 }
 
@@ -1554,8 +1574,8 @@ function grantXP(poke,amount){
     }
   }
   poke.level=newLv;
-  poke.maxHp=Math.floor(poke.baseHp*poke.level/8+poke.level/2+5);
-  poke.atk=Math.floor(poke.baseAtk*poke.level/5+5);
+  poke.maxHp=calcMaxHp(poke.baseHp,poke.level);
+  poke.atk=calcAtk(poke.baseAtk,poke.level);
   if(poke.hp>poke.maxHp)poke.hp=poke.maxHp;
   movesToLearn.forEach(item=>{G.pendingLearnQueue.push(item);});
   return movesToLearn.length>0;
