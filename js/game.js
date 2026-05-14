@@ -245,6 +245,14 @@ function renderShopScreen(){
       <p style="font-size:13px;margin:0">${_shopMsg}</p>
     </div>`;
   }
+  if(_shopNeedsTraining&&_shopGymNode){
+    const gymPk=_shopGymNode.gd.pk;
+    const gymAvgLv=Math.round(gymPk.reduce((s,p)=>s+(p.lv||20),0)/gymPk.length);
+    html+=`<div style="text-align:center;margin-bottom:12px;padding:10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md)">
+      <p style="font-size:13px;margin:0 0 8px">⚔️ Próximo gimnasio: <strong>${_shopGymNode.gd.l}</strong> (media Nv.${gymAvgLv})</p>
+      <button onclick="startTraining()" style="background:#E24B4A;color:white;border:none;padding:8px 16px;border-radius:8px;font-size:13px;cursor:pointer">🏋️ Entrenar contra Pokémon salvajes</button>
+    </div>`;
+  }
   html+=`<div style="display:flex;flex-direction:column;gap:6px">`;
   _shopItems.forEach((it,i)=>{
     const hasDiscount=it.discount>0;
@@ -285,11 +293,15 @@ function buyItem(idx){
 }
 
 let _shopContinueCb=null;
-function showShop(ri,ni,cb,msg){
+let _shopNeedsTraining=false;
+let _shopGymNode=null;
+function showShop(ri,ni,cb,msg,needsTraining,gymNode){
   generateShop();
   _shopContinueCb=cb||function(){nextNode(ri,ni);};
   _shopMsg=msg||"";
   _shopSpriteId=null;
+  _shopNeedsTraining=needsTraining||false;
+  _shopGymNode=gymNode||null;
   Screens.render("shop",renderShopScreen());
   Screens.show("shop");
 }
@@ -312,8 +324,44 @@ function loadSpriteForShop(name,emoji){
 
 function shopContinue(){
   _shopMsg="";
-  _shopSpriteId=null;
+  _shopNeedsTraining=false;
+  _shopGymNode=null;
   if(_shopContinueCb)_shopContinueCb();
+}
+
+function findNextGym(ri,ni){
+  const world=WORLD[ri];
+  if(!world)return null;
+  for(let i=ni+1;i<world.nodes.length;i++){
+    if(world.nodes[i].t==="gym")return world.nodes[i];
+  }
+  if(ri+1<WORLD.length){
+    for(let i=0;i<WORLD[ri+1].nodes.length;i++){
+      if(WORLD[ri+1].nodes[i].t==="gym")return WORLD[ri+1].nodes[i];
+    }
+  }
+  return null;
+}
+
+function isUnderleveledForGym(gd){
+  if(!gd||!gd.pk||!G.team.length)return false;
+  const gymAvgLv=Math.round(gd.pk.reduce((s,p)=>s+(p.lv||20),0)/gd.pk.length);
+  const teamMaxLv=maxLv();
+  return teamMaxLv<gymAvgLv;
+}
+
+function startTraining(){
+  const nextGym=_shopGymNode;
+  if(!nextGym||!nextGym.gd)return;
+  const gymPk=nextGym.gd.pk;
+  const gymAvgLv=Math.round(gymPk.reduce((s,p)=>s+(p.lv||20),0)/gymPk.length);
+  const validWild=WILD.filter(w=>canAppearAtLevel(w.n,gymAvgLv));
+  const wd=validWild.length>0?validWild[Math.floor(Math.random()*validWild.length)]:WILD[0];
+  const lv=Math.max(2,gymAvgLv-2+rnd(0,4));
+  const e=mkPoke(wd,lv);e.hp=e.maxHp;
+  G.battle={e,ri:G.wi,ni:G.ni,type:"wild",canCatch:true,queue:[],_training:true,_gymNode:nextGym};
+  ss("battle");
+  initBattle("🏋️ ¡Entrenando! Un "+wd.n+" salvaje Nv."+lv+" apareció!");
 }
 
 // ── WORLD DATA con equipos y niveles CANÓNICOS ──────────────────────────────
@@ -1199,6 +1247,8 @@ function enterNode(ri,ni){
   const node=WORLD[ri].nodes[ni];
   if(node.t==="town"){
     healTeam();
+    const nextGymNode=findNextGym(ri,ni);
+    const needsTraining=nextGymNode&&isUnderleveledForGym(nextGymNode.gd);
     if(node.id==="paleta"&&!G._paletaGiftReceived&&Math.random()<0.5){
       G._paletaGiftReceived=true;
       const otherPoke=BASE_POKEMON.filter(p=>p.n!==G.team[0].name);
@@ -1211,11 +1261,12 @@ function enterNode(ri,ni){
       savePokedex();saveGame();
       const tc={planta:"#EAF3DE",fuego:"#FAEEDA",agua:"#E6F1FB",eléctrico:"#FAEEDA",normal:"#F1EFE8"};
       const giftMsg=`Tu madre te regala un ${giftData.n} para tu largo viaje.`;
-      showShop(ri,ni,function(){nextNode(ri,ni);},"🎁 "+giftMsg);
+      showShop(ri,ni,function(){nextNode(ri,ni);},"🎁 "+giftMsg,needsTraining,nextGymNode);
       setTimeout(()=>loadSpriteForShop(giftData.n,giftData.s),100);
     } else{
       saveGame();
-      showShop(ri,ni,function(){nextNode(ri,ni);},"🏡 Equipo curado.");
+      const msg=needsTraining?"🏋️ Equipo curado. ¡Entrena antes del gimnasio!":"🏡 Equipo curado.";
+      showShop(ri,ni,function(){nextNode(ri,ni);},msg,needsTraining,nextGymNode);
     }
   }
   else if(node.t==="route"||node.t==="cave")showRoulette(ri,ni);
@@ -1591,9 +1642,12 @@ function useBagItem(k){
 }
 function endBattle(result){
   const b=G.battle,ri=b.ri,ni=b.ni;
+  const isTraining=b._training===true;
+  const gymNode=b._gymNode;
+  
   if(result==="win"){
     const isGym=b.type==="gym",isLeague=b.type==="league";
-    let xpGain=isGym?5:1,reward=b.e.level*6+30,extraMsg="";
+    let xpGain=1,reward=b.e.level*6+30,extraMsg="";
     if(isGym){reward+=200;G.badges++;G.bag.pokeball+=3;G.bag.superpocion+=1;extraMsg=" 🏅 ¡+"+xpGain+" niv. a todo el equipo!";}
     else if(isLeague){
       reward+=500;G.badges+=5;G.bag.hiper_pocion+=2;G.bag.ultra_ball+=2;
@@ -1612,7 +1666,11 @@ function endBattle(result){
     banner.textContent="¡"+G.team.map(p=>p.name+" Nv."+p.level).join(" · ")+"!";
     banner.style.display="block";
     saveGame();
-    showShop(ri,ni,function(){nextNode(ri,ni);},"✨ ¡Victoria! +" + reward + " monedas." + extraMsg);
+    if(isTraining){
+      showShop(ri,ni,function(){nextNode(ri,ni);},"✨ ¡Victoria! +" + reward + " monedas. ¡Sigue entrenando!",true,gymNode);
+    }else{
+      showShop(ri,ni,function(){nextNode(ri,ni);},"✨ ¡Victoria! +" + reward + " monedas." + extraMsg);
+    }
   }else if(result==="catch"){
     const caughtPoke={...b.e,hp:b.e.hp,moves:[...b.e.moves]};
     let wentToPC=false;
@@ -1624,11 +1682,21 @@ function endBattle(result){
     savePokedex();saveGame();
     const _catchName=b.e.name,_catchS=b.e.s;
     const catchMsg=wentToPC?"¡"+_catchName+" fue enviado a la PC!":"¡"+_catchName+" se unió a tu equipo!";
-    showResult(_catchS,"¡Capturado!",catchMsg,ri,ni,false);
-    setTimeout(()=>loadSpriteForResult(_catchName,_catchS),100);
+    if(isTraining){
+      showResult(_catchS,"¡Capturado!",catchMsg+"\n¡Sigue entrenando!",ri,ni,false);
+      setTimeout(()=>loadSpriteForResult(_catchName,_catchS),100);
+    }else{
+      showResult(_catchS,"¡Capturado!",catchMsg,ri,ni,false);
+      setTimeout(()=>loadSpriteForResult(_catchName,_catchS),100);
+    }
   }else if(result==="run"){
     healTeam();
-    saveGame();ss("world");renderWorld();
+    saveGame();
+    if(isTraining){
+      showShop(ri,ni,function(){nextNode(ri,ni);},"🏃 Escapaste. ¿Seguir entrenando?",true,gymNode);
+    }else{
+      ss("world");renderWorld();
+    }
   }else{
     G.team.forEach(p=>{p.hp=Math.floor(p.maxHp*0.25);});
     saveGame();
