@@ -1212,6 +1212,10 @@ function checkIntroSave(){
 function startNewGame(){
   const menu=document.getElementById("intro-menu");
   const pokeball=document.getElementById("intro-pokeball");
+  G.shakes=0;
+  for(let i=0;i<3;i++){const el=document.getElementById("sh"+i);if(el)el.style.background="var(--color-border-tertiary)";}
+  const hint=document.getElementById("pb-hint");
+  if(hint)hint.textContent="Toca para agitar";
   if(menu)menu.style.display="none";
   if(pokeball)pokeball.style.display="block";
 }
@@ -1269,12 +1273,13 @@ let _shakeTimer=null;
 function shakeBall(){
   const pb=document.getElementById("pb");
   if(pb.classList.contains("opening"))return;
+  if(G.shakes>=3) return;
   pb.classList.remove("shaking");void pb.offsetWidth;pb.classList.add("shaking");
   clearTimeout(_shakeTimer);_shakeTimer=setTimeout(()=>pb.classList.remove("shaking"),450);
   G.shakes++;
   if(G.shakes<=3)document.getElementById("sh"+(G.shakes-1)).style.background="#378ADD";
   document.getElementById("pb-hint").textContent=G.shakes>=3?"¡Una más!":"¡"+(3-G.shakes)+" más!";
-  if(G.shakes>=3)setTimeout(openBall,500);
+  if(G.shakes===3)setTimeout(openBall,500);
 }
 
 function startWorld(){G.wi=0;G.ni=0;ss("world");renderWorld();}
@@ -1305,9 +1310,8 @@ function renderMap(){
     }
     const el=document.createElement("div");
     el.className="rnode"+(done?" done":isCur?" current":locked?" locked":"");
-    const showSub=f.node.t!=="route"&&f.node.t!=="cave";
     const stats=(f.node.t==="route"||f.node.t==="cave")?G.routeStats[f.node.id]||{wild:0,trainer:0}:null;
-    const counterLine=stats?`<div class="ns">Salvajes ${stats.wild}/2 · Entrenador ${stats.trainer}/1</div>`:`${showSub?`<div class="ns">${f.node.s}</div>`:""}`;
+    const counterLine=stats?`<div class="ns">Salvajes ${stats.wild}/2 · Entrenador ${stats.trainer}/1</div>`:"";
     el.innerHTML=`<div class="ni">${f.node.i}</div><div class="nd"><div class="nn">${f.node.n}${isCur?" ◀":""}</div>${counterLine}</div><span class="nb ${f.node.cl}">${f.node.t}</span>`;
     if(isCur)el.onclick=()=>enterNode(f.ri,f.ni);
     m.appendChild(el);
