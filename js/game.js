@@ -386,15 +386,20 @@ const WORLD=[
    gd:{l:"Misty",badge:"Medalla Cascada",type:"agua",
        pk:[{n:"Staryu",s:"⭐",t:"agua",hp:30,atk:45,lv:18,mv:["Pistola agua","Impactrueno","Rayo burbuja"]},
            {n:"Starmie",s:"🌟",t:"agua",hp:60,atk:75,lv:21,mv:["Hidrobomba","Psíquico","Impactrueno","Velocidad extrema"]}]}},
-  {id:"ruta9",n:"Rutas 9 y 10",i:"🌿",t:"route",s:"Voltorb y Magnemite",cl:"bgr"},
-  {id:"central-elec",n:"Central Eléctrica",i:"⚡",t:"cave",s:"Voltorb y Magnemite",cl:"bc"},
-  {id:"vermilion",n:"Ciudad Carmín",i:"🏘️",t:"town",s:"Puerto S.S. Anne. Equipo curado.",cl:"bgr"},
+   {id:"ruta9",n:"Ruta 9",i:"🌿",t:"route",s:"Voltorb y Magnemite",cl:"bgr"},
+   {id:"ruta10",n:"Ruta 10",i:"🌿",t:"route",s:"Voltorb y Magnemite",cl:"bgr"},
+   {id:"central-elec",n:"Central Eléctrica",i:"⚡",t:"cave",s:"Voltorb y Magnemite",cl:"bc"},
+   {id:"vermilion",n:"Ciudad Carmín",i:"🏘️",t:"town",s:"Puerto S.S. Anne. Equipo curado.",cl:"bgr"},
   {id:"gym-surge",n:"Gimnasio · Lt. Surge",i:"⚔️",t:"gym",s:"Eléctrico · Medalla Trueno",cl:"bg",
    gd:{l:"Lt. Surge",badge:"Medalla Trueno",type:"eléctrico",
        pk:[{n:"Voltorb",s:"💣",t:"eléctrico",hp:40,atk:30,lv:21,mv:["Impactrueno","Rapidez","Sónico"]},
            {n:"Pikachu",s:"⚡",t:"eléctrico",hp:35,atk:55,lv:18,mv:["Impactrueno","Ataque rápido","Onda voltio"]},
            {n:"Raichu",s:"🌩️",t:"eléctrico",hp:60,atk:90,lv:24,mv:["Trueno","Impactrueno","Golpe cuerpo","Onda voltio"]}]}},
-  {id:"ruta11",n:"Rutas 11-12-13-14-15",i:"🌿",t:"route",s:"Ekans, Drowzee y Doduo",cl:"bgr"},
+   {id:"ruta11",n:"Ruta 11",i:"🌿",t:"route",s:"Ekans y Drowzee",cl:"bgr"},
+   {id:"ruta12",n:"Ruta 12",i:"🌿",t:"route",s:"Oddish y Gloom",cl:"bgr"},
+   {id:"ruta13",n:"Ruta 13",i:"🌿",t:"route",s:"Doduo y Pidgeotto",cl:"bgr"},
+   {id:"ruta14",n:"Ruta 14",i:"🌿",t:"route",s:"Doduo y Venonat",cl:"bgr"},
+   {id:"ruta15",n:"Ruta 15",i:"🌿",t:"route",s:"Doduo y Pidgeotto",cl:"bgr"},
   {id:"lavender",n:"Pueblo Lavanda",i:"🏘️",t:"town",s:"Torre Pokémon. Equipo curado.",cl:"bgr"},
   {id:"torre-lavender",n:"Torre Pokémon",i:"🏚️",t:"cave",s:"Gastly y Haunter",cl:"bc"},
   {id:"celadon",n:"Ciudad Azulona",i:"🏙️",t:"town",s:"Gran Almacén y Salón recreativo. Equipo curado.",cl:"bgr"},
@@ -403,7 +408,9 @@ const WORLD=[
        pk:[{n:"Victreebel",s:"🌿",t:"planta",hp:80,atk:105,lv:29,mv:["Hoja afilada","Polvo veneno","Drenadoras","Látigo cepa"]},
            {n:"Tangela",s:"🌱",t:"planta",hp:65,atk:55,lv:24,mv:["Drenadoras","Megaagotar","Polvo veneno"]},
            {n:"Vileplume",s:"🌺",t:"planta",hp:75,atk:80,lv:29,mv:["Hoja afilada","Esporasueño","Polvo veneno","Pétalo danza"]}]}},
-  {id:"ruta16",n:"Rutas 16-17-18",i:"🌿",t:"route",s:"Doduo y Raticate",cl:"bgr"},
+   {id:"ruta16",n:"Ruta 16",i:"🌿",t:"route",s:"Doduo y Raticate",cl:"bgr"},
+   {id:"ruta17",n:"Ruta 17",i:"🌿",t:"route",s:"Doduo y Raticate",cl:"bgr"},
+   {id:"ruta18",n:"Ruta 18",i:"🌿",t:"route",s:"Doduo y Raticate",cl:"bgr"},
   {id:"fuchsia",n:"Ciudad Fucsia",i:"🏘️",t:"town",s:"Zoológico Pokémon. Equipo curado.",cl:"bgr"},
   {id:"seafoam",n:"Islas Canela",i:"🏝️",t:"cave",s:"Seel y Lapras",cl:"bc"},
   {id:"gym-koga",n:"Gimnasio · Koga",i:"⚔️",t:"gym",s:"Veneno · Medalla Alma",cl:"bg",
@@ -434,7 +441,8 @@ const WORLD=[
            {n:"Nidoqueen",s:"💜",t:"veneno",hp:90,atk:92,lv:44,mv:["Terremoto","Cuerpo a cuerpo","Cornada","Tóxico"]},
            {n:"Nidoking",s:"💙",t:"veneno",hp:81,atk:102,lv:45,mv:["Terremoto","Megacuerno","Cuerpo a cuerpo","Tóxico"]},
            {n:"Rhydon",s:"🦕",t:"roca",hp:105,atk:130,lv:50,mv:["Terremoto","Cornada","Lanzarrocas","Golpe cuerpo"]}]}},
-  {id:"ruta22-23",n:"Ruta 22 y 23 · Vic. Road",i:"🌿",t:"route",s:"Nidoran y Mankey",cl:"bgr"},
+   {id:"ruta22",n:"Ruta 22",i:"🌿",t:"route",s:"Nidoran y Mankey",cl:"bgr"},
+   {id:"ruta23",n:"Ruta 23",i:"🌿",t:"route",s:"Nidoran y Mankey",cl:"bgr"},
   {id:"alto-kanto",n:"Alto Mando Kanto",i:"👑",t:"league",s:"Lorelei · Bruno · Agatha · Lance · Blue",cl:"bl",
    ld:{n:"Kanto",tr:[
      {n:"Lorelei",s:"❄️",lv:54,pk:[{n:"Dewgong",s:"🐬",hp:90,atk:70,mv:["Surf","Ventisca","Canto"]},{n:"Cloyster",s:"🐚",hp:50,atk:95,mv:["Surf","Supersónico","Tornillo"]},{n:"Jynx",s:"🧊",hp:65,atk:50,mv:["Psíquico","Come sueños","Lovely Kiss"]},{n:"Lapras",s:"🧊",hp:130,atk:85,mv:["Surf","Ventisca","Canto"]},{n:"Slowbro",s:"🐠",hp:95,atk:75,mv:["Surf","Psíquico","Amnesia"]}]},
@@ -445,37 +453,64 @@ const WORLD=[
    ]}},
  ]},
  {r:"Johto",nodes:[
+  {id:"j-new-bark",n:"Pueblo Bark",i:"🏡",t:"town",s:"Tu hogar en Johto. Equipo curado.",cl:"bgr"},
+  {id:"j-ruta29",n:"Ruta 29",i:"🌿",t:"route",s:"Pidgey y Rattata",cl:"bgr"},
+  {id:"j-cherrygrove",n:"Ciudad Cherrygrove",i:"🏘️",t:"town",s:"Ciudad de las flores. Equipo curado.",cl:"bgr"},
+  {id:"j-ruta30",n:"Ruta 30",i:"🌿",t:"route",s:"Caterpie y Ledyba",cl:"bgr"},
+  {id:"j-ruta31",n:"Ruta 31",i:"🌿",t:"route",s:"Caterpie y Spinarak",cl:"bgr"},
+  {id:"j-violet",n:"Ciudad Violeta",i:"🏘️",t:"town",s:"Torre Ho-Oh. Equipo curado.",cl:"bgr"},
   {id:"j-falkner",n:"Gimnasio · Falkner",i:"⚔️",t:"gym",s:"Volador · Medalla Ala",cl:"bg",
    gd:{l:"Falkner",badge:"Medalla Ala",type:"volador",
        pk:[{n:"Pidgey",s:"🐦",t:"volador",hp:40,atk:45,lv:9,mv:["Placaje","Tornado","Ataque ala"]},
            {n:"Pidgeotto",s:"🦅",t:"volador",hp:63,atk:60,lv:13,mv:["Ataque ala","Tornado","Vendaval","Rapidez"]}]}},
-  {id:"j-route",n:"Ruta Azalea",i:"🌿",t:"route",s:"Hierba y senderos",cl:"bgr"},
+  {id:"j-ruta32",n:"Ruta 32",i:"🌿",t:"route",s:"Ekans y Zubat",cl:"bgr"},
+  {id:"j-union-cave",n:"Cueva Unión",i:"🌑",t:"cave",s:"Zubat y Geodude",cl:"bc"},
+  {id:"j-ruta33",n:"Ruta 33",i:"🌿",t:"route",s:"Rattata y Spearow",cl:"bgr"},
+  {id:"j-azalea",n:"Pueblo Azalea",i:"🏘️",t:"town",s:"Pueblo de los apicultores. Equipo curado.",cl:"bgr"},
   {id:"j-bugsy",n:"Gimnasio · Bugsy",i:"⚔️",t:"gym",s:"Bicho · Medalla Colmena",cl:"bg",
    gd:{l:"Bugsy",badge:"Medalla Colmena",type:"bicho",
        pk:[{n:"Metapod",s:"🐚",t:"bicho",hp:50,atk:20,lv:15,mv:["Fortaleza"]},
            {n:"Kakuna",s:"🐚",t:"bicho",hp:45,atk:25,lv:15,mv:["Fortaleza","Tóxico"]},
            {n:"Scyther",s:"🐛",t:"bicho",hp:70,atk:110,lv:17,mv:["Cuchillada","Hoja afilada","Ataque rápido","Golpe bis"]}]}},
+  {id:"j-ruta34",n:"Ruta 34",i:"🌿",t:"route",s:"Drowzee y Snubbull",cl:"bgr"},
+  {id:"j-goldenrod",n:"Ciudad Trigal",i:"🏙️",t:"town",s:"Gran Tienda y Torre Radio. Equipo curado.",cl:"bgr"},
   {id:"j-whitney",n:"Gimnasio · Whitney",i:"⚔️",t:"gym",s:"Normal · Medalla Normal",cl:"bg",
    gd:{l:"Whitney",badge:"Medalla Normal",type:"normal",
        pk:[{n:"Clefairy",s:"🌟",t:"normal",hp:70,atk:45,lv:18,mv:["Metronomo","Minimizar","Canto","Doble bofetón"]},
            {n:"Miltank",s:"🐄",t:"normal",hp:95,atk:80,lv:20,mv:["Rodillo","Ordeño","Cuerpo a cuerpo","Atracción"]}]}},
+  {id:"j-ruta35",n:"Ruta 35",i:"🌿",t:"route",s:"Nidoran y Psyduck",cl:"bgr"},
+  {id:"j-ruta36",n:"Ruta 36",i:"🌿",t:"route",s:"Nidoran y Growlithe",cl:"bgr"},
   {id:"j-ruins",n:"Ruinas de Alfa",i:"🏛️",t:"cave",s:"Unown misterioso",cl:"bc"},
+  {id:"j-ruta37",n:"Ruta 37",i:"🌿",t:"route",s:"Stantler y Ledyba",cl:"bgr"},
+  {id:"j-ecruteak",n:"Ciudad Iris",i:"🏘️",t:"town",s:"Torre Quemada y Danza de las Bestias. Equipo curado.",cl:"bgr"},
   {id:"j-morty",n:"Gimnasio · Morty",i:"⚔️",t:"gym",s:"Fantasma · Medalla Niebla",cl:"bg",
    gd:{l:"Morty",badge:"Medalla Niebla",type:"fantasma",
        pk:[{n:"Gastly",s:"👻",t:"fantasma",hp:30,atk:35,lv:21,mv:["Lametazo","Maldición","Hipnosis"]},
            {n:"Haunter",s:"💀",t:"fantasma",hp:45,atk:50,lv:21,mv:["Bola sombra","Hipnosis","Maldición"]},
            {n:"Haunter",s:"💀",t:"fantasma",hp:45,atk:50,lv:23,mv:["Bola sombra","Hipnosis","Come sueños"]},
            {n:"Gengar",s:"👾",t:"fantasma",hp:60,atk:65,lv:25,mv:["Bola sombra","Hipnosis","Come sueños","Maldición"]}]}},
-  {id:"j-chuck",n:"Gimnasio · Chuck",i:"⚔️",t:"gym",s:"Lucha · Medalla Tormenta",cl:"bg",
-   gd:{l:"Chuck",badge:"Medalla Tormenta",type:"lucha",
-       pk:[{n:"Primeape",s:"🐒",t:"lucha",hp:65,atk:105,lv:27,mv:["Puño dinámico","Patada baja","Rabia","Foco energía"]},
-           {n:"Poliwrath",s:"💧",t:"lucha",hp:90,atk:95,lv:30,mv:["Surf","Puño dinámico","Hipnosis","Cuerpo a cuerpo"]}]}},
+  {id:"j-ruta38",n:"Ruta 38",i:"🌿",t:"route",s:"Snubbull y Miltank",cl:"bgr"},
+  {id:"j-ruta39",n:"Ruta 39",i:"🌿",t:"route",s:"Rattata y Meowth",cl:"bgr"},
+  {id:"j-olivine",n:"Ciudad Olivino",i:"🏘️",t:"town",s:"Faro y Puerto. Equipo curado.",cl:"bgr"},
   {id:"j-jasmine",n:"Gimnasio · Jasmine",i:"⚔️",t:"gym",s:"Acero · Medalla Mineral",cl:"bg",
    gd:{l:"Jasmine",badge:"Medalla Mineral",type:"acero",
        pk:[{n:"Magnemite",s:"🔩",t:"eléctrico",hp:25,atk:35,lv:30,mv:["Trueno","Sónico","Impactrueno"]},
            {n:"Magnemite",s:"🔩",t:"eléctrico",hp:25,atk:35,lv:30,mv:["Trueno","Sónico","Rayo"]},
            {n:"Steelix",s:"🐍",t:"acero",hp:75,atk:85,lv:35,mv:["Cola férrea","Lanzarrocas","Terremoto","Fortaleza"]}]}},
+  {id:"j-ruta40",n:"Ruta 40",i:"🌿",t:"route",s:"Tentacool y Staryu",cl:"bgr"},
+  {id:"j-ruta41",n:"Ruta 41",i:"🌊",t:"route",s:"Tentacool y Mantine",cl:"bgr"},
+  {id:"j-cianwood",n:"Ciudad Orquídea",i:"🏘️",t:"town",s:"Gimnasio de Lucha. Equipo curado.",cl:"bgr"},
+  {id:"j-chuck",n:"Gimnasio · Chuck",i:"⚔️",t:"gym",s:"Lucha · Medalla Tormenta",cl:"bg",
+   gd:{l:"Chuck",badge:"Medalla Tormenta",type:"lucha",
+       pk:[{n:"Primeape",s:"🐒",t:"lucha",hp:65,atk:105,lv:27,mv:["Puño dinámico","Patada baja","Rabia","Foco energía"]},
+           {n:"Poliwrath",s:"💧",t:"lucha",hp:90,atk:95,lv:30,mv:["Surf","Puño dinámico","Hipnosis","Cuerpo a cuerpo"]}]}},
+  {id:"j-ruta42",n:"Ruta 42",i:"🌿",t:"route",s:"Mankey y Spearow",cl:"bgr"},
+  {id:"j-ruta43",n:"Ruta 43",i:"🌿",t:"route",s:"Pidgeotto y Sentret",cl:"bgr"},
+  {id:"j-lake-of-rage",n:"Lago de la Furia",i:"🌊",t:"route",s:"Magikarp y Gyarados",cl:"bgr"},
+  {id:"j-mahogany",n:"Pueblo Mahogany",i:"🏘️",t:"town",s:"Pueblo del Team Rocket. Equipo curado.",cl:"bgr"},
+  {id:"j-ruta44",n:"Ruta 44",i:"🌿",t:"route",s:"Bellsprout y Weepinbell",cl:"bgr"},
   {id:"j-ice-path",n:"Sendero Hielo",i:"🧊",t:"cave",s:"Swinub y Sneasel",cl:"bc"},
+  {id:"j-blackthorn",n:"Ciudad Endrino",i:"🏘️",t:"town",s:"Gimnasio Dragón. Equipo curado.",cl:"bgr"},
   {id:"j-pryce",n:"Gimnasio · Pryce",i:"⚔️",t:"gym",s:"Hielo · Medalla Glaciar",cl:"bg",
    gd:{l:"Pryce",badge:"Medalla Glaciar",type:"hielo",
        pk:[{n:"Seel",s:"🦭",t:"agua",hp:65,atk:45,lv:27,mv:["Ventisca","Surf","Aurora","Gruñido"]},
@@ -1263,7 +1298,7 @@ function enterNode(ri,ni){
       showShop(ri,ni,function(){nextNode(ri,ni);},"🏡 Equipo curado.");
     }
   }
-  else if(node.t==="route"||node.t==="cave")showRoulette(ri,ni);
+  else if(node.t==="route"||node.t==="cave")startRouteSequence(ri,ni);
   else if(node.t==="gym"){
     const needsTraining=isUnderleveledForGym(node.gd);
     if(needsTraining){
@@ -1436,6 +1471,52 @@ function grantXP(poke,amount){
   if(poke.hp>poke.maxHp)poke.hp=poke.maxHp;
   movesToLearn.forEach(item=>{G.pendingLearnQueue.push(item);});
   return movesToLearn.length>0;
+}
+
+// ── ROUTE SEQUENCE SYSTEM ──────────────────────────────────────────────────
+let _routeState=null;
+function startRouteSequence(ri,ni){
+  const lv=getWildLevel();
+  const tname=TRAINER_NAMES[Math.floor(Math.random()*TRAINER_NAMES.length)];
+  const numTrainerPk=rnd(2,3);
+  const validWild=WILD.filter(w=>canAppearAtLevel(w.n,lv));
+  const pickWild=()=>{const pool=validWild.length>0?validWild:WILD;return pool[Math.floor(Math.random()*pool.length)];};
+  const w1=pickWild(),w2=pickWild();
+  const trainerPk=[];
+  for(let i=0;i<numTrainerPk;i++){
+    const w=pickWild();
+    const plv=Math.max(2,lv+rnd(-1,1));
+    const p=mkPoke(w,plv);p.hp=p.maxHp;p.name=w.n+" ("+tname+")";trainerPk.push(p);
+  }
+  _routeState={ri,ni,step:0,lv,w1,w2,tname,trainerPk};
+  startRouteBattle();
+}
+function startRouteBattle(){
+  if(!_routeState)return;
+  const s=_routeState,lv=s.lv;
+  if(s.step===0){
+    const e=mkPoke(s.w1,lv);e.hp=e.maxHp;
+    G.battle={e,ri:s.ri,ni:s.ni,type:"wild",canCatch:true,queue:[],_routeSeq:true};
+    ss("battle");initBattle("¡Un "+s.w1.n+" salvaje Nv."+lv+" apareció! (1/3)");
+  }else if(s.step===1){
+    const e=mkPoke(s.w2,lv);e.hp=e.maxHp;
+    G.battle={e,ri:s.ri,ni:s.ni,type:"wild",canCatch:true,queue:[],_routeSeq:true};
+    ss("battle");initBattle("¡Un "+s.w2.n+" salvaje Nv."+lv+" apareció! (2/3)");
+  }else{
+    const queue=s.trainerPk.slice(1);
+    const e=s.trainerPk[0];
+    G.battle={e,ri:s.ri,ni:s.ni,type:"trainer",canCatch:false,queue,_routeSeq:true};
+    ss("battle");initBattle("¡Entrenador "+s.tname+" quiere combatir! Tiene "+s.trainerPk.length+" Pokémon. (3/3)");
+  }
+}
+function advanceRouteSequence(){
+  if(!_routeState)return;
+  _routeState.step++;
+  if(_routeState.step>=3){
+    _routeState=null;
+    return false;
+  }
+  return true;
 }
 
 const RSEG=[
@@ -1720,6 +1801,7 @@ function endBattle(result){
   const b=G.battle,ri=b.ri,ni=b.ni;
   const isTraining=b._training===true;
   const gymNode=b._gymNode;
+  const isRouteSeq=b._routeSeq===true;
   
   if(result==="win"){
     const isGym=b.type==="gym",isLeague=b.type==="league";
@@ -1744,6 +1826,9 @@ function endBattle(result){
     saveGame();
     if(isTraining&&gymNode){
       showGymTraining(gymNode,ri,ni);
+    }else if(isRouteSeq){
+      if(advanceRouteSequence())startRouteBattle();
+      else showShop(ri,ni,function(){nextNode(ri,ni);},"✨ ¡Ruta completada! +" + reward + " monedas.");
     }else{
       showShop(ri,ni,function(){nextNode(ri,ni);},"✨ ¡Victoria! +" + reward + " monedas." + extraMsg);
     }
@@ -1760,6 +1845,9 @@ function endBattle(result){
     const catchMsg=wentToPC?"¡"+_catchName+" fue enviado a la PC!":"¡"+_catchName+" se unió a tu equipo!";
     if(isTraining&&gymNode){
       showGymTraining(gymNode,ri,ni);
+    }else if(isRouteSeq){
+      if(advanceRouteSequence())startRouteBattle();
+      else showShop(ri,ni,function(){nextNode(ri,ni);},"✨ ¡Ruta completada!");
     }else{
       showResult(_catchS,"¡Capturado!",catchMsg,ri,ni,false);
       setTimeout(()=>loadSpriteForResult(_catchName,_catchS),100);
@@ -1769,6 +1857,9 @@ function endBattle(result){
     saveGame();
     if(isTraining&&gymNode){
       showGymTraining(gymNode,ri,ni);
+    }else if(isRouteSeq){
+      if(advanceRouteSequence())startRouteBattle();
+      else{ss("world");renderWorld();}
     }else{
       ss("world");renderWorld();
     }
