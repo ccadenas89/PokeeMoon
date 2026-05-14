@@ -1307,7 +1307,7 @@ function renderMap(){
     el.className="rnode"+(done?" done":isCur?" current":locked?" locked":"");
     const showSub=f.node.t!=="route"&&f.node.t!=="cave";
     const stats=(f.node.t==="route"||f.node.t==="cave")?G.routeStats[f.node.id]||{wild:0,trainer:0}:null;
-    const counterLine=stats?`<div class="ns">${f.node.s} · Salvajes ${stats.wild}/2 · Entrenador ${stats.trainer}/1</div>`:`${showSub?`<div class="ns">${f.node.s}</div>`:""}`;
+    const counterLine=stats?`<div class="ns">Salvajes ${stats.wild}/2 · Entrenador ${stats.trainer}/1</div>`:`${showSub?`<div class="ns">${f.node.s}</div>`:""}`;
     el.innerHTML=`<div class="ni">${f.node.i}</div><div class="nd"><div class="nn">${f.node.n}${isCur?" ◀":""}</div>${counterLine}</div><span class="nb ${f.node.cl}">${f.node.t}</span>`;
     if(isCur)el.onclick=()=>enterNode(f.ri,f.ni);
     m.appendChild(el);
@@ -1339,7 +1339,6 @@ function wTab(t){
 function enterNode(ri,ni){
   const node=WORLD[ri].nodes[ni];
   if(node.t==="town"){
-    healTeam();
     if(node.id==="paleta"&&!G._paletaGiftReceived&&Math.random()<0.5){
       G._paletaGiftReceived=true;
       const otherPoke=BASE_POKEMON.filter(p=>p.n!==G.team[0].name);
@@ -1353,7 +1352,7 @@ function enterNode(ri,ni){
       showGiftScreen(giftData,ri,ni);
     } else{
       saveGame();
-      showShop(ri,ni,function(){nextNode(ri,ni);},"🏡 Equipo curado.");
+      showShop(ri,ni,function(){nextNode(ri,ni);},"🏡 Pueblo.");
     }
   }
   else if(node.t==="route"||node.t==="cave"){
