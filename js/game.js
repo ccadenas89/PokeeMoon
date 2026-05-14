@@ -1247,24 +1247,47 @@ function playThemeMusic(){
 function stopMusic(){
   const intro = document.getElementById("bg-music-intro");
   const theme = document.getElementById("bg-music-theme");
-  if(!intro || !theme) return;
+  const battle = document.getElementById("bg-music-battle");
+  if(!intro || !theme || !battle) return;
   intro.pause();
   intro.currentTime = 0;
   theme.pause();
   theme.currentTime = 0;
+  battle.pause();
+  battle.currentTime = 0;
   updateMusicButton(false);
+}
+
+function playBattleMusic(){
+  const intro = document.getElementById("bg-music-intro");
+  const theme = document.getElementById("bg-music-theme");
+  const battle = document.getElementById("bg-music-battle");
+  if(!intro || !theme || !battle) return;
+  intro.pause();
+  intro.currentTime = 0;
+  theme.pause();
+  theme.currentTime = 0;
+  battle.volume = 0.18;
+  const playPromise = battle.play();
+  if(playPromise && playPromise.catch){
+    playPromise.catch(()=>{});
+  }
+  updateMusicButton(true);
 }
 
 function toggleMusic(){
   const intro = document.getElementById("bg-music-intro");
   const theme = document.getElementById("bg-music-theme");
-  if(!intro || !theme) return;
-  const isPlaying = !intro.paused || !theme.paused;
+  const battle = document.getElementById("bg-music-battle");
+  if(!intro || !theme || !battle) return;
+  const isPlaying = !intro.paused || !theme.paused || !battle.paused;
   if(isPlaying){
     stopMusic();
   } else {
     if(document.getElementById("s-intro").classList.contains("active")){
       playIntroMusic();
+    } else if(document.getElementById("s-battle").classList.contains("active")){
+      playBattleMusic();
     } else {
       playThemeMusic();
     }
@@ -1845,6 +1868,7 @@ function itemContinue(){
 }
 function initBattle(msg){
   Screens.render("battle",renderBattleScreen());
+  playBattleMusic();
   setBattleLock(false);
   document.getElementById("lvup-banner").style.display="none";
   Screens.show("battle");
