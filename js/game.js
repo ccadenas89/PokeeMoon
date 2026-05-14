@@ -1114,6 +1114,7 @@ let G={
        caramelo_exp:0,caramelo_raro:0,caramelo_gordo:0,caramelo_maximo:0,
        tm_hiperrayo:0,tm_esfera:0},
   money:500,badges:0,wi:0,ni:0,shakes:0,
+  routeStats:{},
   battle:null,pendingLearnQueue:[],
   _itemRi:null,_itemNi:null,_pendingGym:null,
   _paletaGiftReceived:false,
@@ -1147,6 +1148,7 @@ function saveGame(){
     wi:G.wi,
     ni:G.ni,
     _paletaGiftReceived:G._paletaGiftReceived,
+    routeStats:G.routeStats,
     caught:Array.from(G.caught),
     timestamp:Date.now()
   };
@@ -1167,6 +1169,7 @@ function loadGame(){
     G.wi=data.wi||0;
     G.ni=data.ni||0;
     G._paletaGiftReceived=data._paletaGiftReceived||false;
+    G.routeStats=data.routeStats||{};
     if(data.caught)G.caught=new Set(data.caught);
     return true;
   }catch(e){return false;}
@@ -1303,7 +1306,9 @@ function renderMap(){
     const el=document.createElement("div");
     el.className="rnode"+(done?" done":isCur?" current":locked?" locked":"");
     const showSub=f.node.t!=="route"&&f.node.t!=="cave";
-    el.innerHTML=`<div class="ni">${f.node.i}</div><div class="nd"><div class="nn">${f.node.n}${isCur?" ◀":""}</div>${showSub?`<div class="ns">${f.node.s}</div>`:""}</div><span class="nb ${f.node.cl}">${f.node.t}</span>`;
+    const stats=(f.node.t==="route"||f.node.t==="cave")?G.routeStats[f.node.id]||{wild:0,trainer:0}:null;
+    const counterLine=stats?`<div class="ns">${f.node.s} · Salvajes ${stats.wild} · Entrenador ${stats.trainer}</div>`:`${showSub?`<div class="ns">${f.node.s}</div>`:""}`;
+    el.innerHTML=`<div class="ni">${f.node.i}</div><div class="nd"><div class="nn">${f.node.n}${isCur?" ◀":""}</div>${counterLine}</div><span class="nb ${f.node.cl}">${f.node.t}</span>`;
     if(isCur)el.onclick=()=>enterNode(f.ri,f.ni);
     m.appendChild(el);
     if(vi<visible.length-1){const c=document.createElement("div");c.className="conn";m.appendChild(c);}
@@ -1312,6 +1317,14 @@ function renderMap(){
   prog.style.cssText="font-size:11px;color:var(--color-text-secondary);text-align:center;padding:8px 0 2px;";
   prog.textContent=`Nodo ${cur+1} de ${flat.length}`;
   m.appendChild(prog);
+}
+
+function addRouteBattleCount(ri,ni,type){
+  const node=WORLD[ri].nodes[ni];
+  if(!node||!(node.t==="route"||node.t==="cave"))return;
+  const stats=G.routeStats[node.id]||(G.routeStats[node.id]={wild:0,trainer:0});
+  if(type==="trainer")stats.trainer++;
+  else stats.wild++;
 }
 
 function wTab(t){
@@ -1343,7 +1356,10 @@ function enterNode(ri,ni){
       showShop(ri,ni,function(){nextNode(ri,ni);},"🏡 Equipo curado.");
     }
   }
-  else if(node.t==="route"||node.t==="cave")startRouteSequence(ri,ni);
+  else if(node.t==="route"||node.t==="cave"){
+    if(_routeState&&_routeState.ri===ri&&_routeState.ni===ni)startRouteBattle();
+    else startRouteSequence(ri,ni);
+  }
   else if(node.t==="gym"){
     const needsTraining=isUnderleveledForGym(node.gd);
     if(needsTraining){
@@ -1904,16 +1920,19 @@ function endBattle(result){
     const banner=document.getElementById("lvup-banner");
     banner.textContent="¡"+G.team.map(p=>p.name+" Nv."+p.level).join(" · ")+"!";
     banner.style.display="block";
+    addRouteBattleCount(b.ri,b.ni,b.type);
     saveGame();
     if(isTraining&&gymNode){
       showGymTraining(gymNode,ri,ni);
     }else if(isRouteSeq){
-      if(advanceRouteSequence())startRouteBattle();
-      else showShop(ri,ni,function(){nextNode(ri,ni);},"✨ ¡Ruta completada! +" + reward + " monedas.");
+      if(advanceRouteSequence()){
+        ss("world");renderWorld();
+      }else showShop(ri,ni,function(){nextNode(ri,ni);},"✨ ¡Ruta completada! +" + reward + " monedas.");
     }else{
       showShop(ri,ni,function(){nextNode(ri,ni);},"✨ ¡Victoria! +" + reward + " monedas." + extraMsg);
     }
   }else if(result==="catch"){
+    addRouteBattleCount(b.ri,b.ni,b.type);
     const caughtPoke={...b.e,hp:b.e.hp,moves:[...b.e.moves]};
     let wentToPC=false;
     if(G.team.length<6)G.team.push(caughtPoke);
@@ -1927,20 +1946,23 @@ function endBattle(result){
     if(isTraining&&gymNode){
       showGymTraining(gymNode,ri,ni);
     }else if(isRouteSeq){
-      if(advanceRouteSequence())startRouteBattle();
-      else showShop(ri,ni,function(){nextNode(ri,ni);},"✨ ¡Ruta completada!");
+      if(advanceRouteSequence()){
+        ss("world");renderWorld();
+      }else showShop(ri,ni,function(){nextNode(ri,ni);},"✨ ¡Ruta completada!");
     }else{
       showResult(_catchS,"¡Capturado!",catchMsg,ri,ni,false);
       setTimeout(()=>loadSpriteForResult(_catchName,_catchS),100);
     }
   }else if(result==="run"){
+    addRouteBattleCount(b.ri,b.ni,b.type);
     healTeam();
     saveGame();
     if(isTraining&&gymNode){
       showGymTraining(gymNode,ri,ni);
     }else if(isRouteSeq){
-      if(advanceRouteSequence())startRouteBattle();
-      else{ss("world");renderWorld();}
+      if(advanceRouteSequence()){
+        ss("world");renderWorld();
+      }else{ss("world");renderWorld();}
     }else{
       ss("world");renderWorld();
     }
