@@ -1209,6 +1209,75 @@ function checkIntroSave(){
   }
 }
 
+let _musicContext=null;
+let _musicOsc=null;
+let _musicGain=null;
+let _musicTimer=null;
+let _musicNoteIndex=0;
+const _musicNotes=[
+  261.63, 0, 261.63, 0, 329.63, 0, 392.00, 0,
+  392.00, 0, 329.63, 0, 293.66, 0, 261.63, 0,
+  392.00, 0, 392.00, 0, 349.23, 0, 329.63, 0,
+  293.66, 0, 329.63, 0, 261.63, 0, 0, 0
+];
+
+function updateMusicButton(on){
+  const btn=document.getElementById("music-toggle");
+  if(!btn)return;
+  btn.textContent = on ? "🔊 Música on" : "🔇 Música off";
+}
+
+function createMusic(){
+  if(_musicContext) return;
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if(!AudioContext) return;
+  _musicContext = new AudioContext();
+  _musicGain = _musicContext.createGain();
+  _musicGain.gain.value = 0.12;
+  _musicGain.connect(_musicContext.destination);
+}
+
+function playMusic(){
+  if(!_musicContext) createMusic();
+  if(!_musicContext) return;
+  if(_musicContext.state === "suspended") _musicContext.resume();
+  if(_musicTimer) return;
+  _musicOsc = _musicContext.createOscillator();
+  _musicOsc.type = "triangle";
+  _musicOsc.connect(_musicGain);
+  _musicOsc.start();
+  _musicNoteIndex = 0;
+  _musicTimer = setInterval(() => {
+    const note = _musicNotes[_musicNoteIndex++];
+    if(_musicNoteIndex >= _musicNotes.length) _musicNoteIndex = 0;
+    if(note === 0) {
+      _musicGain.gain.setTargetAtTime(0, _musicContext.currentTime, 0.05);
+    } else {
+      _musicOsc.frequency.setTargetAtTime(note, _musicContext.currentTime, 0.02);
+      _musicGain.gain.setTargetAtTime(0.12, _musicContext.currentTime, 0.02);
+    }
+  }, 450);
+  updateMusicButton(true);
+}
+
+function stopMusic(){
+  if(_musicTimer){
+    clearInterval(_musicTimer);
+    _musicTimer = null;
+  }
+  if(_musicOsc){
+    try{_musicOsc.stop();}catch(e){}
+    _musicOsc.disconnect();
+    _musicOsc = null;
+  }
+  updateMusicButton(false);
+}
+
+function toggleMusic(){
+  if(_musicTimer) stopMusic();
+  else playMusic();
+}
+
 function startNewGame(){
   const menu=document.getElementById("intro-menu");
   const pokeball=document.getElementById("intro-pokeball");
