@@ -89,9 +89,9 @@ button{cursor:pointer}
 .pb-btn{width:26px;height:26px;border-radius:50%;background:#f0f0f0;border:4px solid #2C2C2A;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
 .pb-bot{width:110px;height:55px;background:#f0f0f0;border-radius:0 0 55px 55px;border:3px solid #2C2C2A;border-top:none}
 .pokeball.shaking{animation:pbshake 0.45s ease-in-out}
-.pokeball.opening .pb-top{animation:pbtop 0.5s ease forwards}
+.pokeball.opening img{animation:pbopen 0.5s ease forwards}
 @keyframes pbshake{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg)}75%{transform:rotate(10deg)}}
-@keyframes pbtop{to{transform:translateY(-38px) rotate(-25deg);opacity:0}}
+@keyframes pbopen{to{opacity:0;transform:scale(0.7)}}
 @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .fadeup{animation:fadeup 0.5s ease forwards}
 .roulette-wrap{text-align:center;padding:1rem}
