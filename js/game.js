@@ -1216,6 +1216,27 @@ function updateMusicButton(on){
   btn.textContent = on ? "🔊 Música on" : "🔇 Música off";
 }
 
+let _musicUnlocked=false;
+
+function _onFirstInteraction(){
+  if(_musicUnlocked)return;
+  _musicUnlocked=true;
+  if(document.getElementById("s-intro").classList.contains("active")){
+    playIntroMusic();
+  }else if(document.getElementById("s-battle").classList.contains("active")){
+    playBattleMusic();
+  }else{
+    playThemeMusic();
+  }
+}
+
+function _setupFirstInteraction(){
+  if(_musicUnlocked)return;
+  document.addEventListener("click",_onFirstInteraction,{once:true});
+  document.addEventListener("touchstart",_onFirstInteraction,{once:true});
+  document.addEventListener("keydown",_onFirstInteraction,{once:true});
+}
+
 function playIntroMusic(){
   const intro = document.getElementById("bg-music-intro");
   const theme = document.getElementById("bg-music-theme");
@@ -1224,10 +1245,15 @@ function playIntroMusic(){
   theme.pause();
   theme.currentTime = 0;
   const playPromise = intro.play();
-  if(playPromise && playPromise.catch){
-    playPromise.catch(()=>{});
+  if(playPromise && playPromise.then && playPromise.catch){
+    playPromise.then(()=>{
+      _musicUnlocked=true;
+      updateMusicButton(true);
+    }).catch(()=>{
+      updateMusicButton(false);
+      _setupFirstInteraction();
+    });
   }
-  updateMusicButton(true);
 }
 
 function playThemeMusic(){
@@ -1241,10 +1267,15 @@ function playThemeMusic(){
   battle.currentTime = 0;
   theme.volume = 0.18;
   const playPromise = theme.play();
-  if(playPromise && playPromise.catch){
-    playPromise.catch(()=>{});
+  if(playPromise && playPromise.then && playPromise.catch){
+    playPromise.then(()=>{
+      _musicUnlocked=true;
+      updateMusicButton(true);
+    }).catch(()=>{
+      updateMusicButton(false);
+      _setupFirstInteraction();
+    });
   }
-  updateMusicButton(true);
 }
 
 function stopMusic(){
@@ -1272,10 +1303,15 @@ function playBattleMusic(){
   theme.currentTime = 0;
   battle.volume = 0.18;
   const playPromise = battle.play();
-  if(playPromise && playPromise.catch){
-    playPromise.catch(()=>{});
+  if(playPromise && playPromise.then && playPromise.catch){
+    playPromise.then(()=>{
+      _musicUnlocked=true;
+      updateMusicButton(true);
+    }).catch(()=>{
+      updateMusicButton(false);
+      _setupFirstInteraction();
+    });
   }
-  updateMusicButton(true);
 }
 
 function toggleMusic(){
