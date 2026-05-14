@@ -123,6 +123,13 @@ function getMovesAtLevel(pokeName, level){
   return available.length>0?available:["Placaje"];
 }
 
+function getMovesOnlyAtLevel(pokeName, level){
+  const data=POKEMON_MOVES_LEVELS[pokeName];
+  if(!data)return[];
+  const moves=data.moves[level];
+  return moves?moves.filter(m=>m):[];
+}
+
 function getRandomMovesForLevel(pokeName, level, maxMoves){
   const available=getMovesAtLevel(pokeName, level);
   if(available.length<=maxMoves)return[...available];

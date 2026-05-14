@@ -1021,9 +1021,54 @@ const MOVE_POWER={
   "Cabeza de roca":150,"Doble filo":120,"Aguante":0,
 };
 
+const MOVE_ACCURACY={
+  // Most moves have 1.0 accuracy
+  // Powerful moves have slightly lower
+  "Hiperrayo":0.9,"Llamarada":0.85,"Hidrobomba":0.85,"Trueno":0.7,"Erupción":0.85,
+  "Vendaval":0.85,"Ventisca":0.7,"Rayo solar":0.75,"Esfera Aural":0.9,"Fantasma de dragón":1.0,
+  "Pulso dragón":0.85,"Garra dragón":0.8,"Terremoto":1.0,"Cola férrea":0.85,"Puño dinámico":1.0,
+  "Voltio cruel":0.9,"Fisura":0.3,"Manzanada":0.9,"Baxcalibur":0.9,
+  "Lanzallamas":0.85,"Surf":1.0,"Rayo":0.9,"Catarata":0.8,"Fuego sagrado":0.95,
+  "Rueda fuego":0.85,"Patada ígnea":0.9,"Incineración":1.0,"Combustión":0.85,
+  "Energibola":1.0,"Hoja afilada":0.95,"Rayo burbuja":1.0,"Chispazo":0.95,
+  "Impactrueno":0.95,"Ondavatio":0.9,"Canto de roca":0.8,"Lanzarrocas":0.9,"Avalancha":0.9,
+  "Cuerpo a cuerpo":1.0,"Demolición":1.0,"Machazo":1.0,"Cabezazo":1.0,"Hiper voz":1.0,
+  "Doble filo":1.0,"Pisotón":1.0,"Velocidad extrema":1.0,"Ataque rápido":1.0,
+  "Bola sombra":1.0,"Golpe fantasma":1.0,"Sombra bola":1.0,"Pulso oscuro":1.0,
+  "Tajo umbrío":0.95,"Aura oscura":1.0,"Mordisco":1.0,"Triturar":1.0,"Tajo brutal":0.95,
+  "Psíquico":1.0,"Psicocarga":1.0,"Psico corte":1.0,"Impacto fuerza":1.0,
+  "Golpe bis":0.75,"Patada baja":1.0,"Golpe kárate":1.0,"Golpe bajo":1.0,
+  "Colmillo venenoso":1.0,"Bomba ácida":1.0,"Bomba lodo":0.85,"Tóxico":0.9,
+  "Picadura":0.95,"Aguijón":1.0,"Polvo veneno":0.75,"Polvo tóxico":0.75,"Destructor":1.0,
+  "Ataque ala":1.0,"Aire cortante":0.95,"Acrobacia":1.0,"Acróbata":1.0,"Vendaval":1.0,
+  "Excavar":1.0,"Cavar":1.0,"Remolino arena":0.7,"Hundimiento":0.85,
+  "Carámbano":1.0,"Rayo hielo":1.0,"Cañón hielo":1.0,"Puño hielo":1.0,"Polvo hielo":1.0,
+  "Cuchillada":0.95,"X-Tijera":1.0,"Zumbido":0.95,"Zunzún":1.0,
+  "Ascuas":1.0,"Pirotecnia":1.0,"Puño fuego":1.0,"Brazo banda":1.0,
+  "Pistola agua":1.0,"Acua jet":1.0,"Burbuja":1.0,"Buceo":1.0,
+  "Cola dragón":0.9,"Furia dragón":1.0,"Látigo dragón":1.0,
+  "Voz cautivadora":1.0,"Beso drenante":0.75,"Fuerza lunar":1.0,"Cambia fuerza":1.0,
+  "Pico taladrante":1.0,"Tornado":0.7,"Pedrada":0.9,"Pedrisco":0.7,"Colmillo de roca":0.9,
+  "Roca afilada":0.95,"Cola de acero":0.85,"Giro bola":0.95,"Bayoneta":0.95,"Bola ferro":0.95,
+  "Látigo cepa":1.0,"Drenadoras":1.0,"Megaagotar":0.9,"Síntesis":1.0,"Drenadoras":1.0,
+  "Placaje":1.0,"Rasguño":1.0,"Finta":1.0,"Libra":1.0,"Arañazo":1.0,"Burla":1.0,
+  "Matraca":0.85,"Impacto":1.0,"Represalia":1.0,"Vinculo":0.75,"Tamborrada":0.9,
+  "Carga zen":0.9,"Psicoimpulso":1.0,"Señuelo":1.0,"Recuperación":1.0,"Amnesia":1.0,
+  "Maldición":1.0,"Hipnosis":0.6,"Infortunio":1.0,"Tinieblas":1.0,"Languidez":0.75,"Asombro":1.0,
+  "Canto":0.55,"Vozarrón":1.0,"Bostezo":1.0,"Seda pegajosa":0.95,"Paralizador":0.95,
+  "Danza dragón":1.0,"Maquinación":1.0,"Aceleración":1.0,"Encanto":1.0,"Neblina":1.0,"Celo":1.0,
+  "Danza amiga":1.0,"Acoso":1.0,"Embargo":1.0,"Lengüetazo":1.0,"Fortaleza":1.0,
+  "Defensa roca":1.0,"Teletransporte":1.0,"Defensa metálica":1.0,"Cuerpo metálico":1.0,
+  "Cabeza de roca":0.5,"Doble filo":1.0,"Aguante":1.0,
+};
+
 function getMovePower(moveName){
   const p=MOVE_POWER[moveName];
   return(p!==undefined&&p>0)?p:50; // default 50 for unknown/status moves
+}
+
+function getMoveAccuracy(moveName){
+  return MOVE_ACCURACY[moveName]!==undefined?MOVE_ACCURACY[moveName]:1.0; // default 100% for unknown moves
 }
 
 function getMoveType(moveName){
@@ -1212,7 +1257,7 @@ function mkPoke(d,lv){
   const moves=getRandomMovesForLevel(pokeName, lv, maxMoves);
   return{name:pokeName,s:d.s||"❓",type:d.t||d.type||"normal",
     level:lv,maxHp:Math.floor(bH*lv/8+lv/2+5),hp:0,atk:Math.floor(bA*lv/5+5),
-    moves:moves,baseHp:bH,baseAtk:bA};
+    moves:moves,baseHp:bH,baseAtk:bA,offeredMoves:[]};
 }
 
 function ss(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById("s-"+id).classList.add("active");}
@@ -1424,32 +1469,55 @@ function processLearnQueue(cb){
 function showLearnScreen(item,cb){
   Screens.render("learn",renderLearnScreen());
   const moveToLearn=item.move;
-  document.getElementById("learn-title").textContent=item.poke.name+" puede aprender "+moveToLearn+" (Nv."+item.level+")";
-  document.getElementById("learn-sub").textContent="¿Quieres que aprenda este movimiento?";
+  const poke=item.poke;
+  document.getElementById("learn-title").textContent=poke.name+" puede aprender "+moveToLearn+" (Nv."+item.level+")";
   const opts=document.getElementById("learn-opts");
-  opts.innerHTML=`
-    <div class="rnode" onclick="learnMove('${moveToLearn}')" data-mv="${moveToLearn}" data-poke="${item.poke.name}">
-      <div class="nd"><div class="nn">${moveToLearn}</div><div class="ns">Aprender movimiento</div></div>
-    </div>
-    <button onclick="skipLearn()" style="margin-top:8px">No aprender</button>
-  `;
+  if(poke.moves.length<4){
+    document.getElementById("learn-sub").textContent="¿Quieres que aprenda este movimiento?";
+    opts.innerHTML=`
+      <div class="rnode" onclick="learnMove('${moveToLearn}',-1)" data-mv="${moveToLearn}" data-poke="${poke.name}">
+        <div class="nd"><div class="nn">${moveToLearn}</div><div class="ns">Aprender movimiento</div></div>
+      </div>
+      <button onclick="skipLearn()" style="margin-top:8px">No aprender</button>
+    `;
+  }else{
+    document.getElementById("learn-sub").textContent="Ya tiene 4 movimientos. Elige cuál reemplazar:";
+    let html="";
+    poke.moves.forEach((mv,i)=>{
+      html+=`<div class="rnode" onclick="learnMove('${moveToLearn}',${i})" data-mv="${mv}">
+        <div class="nd"><div class="nn">${mv}</div><div class="ns">Reemplazar por ${moveToLearn}</div></div>
+      </div>`;
+    });
+    html+=`<button onclick="skipLearn()" style="margin-top:8px">No aprender</button>`;
+    opts.innerHTML=html;
+  }
   G._learnCb=cb;Screens.show("learn");
 }
 
-function learnMove(mv){
-  const pokeName=G.pendingLearnQueue[0]?.poke?.name;
-  const poke=G.team.find(p=>p.name===pokeName);
+function learnMove(mv,replaceIdx){
+  const item=G.pendingLearnQueue[0];
+  if(!item)return;
+  const poke=G.team.find(p=>p.name===item.poke.name);
   if(poke){
-    if(poke.moves.length<4){
+    if(replaceIdx>=0&&replaceIdx<poke.moves.length){
+      poke.moves[replaceIdx]=mv;
+    }else if(poke.moves.length<4){
       poke.moves.push(mv);
-    }else{
-      poke.moves[Math.floor(Math.random()*4)]=mv;
     }
+    if(!poke.offeredMoves)poke.offeredMoves=[];
+    poke.offeredMoves.push(item.move);
   }
   G.pendingLearnQueue.shift();
   const cb=G._learnCb;G._learnCb=null;if(cb)cb();
 }
 function skipLearn(){
+  const item=G.pendingLearnQueue[0];
+  if(!item)return;
+  const poke=G.team.find(p=>p.name===item.poke.name);
+  if(poke){
+    if(!poke.offeredMoves)poke.offeredMoves=[];
+    poke.offeredMoves.push(item.move);
+  }
   G.pendingLearnQueue.shift();
   const cb=G._learnCb;G._learnCb=null;if(cb)cb();
 }
@@ -1458,9 +1526,10 @@ function grantXP(poke,amount){
   const newLv=Math.min(100,poke.level+amount);
   const movesToLearn=[];
   for(let lv=poke.level+1;lv<=newLv;lv++){
-    const available=getMovesAtLevel(poke.name, lv);
-    for(const move of available){
-      if(!poke.moves.includes(move)){
+    const available=getMovesOnlyAtLevel(poke.name, lv);
+    if(available.length>0){
+      const move=available[Math.floor(Math.random()*available.length)];
+      if(!poke.moves.includes(move)&&!poke.offeredMoves?.includes(move)&&!movesToLearn.some(m=>m.move===move)){
         movesToLearn.push({poke,move,level:lv});
       }
     }
@@ -1681,6 +1750,12 @@ function useMove(i){
   setBattleLock(true);
   const b=G.battle,player=G.team.find(p=>p.hp>0);
   const moveName=player.moves[i];
+  if(Math.random() > getMoveAccuracy(moveName)){
+    document.getElementById("blog").textContent=player.name+" usa "+moveName+"... ¡Pero falló!";
+    renderBattle();
+    setTimeout(enemyTurn,850);
+    return;
+  }
   const {dmg,typeMultiplier}=calcDamage(player,moveName,b.e);
   b.e.hp=Math.max(0,b.e.hp-dmg);
   const effMsg=typeEffectMsg(typeMultiplier);
@@ -1697,6 +1772,12 @@ function enemyTurn(){
   const b=G.battle,player=G.team.find(p=>p.hp>0);
   if(!player){endBattle("lose");return;}
   const mv=b.e.moves?b.e.moves[Math.floor(Math.random()*b.e.moves.length)]:"Ataque";
+  if(Math.random() > getMoveAccuracy(mv)){
+    document.getElementById("blog").textContent=b.e.name+" usa "+mv+"... ¡Pero falló!";
+    renderBattle();
+    setBattleLock(false);
+    return;
+  }
   const {dmg,typeMultiplier}=calcDamage(b.e,mv,player);
   player.hp=Math.max(0,player.hp-dmg);
   const effMsg=typeEffectMsg(typeMultiplier);
