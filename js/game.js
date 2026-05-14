@@ -1307,7 +1307,7 @@ function renderMap(){
     el.className="rnode"+(done?" done":isCur?" current":locked?" locked":"");
     const showSub=f.node.t!=="route"&&f.node.t!=="cave";
     const stats=(f.node.t==="route"||f.node.t==="cave")?G.routeStats[f.node.id]||{wild:0,trainer:0}:null;
-    const counterLine=stats?`<div class="ns">${f.node.s} · Salvajes ${stats.wild} · Entrenador ${stats.trainer}</div>`:`${showSub?`<div class="ns">${f.node.s}</div>`:""}`;
+    const counterLine=stats?`<div class="ns">${f.node.s} · Salvajes ${stats.wild}/2 · Entrenador ${stats.trainer}/1</div>`:`${showSub?`<div class="ns">${f.node.s}</div>`:""}`;
     el.innerHTML=`<div class="ni">${f.node.i}</div><div class="nd"><div class="nn">${f.node.n}${isCur?" ◀":""}</div>${counterLine}</div><span class="nb ${f.node.cl}">${f.node.t}</span>`;
     if(isCur)el.onclick=()=>enterNode(f.ri,f.ni);
     m.appendChild(el);
@@ -1565,7 +1565,11 @@ function startRouteSequence(ri,ni){
   const tname=TRAINER_NAMES[Math.floor(Math.random()*TRAINER_NAMES.length)];
   const numTrainerPk=rnd(2,3);
   const validWild=WILD.filter(w=>canAppearAtLevel(w.n,lv));
-  const pickWild=()=>{const pool=validWild.length>0?validWild:WILD;return pool[Math.floor(Math.random()*pool.length)];};
+  const pickWild=()=>{
+    const pool=validWild.length>0?validWild:WILD.filter(w=>canAppearAtLevel(w.n,lv));
+    if(pool.length===0)return WILD[0];
+    return pool[Math.floor(Math.random()*pool.length)];
+  };
   const w1=pickWild(),w2=pickWild();
   const trainerPk=[];
   for(let i=0;i<numTrainerPk;i++){
