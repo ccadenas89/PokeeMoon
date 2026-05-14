@@ -1233,9 +1233,12 @@ function playIntroMusic(){
 function playThemeMusic(){
   const intro = document.getElementById("bg-music-intro");
   const theme = document.getElementById("bg-music-theme");
-  if(!intro || !theme) return;
+  const battle = document.getElementById("bg-music-battle");
+  if(!intro || !theme || !battle) return;
   intro.pause();
   intro.currentTime = 0;
+  battle.pause();
+  battle.currentTime = 0;
   theme.volume = 0.18;
   const playPromise = theme.play();
   if(playPromise && playPromise.catch){
