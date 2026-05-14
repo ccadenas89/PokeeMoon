@@ -2050,7 +2050,7 @@ function endBattle(result){
   const isTraining=b._training===true;
   const gymNode=b._gymNode;
   const isRouteSeq=b._routeSeq===true;
-  
+  if(result!=="lose") playThemeMusic();
   if(result==="win"){
     const isGym=b.type==="gym",isLeague=b.type==="league";
     let xpGain=1,reward=b.e.level*6+30,extraMsg="";
