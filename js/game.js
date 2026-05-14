@@ -1186,6 +1186,7 @@ function deleteSave(){
 function continueGame(){
   if(loadGame()){
     loadPokedex();
+    playThemeMusic();
     ss("world");renderWorld();
   }
 }
@@ -1215,11 +1216,28 @@ function updateMusicButton(on){
   btn.textContent = on ? "🔊 Música on" : "🔇 Música off";
 }
 
-function playMusic(){
-  const audio = document.getElementById("bg-music");
-  if(!audio) return;
-  audio.volume = 0.18;
-  const playPromise = audio.play();
+function playIntroMusic(){
+  const intro = document.getElementById("bg-music-intro");
+  const theme = document.getElementById("bg-music-theme");
+  if(!intro || !theme) return;
+  intro.volume = 0.18;
+  theme.pause();
+  theme.currentTime = 0;
+  const playPromise = intro.play();
+  if(playPromise && playPromise.catch){
+    playPromise.catch(()=>{});
+  }
+  updateMusicButton(true);
+}
+
+function playThemeMusic(){
+  const intro = document.getElementById("bg-music-intro");
+  const theme = document.getElementById("bg-music-theme");
+  if(!intro || !theme) return;
+  intro.pause();
+  intro.currentTime = 0;
+  theme.volume = 0.18;
+  const playPromise = theme.play();
   if(playPromise && playPromise.catch){
     playPromise.catch(()=>{});
   }
@@ -1227,20 +1245,29 @@ function playMusic(){
 }
 
 function stopMusic(){
-  const audio = document.getElementById("bg-music");
-  if(!audio) return;
-  audio.pause();
-  audio.currentTime = 0;
+  const intro = document.getElementById("bg-music-intro");
+  const theme = document.getElementById("bg-music-theme");
+  if(!intro || !theme) return;
+  intro.pause();
+  intro.currentTime = 0;
+  theme.pause();
+  theme.currentTime = 0;
   updateMusicButton(false);
 }
 
 function toggleMusic(){
-  const audio = document.getElementById("bg-music");
-  if(!audio) return;
-  if(audio.paused){
-    playMusic();
-  } else {
+  const intro = document.getElementById("bg-music-intro");
+  const theme = document.getElementById("bg-music-theme");
+  if(!intro || !theme) return;
+  const isPlaying = !intro.paused || !theme.paused;
+  if(isPlaying){
     stopMusic();
+  } else {
+    if(document.getElementById("s-intro").classList.contains("active")){
+      playIntroMusic();
+    } else {
+      playThemeMusic();
+    }
   }
 }
 
@@ -1257,6 +1284,7 @@ function startNewGame(){
 
 function initIntro(){
   checkIntroSave();
+  playIntroMusic();
   const newGameBtn=document.getElementById("btn-new-game");
   if(newGameBtn){
     newGameBtn.addEventListener("click",function(e){
@@ -1317,7 +1345,7 @@ function shakeBall(){
   if(G.shakes===3)setTimeout(openBall,500);
 }
 
-function startWorld(){G.wi=0;G.ni=0;ss("world");renderWorld();}
+function startWorld(){G.wi=0;G.ni=0;ss("world");playThemeMusic();renderWorld();}
 function renderWorld(){updateHUD();renderMap();}
 function updateHUD(){
   const lead=G.team[0];
@@ -2069,6 +2097,7 @@ function endBattle(result){
     savePokedex();
     ss("intro");
     checkIntroSave();
+    playIntroMusic();
     const menu=document.getElementById("intro-menu");
     const pokeball=document.getElementById("intro-pokeball");
     if(menu)menu.style.display="block";
