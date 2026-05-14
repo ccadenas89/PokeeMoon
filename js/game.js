@@ -1237,81 +1237,58 @@ function _setupFirstInteraction(){
   document.addEventListener("keydown",_onFirstInteraction,{once:true});
 }
 
+function _playMusic(el){
+  if(!el)return;
+  _musicUnlocked=true;
+  const p=el.play();
+  updateMusicButton(true);
+  if(p&&p.catch)p.catch(()=>{
+    _musicUnlocked=false;
+    updateMusicButton(false);
+    _setupFirstInteraction();
+  });
+}
+
 function playIntroMusic(){
   const intro = document.getElementById("bg-music-intro");
   const theme = document.getElementById("bg-music-theme");
-  if(!intro || !theme) return;
-  intro.volume = 0.18;
-  theme.pause();
-  theme.currentTime = 0;
-  const playPromise = intro.play();
-  if(playPromise && playPromise.then && playPromise.catch){
-    playPromise.then(()=>{
-      _musicUnlocked=true;
-      updateMusicButton(true);
-    }).catch(()=>{
-      updateMusicButton(false);
-      _setupFirstInteraction();
-    });
-  }
+  if(!intro||!theme)return;
+  intro.volume=0.18;
+  theme.pause();theme.currentTime=0;
+  _playMusic(intro);
 }
 
 function playThemeMusic(){
-  const intro = document.getElementById("bg-music-intro");
-  const theme = document.getElementById("bg-music-theme");
-  const battle = document.getElementById("bg-music-battle");
-  if(!intro || !theme || !battle) return;
-  intro.pause();
-  intro.currentTime = 0;
-  battle.pause();
-  battle.currentTime = 0;
-  theme.volume = 0.18;
-  const playPromise = theme.play();
-  if(playPromise && playPromise.then && playPromise.catch){
-    playPromise.then(()=>{
-      _musicUnlocked=true;
-      updateMusicButton(true);
-    }).catch(()=>{
-      updateMusicButton(false);
-      _setupFirstInteraction();
-    });
-  }
+  const intro=document.getElementById("bg-music-intro");
+  const theme=document.getElementById("bg-music-theme");
+  const battle=document.getElementById("bg-music-battle");
+  if(!intro||!theme||!battle)return;
+  intro.pause();intro.currentTime=0;
+  battle.pause();battle.currentTime=0;
+  theme.volume=0.18;
+  _playMusic(theme);
 }
 
 function stopMusic(){
-  const intro = document.getElementById("bg-music-intro");
-  const theme = document.getElementById("bg-music-theme");
-  const battle = document.getElementById("bg-music-battle");
-  if(!intro || !theme || !battle) return;
-  intro.pause();
-  intro.currentTime = 0;
-  theme.pause();
-  theme.currentTime = 0;
-  battle.pause();
-  battle.currentTime = 0;
+  const i=document.getElementById("bg-music-intro");
+  const t=document.getElementById("bg-music-theme");
+  const b=document.getElementById("bg-music-battle");
+  if(!i||!t||!b)return;
+  i.pause();i.currentTime=0;
+  t.pause();t.currentTime=0;
+  b.pause();b.currentTime=0;
   updateMusicButton(false);
 }
 
 function playBattleMusic(){
-  const intro = document.getElementById("bg-music-intro");
-  const theme = document.getElementById("bg-music-theme");
-  const battle = document.getElementById("bg-music-battle");
-  if(!intro || !theme || !battle) return;
-  intro.pause();
-  intro.currentTime = 0;
-  theme.pause();
-  theme.currentTime = 0;
-  battle.volume = 0.18;
-  const playPromise = battle.play();
-  if(playPromise && playPromise.then && playPromise.catch){
-    playPromise.then(()=>{
-      _musicUnlocked=true;
-      updateMusicButton(true);
-    }).catch(()=>{
-      updateMusicButton(false);
-      _setupFirstInteraction();
-    });
-  }
+  const intro=document.getElementById("bg-music-intro");
+  const theme=document.getElementById("bg-music-theme");
+  const battle=document.getElementById("bg-music-battle");
+  if(!intro||!theme||!battle)return;
+  intro.pause();intro.currentTime=0;
+  theme.pause();theme.currentTime=0;
+  battle.volume=0.18;
+  _playMusic(battle);
 }
 
 function toggleMusic(){
