@@ -1414,9 +1414,18 @@ function renderMap(){
   });
   const prog=document.createElement("div");
   prog.style.cssText="font-size:11px;color:var(--color-text-secondary);text-align:center;padding:8px 0 2px;";
-  const progress=getRemainingProgress(cur);
-  prog.textContent=`Medallas restantes ${progress.badges} · Ligas restantes ${progress.leagues}`;
+  const completedLeagues = getCompletedLeagues(cur);
+  prog.textContent=`Medallas obtenidas ${G.badges}/67 · Ligas superadas ${completedLeagues}/9`;
   m.appendChild(prog);
+}
+
+function getCompletedLeagues(cur){
+  const flat=[];WORLD.forEach(reg=>reg.nodes.forEach(node=>flat.push(node)));
+  let leagues=0;
+  for(let i=0;i<cur;i++){
+    if(flat[i]?.t==="league") leagues++;
+  }
+  return leagues;
 }
 
 function addRouteBattleCount(ri,ni,type){
