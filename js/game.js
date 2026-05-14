@@ -1247,8 +1247,6 @@ function enterNode(ri,ni){
   const node=WORLD[ri].nodes[ni];
   if(node.t==="town"){
     healTeam();
-    const nextGymNode=findNextGym(ri,ni);
-    const needsTraining=nextGymNode&&isUnderleveledForGym(nextGymNode.gd);
     if(node.id==="paleta"&&!G._paletaGiftReceived&&Math.random()<0.5){
       G._paletaGiftReceived=true;
       const otherPoke=BASE_POKEMON.filter(p=>p.n!==G.team[0].name);
@@ -1259,12 +1257,12 @@ function enterNode(ri,ni){
       else G.pc.push(giftPoke);
       G.caught.add(giftData.n);
       savePokedex();saveGame();
-      const tc={planta:"#EAF3DE",fuego:"#FAEEDA",agua:"#E6F1FB",eléctrico:"#FAEEDA",normal:"#F1EFE8"};
-      const giftMsg=`Tu madre te regala un ${giftData.n} para tu largo viaje.`;
-      showShop(ri,ni,function(){nextNode(ri,ni);},"🎁 "+giftMsg,needsTraining,nextGymNode);
-      setTimeout(()=>loadSpriteForShop(giftData.n,giftData.s),100);
+      showGiftScreen(giftData,ri,ni);
     } else{
       saveGame();
+      const isGymTown=hasGymAhead(ri,ni);
+      const nextGymNode=isGymTown?findNextGym(ri,ni):null;
+      const needsTraining=nextGymNode&&isUnderleveledForGym(nextGymNode.gd);
       const msg=needsTraining?"🏋️ Equipo curado. ¡Entrena antes del gimnasio!":"🏡 Equipo curado.";
       showShop(ri,ni,function(){nextNode(ri,ni);},msg,needsTraining,nextGymNode);
     }
@@ -1272,6 +1270,49 @@ function enterNode(ri,ni){
   else if(node.t==="route"||node.t==="cave")showRoulette(ri,ni);
   else if(node.t==="gym")showGymPreview(node.gd,ri,ni);
   else if(node.t==="league")startLeague(node.ld,ri,ni);
+}
+
+function hasGymAhead(ri,ni){
+  const world=WORLD[ri];
+  if(!world)return false;
+  for(let i=ni+1;i<world.nodes.length;i++){
+    if(world.nodes[i].t==="gym")return true;
+  }
+  if(ri+1<WORLD.length){
+    for(let i=0;i<WORLD[ri+1].nodes.length;i++){
+      if(WORLD[ri+1].nodes[i].t==="gym")return true;
+    }
+  }
+  return false;
+}
+
+let _giftData=null,_giftRi=0,_giftNi=0;
+function showGiftScreen(giftData,ri,ni){
+  _giftData=giftData;
+  _giftRi=ri;
+  _giftNi=ni;
+  const id=PKID[giftData.n];
+  const spriteUrl=id?`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`:null;
+  let html=`<div style="padding:20px;text-align:center">
+    <div style="font-size:48px;margin-bottom:16px">🎁</div>
+    <h2 style="margin:0 0 8px">¡Regalo de mamá!</h2>
+    <p style="font-size:14px;color:var(--color-text-secondary);margin-bottom:16px">Tu madre te regala un Pokémon para tu largo viaje.</p>
+    <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:20px;margin-bottom:16px">
+      ${spriteUrl?`<img src="${spriteUrl}" style="width:96px;height:96px;image-rendering:pixelated" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="font-size:64px;display:none">${giftData.s}</span>`:`<span style="font-size:64px">${giftData.s}</span>`}
+      <div style="font-size:18px;font-weight:600;margin-top:8px">${giftData.n}</div>
+      <div style="font-size:13px;color:var(--color-text-secondary)">${giftData.t}</div>
+    </div>
+    <button onclick="closeGiftScreen()" style="font-size:14px;padding:10px 24px">¡Gracias mamá! →</button>
+  </div>`;
+  Screens.render("gift",html);
+  Screens.show("gift");
+}
+
+function closeGiftScreen(){
+  const isGymTown=hasGymAhead(_giftRi,_giftNi);
+  const nextGymNode=isGymTown?findNextGym(_giftRi,_giftNi):null;
+  const needsTraining=nextGymNode&&isUnderleveledForGym(nextGymNode.gd);
+  showShop(_giftRi,_giftNi,function(){nextNode(_giftRi,_giftNi);},"🎁 ¡"+_giftData.n+" se unió a tu equipo!",needsTraining,nextGymNode);
 }
 
 function showGymPreview(gd,ri,ni){
