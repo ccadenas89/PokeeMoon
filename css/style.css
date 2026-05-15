@@ -141,7 +141,7 @@ button{cursor:pointer}
 .ftr{display:flex;align-items:center;gap:10px;padding:5px 0;position:relative;z-index:1}
 .ftr.enemy{flex-direction:row-reverse;text-align:right}
 .battle-panel{position:absolute;z-index:2;background:rgba(232,228,220,0.92);border:1.5px solid #2C2C2A;border-radius:8px;padding:6px 12px}
-.battle-panel-enemy{top:8px;left:42%;right:6px;text-align:right}
+.battle-panel-enemy{top:8px;left:6px;right:44%}
 .battle-panel-player{top:55%;left:6px;right:44%}
 .ftr .sp{font-size:80px}.ftr .fi{flex:1}
 .fi .fn{font-size:14px;font-weight:500;color:var(--color-text-primary)}
