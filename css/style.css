@@ -316,3 +316,4 @@ button{cursor:pointer}
   .pkcard[draggable="true"]{cursor:pointer}
   .pkcard.drag-over{border:2px dashed #378ADD;background:#E6F1FB;transform:scale(1.05)}
 }
+
