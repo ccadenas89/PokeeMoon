@@ -68,7 +68,7 @@ body::before{
 
 /* ── SPRITE IMG HELPERS ── */
 .pk-sprite{image-rendering:pixelated;display:inline-block}
-.pk-sprite-battle{width:80px;height:80px;image-rendering:pixelated}
+.pk-sprite-battle{width:96px;height:96px;image-rendering:pixelated}
 .pk-sprite-sm{width:40px;height:40px;image-rendering:pixelated}
 .pk-sprite-md{width:56px;height:56px;image-rendering:pixelated}
 .pk-sprite-lg{width:64px;height:64px;image-rendering:pixelated}
@@ -124,6 +124,7 @@ button{cursor:pointer}
   position:relative;
   overflow:hidden;
   border-radius:var(--border-radius-lg);
+  padding-top:32px;
 }
 .battle-bg-img{
   position:absolute;
