@@ -1917,11 +1917,10 @@ function initBattle(msg){
   document.getElementById("b-catch-btn").style.display=b.canCatch?"inline":"none";
   document.getElementById("b-run-btn").style.display=(b.type==="gym"||b.type==="league"||b.type==="trainer")?"none":"inline";
   const bg=getBattleBg();
-  if(bg){
-    const el=document.querySelector("#s-battle .battle-bg");
-    if(el){
-      el.style.setProperty('--bg-img','url("'+bg+'")');
-    }
+  const bgImg=document.getElementById("b-bg-img");
+  if(bgImg){
+    if(bg){bgImg.src=bg;bgImg.style.display="";}
+    else bgImg.style.display="none";
   }
 }
 function renderBattle(msg){

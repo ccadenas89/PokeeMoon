@@ -3,6 +3,7 @@ function renderBattleScreen(){
     <div id="lvup-banner" class="lvup-banner"></div>
     <div class="battle-box">
       <div class="battle-bg">
+      <img id="b-bg-img" class="battle-bg-img" src="" alt="" style="display:none">
       <div class="ftr enemy">
         <div class="sp" id="b-es"></div>
         <div class="fi">
