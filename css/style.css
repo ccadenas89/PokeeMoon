@@ -133,7 +133,7 @@ button{cursor:pointer}
   background-image:var(--bg-img);
   background-size:cover;
   background-position:center;
-  height:80%;
+  clip-path:inset(0 0 20% 0);
   border-radius:var(--border-radius-lg);
 }
 .pk-sprite-battle{width:160px;height:160px;image-rendering:pixelated}
