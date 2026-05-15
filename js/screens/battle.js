@@ -4,24 +4,24 @@ function renderBattleScreen(){
     <div class="battle-box">
       <div class="battle-bg">
       <img id="b-bg-img" class="battle-bg-img" src="" alt="" style="display:none">
+      <div class="battle-panel battle-panel-enemy">
+        <div class="fn" id="b-en"></div>
+        <div class="fl" id="b-el"></div>
+        <div class="hpb"><div class="hpf" id="b-eh" style="background:#E24B4A"></div></div>
+        <div class="hpt" id="b-eht"></div>
+      </div>
       <div class="ftr enemy">
         <div class="sp" id="b-es"></div>
-        <div class="fi">
-          <div class="fn" id="b-en"></div>
-          <div class="fl" id="b-el"></div>
-          <div class="hpb"><div class="hpf" id="b-eh" style="background:#E24B4A"></div></div>
-          <div class="hpt" id="b-eht"></div>
-        </div>
       </div>
       <div class="divl"></div>
       <div class="ftr">
         <div class="sp" id="b-ps"></div>
-        <div class="fi">
-          <div class="fn" id="b-pn"></div>
-          <div class="fl" id="b-pl"></div>
-          <div class="hpb"><div class="hpf" id="b-ph" style="background:#639922"></div></div>
-          <div class="hpt" id="b-pht"></div>
-        </div>
+      </div>
+      <div class="battle-panel battle-panel-player">
+        <div class="fn" id="b-pn"></div>
+        <div class="fl" id="b-pl"></div>
+        <div class="hpb"><div class="hpf" id="b-ph" style="background:#639922"></div></div>
+        <div class="hpt" id="b-pht"></div>
       </div>
       </div>
     </div>
