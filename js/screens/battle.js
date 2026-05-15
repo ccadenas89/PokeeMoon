@@ -2,6 +2,7 @@ function renderBattleScreen(){
   return `
     <div id="lvup-banner" class="lvup-banner"></div>
     <div class="battle-box">
+      <div class="battle-bg">
       <div class="ftr enemy">
         <div class="sp" id="b-es"></div>
         <div class="fi">
@@ -20,6 +21,7 @@ function renderBattleScreen(){
           <div class="hpb"><div class="hpf" id="b-ph" style="background:#639922"></div></div>
           <div class="hpt" id="b-pht"></div>
         </div>
+      </div>
       </div>
     </div>
     <div class="blog" id="blog"></div>

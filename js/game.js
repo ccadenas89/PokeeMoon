@@ -1918,7 +1918,7 @@ function initBattle(msg){
   document.getElementById("b-run-btn").style.display=(b.type==="gym"||b.type==="league"||b.type==="trainer")?"none":"inline";
   const bg=getBattleBg();
   if(bg){
-    const el=document.querySelector("#s-battle .battle-box");
+    const el=document.querySelector("#s-battle .battle-bg");
     if(el){
       el.style.backgroundImage='url("'+bg+'")';
       el.style.backgroundSize="cover";

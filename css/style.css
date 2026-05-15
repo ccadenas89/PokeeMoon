@@ -119,14 +119,12 @@ button{cursor:pointer}
 .tabs{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap;justify-content:center}
 .tab{font-size:11px;padding:4px 10px;border-radius:var(--border-radius-md)}
 .tab.active{background:var(--color-background-secondary);font-weight:500}
-.battle-box{
-  background-color:var(--color-background-secondary);
+.battle-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:10px}
+.battle-bg{
   background-size:cover!important;
   background-position:center!important;
   border-radius:var(--border-radius-lg);
-  padding:14px;
-  margin-bottom:10px;
-  min-height:300px;
+  padding-bottom:20px;
 }
 .pk-sprite-battle{width:160px;height:160px;image-rendering:pixelated}
 .ftr{display:flex;align-items:center;gap:10px;padding:5px 0}
