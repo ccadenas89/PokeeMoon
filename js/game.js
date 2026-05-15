@@ -1918,10 +1918,12 @@ function initBattle(msg){
   document.getElementById("b-run-btn").style.display=(b.type==="gym"||b.type==="league"||b.type==="trainer")?"none":"inline";
   const bg=getBattleBg();
   if(bg){
-    const el=document.getElementById("s-battle");
-    el.style.backgroundImage='url("'+bg+'")';
-    el.style.backgroundSize="cover";
-    el.style.backgroundPosition="center";
+    const el=document.querySelector("#s-battle .battle-box");
+    if(el){
+      el.style.backgroundImage='url("'+bg+'")';
+      el.style.backgroundSize="cover";
+      el.style.backgroundPosition="center";
+    }
   }
 }
 function renderBattle(msg){
