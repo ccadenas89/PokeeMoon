@@ -132,7 +132,7 @@ button{cursor:pointer}
   left:0;
   right:0;
   width:100%;
-  height:90%;
+  height:85%;
   object-fit:cover;
   border-radius:var(--border-radius-lg);
   opacity:0.82;
