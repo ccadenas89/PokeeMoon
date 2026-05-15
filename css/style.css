@@ -138,9 +138,9 @@ button{cursor:pointer}
   opacity:0.82;
 }
 .pk-sprite-battle{width:160px;height:160px;image-rendering:pixelated}
-.ftr{display:flex;align-items:center;gap:10px;padding:5px 0;position:relative;z-index:1}
-.ftr.enemy{flex-direction:row-reverse;text-align:right}
-.ftr .sp{font-size:80px}.ftr .fi{flex:1}
+.ftr{display:flex;flex-direction:column-reverse;align-items:flex-start;gap:2px;padding:5px 8px;position:relative;z-index:1}
+.ftr.enemy{align-items:flex-end;text-align:right}
+.ftr .sp{font-size:80px}.ftr .fi{width:50%}
 .fi .fn{font-size:14px;font-weight:500;color:var(--color-text-primary)}
 .fi .fl{font-size:11px;color:var(--color-text-secondary)}
 .hpb{height:7px;background:#fff;border-radius:4px;margin-top:4px;overflow:hidden;border:1.5px solid #2C2C2A}
