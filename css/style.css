@@ -121,10 +121,20 @@ button{cursor:pointer}
 .tab.active{background:var(--color-background-secondary);font-weight:500}
 .battle-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:10px}
 .battle-bg{
-  background-size:cover!important;
-  background-position:center!important;
+  position:relative;
+  z-index:0;
   border-radius:var(--border-radius-lg);
-  padding-bottom:20px;
+}
+.battle-bg::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background-image:var(--bg-img);
+  background-size:cover;
+  background-position:center;
+  height:80%;
+  border-radius:var(--border-radius-lg);
 }
 .pk-sprite-battle{width:160px;height:160px;image-rendering:pixelated}
 .ftr{display:flex;align-items:center;gap:10px;padding:5px 0}

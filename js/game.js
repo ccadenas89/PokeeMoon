@@ -1920,9 +1920,7 @@ function initBattle(msg){
   if(bg){
     const el=document.querySelector("#s-battle .battle-bg");
     if(el){
-      el.style.backgroundImage='url("'+bg+'")';
-      el.style.backgroundSize="cover";
-      el.style.backgroundPosition="center";
+      el.style.setProperty('--bg-img','url("'+bg+'")');
     }
   }
 }
