@@ -1882,6 +1882,29 @@ function applySpecialItem(itemDef,qty){
 function itemContinue(){
   processLearnQueue(()=>nextNode(G._itemRi,G._itemNi));
 }
+function getBattleBg(){
+  const b=G.battle,base="assets/images/";
+  if(b.type==="gym") return base+"gim1.png";
+  if(b.type==="league") return base+"liga1.png";
+  if(b.type==="trainer") return base+"entrenador1.png";
+  if(b.type==="fish"){
+    const pool=["agua1.png","agua2.png","agua3.png"];
+    return base+pool[Math.floor(Math.random()*pool.length)];
+  }
+  if(b.type==="wild"){
+    const ri=b.ri,ni=b.ni;
+    if(ri!==void 0&&ni!==void 0){
+      const node=WORLD[ri]&&WORLD[ri].nodes[ni];
+      if(node&&node.t==="cave"){
+        const pool=["cueva1.png","cueva2.png","cueva3.png"];
+        return base+pool[Math.floor(Math.random()*pool.length)];
+      }
+    }
+    const pool=["normal1.png","normal2.png","normal3.png"];
+    return base+pool[Math.floor(Math.random()*pool.length)];
+  }
+  return "";
+}
 function initBattle(msg){
   Screens.render("battle",renderBattleScreen());
   const btype=G.battle.type;
@@ -1893,6 +1916,13 @@ function initBattle(msg){
   const b=G.battle;
   document.getElementById("b-catch-btn").style.display=b.canCatch?"inline":"none";
   document.getElementById("b-run-btn").style.display=(b.type==="gym"||b.type==="league"||b.type==="trainer")?"none":"inline";
+  const bg=getBattleBg();
+  if(bg){
+    const el=document.getElementById("s-battle");
+    el.style.backgroundImage='url("'+bg+'")';
+    el.style.backgroundSize="cover";
+    el.style.backgroundPosition="center";
+  }
 }
 function renderBattle(msg){
   const b=G.battle,player=G.team.find(p=>p.hp>0);

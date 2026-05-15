@@ -119,6 +119,12 @@ button{cursor:pointer}
 .tabs{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap;justify-content:center}
 .tab{font-size:11px;padding:4px 10px;border-radius:var(--border-radius-md)}
 .tab.active{background:var(--color-background-secondary);font-weight:500}
+#s-battle{
+  background-size:cover!important;
+  background-position:center!important;
+  border-radius:var(--border-radius-lg);
+  min-height:300px;
+}
 .battle-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:10px}
 .ftr{display:flex;align-items:center;gap:10px;padding:5px 0}
 .ftr.enemy{flex-direction:row-reverse;text-align:right}
