@@ -127,9 +127,11 @@ button{cursor:pointer}
 }
 .battle-bg-img{
   position:absolute;
-  inset:0;
+  top:0;
+  left:0;
+  right:0;
   width:100%;
-  height:100%;
+  height:78%;
   object-fit:cover;
   border-radius:var(--border-radius-lg);
   opacity:0.82;

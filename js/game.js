@@ -1917,11 +1917,9 @@ function initBattle(msg){
   document.getElementById("b-catch-btn").style.display=b.canCatch?"inline":"none";
   document.getElementById("b-run-btn").style.display=(b.type==="gym"||b.type==="league"||b.type==="trainer")?"none":"inline";
   const bg=getBattleBg();
-  console.log("[BATTLE BG] type:", G.battle.type, "bg:", bg);
   const bgImg=document.getElementById("b-bg-img");
-  console.log("[BATTLE BG] imgEl:", bgImg, "display:", bgImg&&bgImg.style.display);
   if(bgImg){
-    if(bg){bgImg.src=bg;bgImg.style.display="block";console.log("[BATTLE BG] src set to:", bgImg.src);}
+    if(bg){bgImg.src=bg;bgImg.style.display="block";}
     else bgImg.style.display="none";
   }
 }
