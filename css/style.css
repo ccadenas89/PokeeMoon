@@ -308,6 +308,7 @@ button{cursor:pointer}
   .rou-wheel{width:140px;height:140px}
 }
 
+
 @media(min-width:481px) and (max-width:768px){
   #app{max-width:600px;padding:12px}
   .team-grid .pkcard .pk-sprite-lg{width:52px;height:52px}
