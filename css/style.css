@@ -125,7 +125,7 @@ button{cursor:pointer}
   position:relative;
   overflow:hidden;
   border-radius:var(--border-radius-lg);
-  padding-top:32px;
+  padding-top:38px;
 }
 .battle-bg-img{
   position:absolute;
@@ -133,12 +133,12 @@ button{cursor:pointer}
   left:0;
   right:0;
   width:100%;
-  height:85%;
+  height:90%;
   object-fit:cover;
   border-radius:var(--border-radius-lg);
   opacity:0.82;
 }
-.pk-sprite-battle{width:96px;height:96px;image-rendering:pixelated}
+.pk-sprite-battle{width:116px;height:116px;image-rendering:pixelated}
 .ftr{display:flex;align-items:center;gap:10px;padding:5px 0;position:relative;z-index:1}
 .ftr.enemy{flex-direction:row-reverse;text-align:right}
 .battle-panel{position:absolute;z-index:2;background:rgba(232,228,220,0.92);border:1.5px solid #2C2C2A;border-radius:8px;padding:6px 12px}
