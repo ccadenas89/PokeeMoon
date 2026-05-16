@@ -150,7 +150,7 @@ button{cursor:pointer}
 .hpf{height:100%;border-radius:4px;transition:width 0.35s}
 .hpt{font-size:10px;color:var(--color-text-secondary);margin-top:1px}
 .divl{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:7px 0;position:relative;z-index:1}
-.blog{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:9px 12px;min-height:48px;font-size:13px;color:var(--color-text-primary);line-height:1.5;margin-bottom:8px}
+.blog{display:none}
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:7px}
 .mbtn{padding:7px 10px;font-size:12px;border-radius:var(--border-radius-md);text-align:left}
 .mbtn .mp{font-size:9px;opacity:0.6;display:block;margin-top:1px}
