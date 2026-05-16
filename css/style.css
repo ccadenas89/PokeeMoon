@@ -65,6 +65,7 @@ body::before{
 /* ── SCREEN VISIBILITY ── */
 #app .screen{display:none!important}
 #app .screen.active{display:block!important}
+#s-battle.active{display:flex!important;flex-direction:column;min-height:calc(100vh - 20px)}
 
 /* ── SPRITE IMG HELPERS ── */
 .pk-sprite{image-rendering:pixelated;display:inline-block}
@@ -119,7 +120,7 @@ button{cursor:pointer}
 .tabs{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap;justify-content:center}
 .tab{font-size:11px;padding:4px 10px;border-radius:var(--border-radius-md)}
 .tab.active{background:var(--color-background-secondary);font-weight:500}
-.battle-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:10px}
+.battle-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;margin-bottom:6px}
 .battle-bg{
   position:relative;
   overflow:hidden;
@@ -151,8 +152,9 @@ button{cursor:pointer}
 .hpt{font-size:10px;color:var(--color-text-secondary);margin-top:1px}
 .divl{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:7px 0;position:relative;z-index:1}
 .blog{display:none}
-.b-actions{display:flex;gap:5px}
-.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;flex:1}
+#b-main{flex:1;display:flex;align-items:stretch}
+.b-actions{display:flex;gap:5px;flex:1;align-items:stretch}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;flex:1;align-content:start}
 .bgrid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:5px;flex:1}
 .bgrid button{height:100%;min-height:36px}
 .mbtn{padding:7px 10px;font-size:12px;border-radius:var(--border-radius-md);text-align:left}
