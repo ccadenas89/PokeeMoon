@@ -65,7 +65,7 @@ body::before{
 /* ── SCREEN VISIBILITY ── */
 #app .screen{display:none!important}
 #app .screen.active{display:block!important}
-#s-battle.active{display:flex!important;flex-direction:column;height:calc(100vh - 20px);overflow:hidden}
+#s-battle.active{display:flex!important;flex-direction:column;height:60vh;overflow:hidden}
 
 /* ── SPRITE IMG HELPERS ── */
 .pk-sprite{image-rendering:pixelated;display:inline-block}
@@ -138,7 +138,7 @@ button{cursor:pointer}
   border-radius:var(--border-radius-lg);
   opacity:0.82;
 }
-.pk-sprite-battle{width:160px;height:160px;image-rendering:pixelated}
+.pk-sprite-battle{width:96px;height:96px;image-rendering:pixelated}
 .ftr{display:flex;align-items:center;gap:10px;padding:5px 0;position:relative;z-index:1}
 .ftr.enemy{flex-direction:row-reverse;text-align:right}
 .battle-panel{position:absolute;z-index:2;background:rgba(232,228,220,0.92);border:1.5px solid #2C2C2A;border-radius:8px;padding:6px 12px}

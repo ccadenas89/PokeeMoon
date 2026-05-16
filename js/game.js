@@ -311,14 +311,14 @@ function loadSpriteForShop(name,emoji){
   const el=document.getElementById("shop-sprite");
   if(!el)return;
   const id=PKID[name];
-  if(!id){el.textContent=emoji||"❓";return;}
+  if(!id){el.textContent='';return;}
   _shopSpriteId={n:name,s:emoji};
   const url=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
   const img=document.createElement("img");
   img.style.cssText="width:64px;height:64px;image-rendering:pixelated;display:none";
-  el.innerHTML=`<span style="font-size:32px">${emoji||"❓"}</span>`;
+  el.innerHTML='';
   el.appendChild(img);
-  img.onload=function(){el.querySelector("span").style.display="none";img.style.display="block";};
+  img.onload=function(){img.style.display="block";};
   img.onerror=function(){img.remove();};
   img.src=url;
 }
@@ -1591,22 +1591,18 @@ function showGiftScreen(giftData,ri,ni){
       if (artUrl || smlUrl) {
         const img=document.createElement("img");
         img.style.cssText="width:128px;height:128px;object-fit:contain;display:none;";
-        const span=document.createElement("span");
-        span.style.cssText="font-size:72px;display:none";
-        span.textContent=giftData.s;
         spriteEl.innerHTML="";
         spriteEl.appendChild(img);
-        spriteEl.appendChild(span);
         let tried=0;
         const urls=[artUrl,smlUrl].filter(Boolean);
         function tryNext(){
           img.onload=function(){img.style.display="block";};
-          img.onerror=function(){if(++tried<urls.length){img.src=urls[tried];}else{img.style.display="none";span.style.display="block";}};
+          img.onerror=function(){if(++tried<urls.length){img.src=urls[tried];}else{img.style.display="none";}};
           img.src=urls[tried];
         }
         tryNext();
       } else {
-        spriteEl.textContent=giftData.s;
+        spriteEl.textContent='';
       }
       nameEl.textContent = giftData.n;
       typeEl.textContent = giftData.t;
@@ -1941,14 +1937,14 @@ function initBattle(msg){
 function renderBattle(msg){
   const b=G.battle,player=G.team.find(p=>p.hp>0);
   if(!player){endBattle("lose");return;}
-  document.getElementById("b-es").textContent=b.e.s;
+  document.getElementById("b-es").textContent='';
   document.getElementById("b-en").textContent=b.e.name;
   document.getElementById("b-el").textContent="Nv."+b.e.level+" · "+b.e.type;
   const er=b.e.hp/b.e.maxHp;
   document.getElementById("b-eh").style.width=Math.max(0,er*100)+"%";
   document.getElementById("b-eh").style.background=HPcolor(er);
   document.getElementById("b-eht").textContent=b.e.hp+"/"+b.e.maxHp+" HP";
-  document.getElementById("b-ps").textContent=player.s;
+  document.getElementById("b-ps").textContent='';
   document.getElementById("b-pn").textContent=player.name;
   document.getElementById("b-pl").textContent="Nv."+player.level+" · "+player.type;
   const pr=player.hp/player.maxHp;
@@ -2064,7 +2060,7 @@ function bAct(a){
       const hpPct=Math.max(0,p.hp/p.maxHp*100);
       const hpCol=HPcolor(p.hp/p.maxHp);
       const disabled=p.hp<=0||isCurrent;
-      return`<div class="rnode" onclick="${disabled?'':'switchPokemon('+i+')'}" style="${disabled?'opacity:0.5;pointer-events:none':''}"><div class="nd"><div class="nn">${p.s} ${p.name}${isCurrent?' (actual)':''}</div><div class="ns">Nv.${p.level} · ${p.type}</div></div><div style="width:80px"><div class="hpb" style="height:8px"><div class="hpf" style="width:${hpPct}%;background:${hpCol}"></div></div><div style="font-size:10px;text-align:right">${p.hp}/${p.maxHp}</div></div></div>`;
+      return`<div class="rnode" onclick="${disabled?'':'switchPokemon('+i+')'}" style="${disabled?'opacity:0.5;pointer-events:none':''}"><div class="nd"><div class="nn">${p.name}${isCurrent?' (actual)':''}</div><div class="ns">Nv.${p.level} · ${p.type}</div></div><div style="width:80px"><div class="hpb" style="height:8px"><div class="hpf" style="width:${hpPct}%;background:${hpCol}"></div></div><div style="font-size:10px;text-align:right">${p.hp}/${p.maxHp}</div></div></div>`;
     }).join("");
   }
 }
@@ -2248,9 +2244,8 @@ function loadSpriteForResult(pokeName,fallbackEmoji){
     return;
   }
   console.log("Loading sprite for:",pokeName,"ID:",_pokeId);
-  // Empezar con ?
-  _rIco.style.fontSize="56px";
-  _rIco.textContent="❓";
+  _rIco.style.fontSize="0";
+  _rIco.textContent='';
   // Animación después de 1 segundo
   setTimeout(() => {
     _rIco.style.transition = "all 0.5s ease";
@@ -2282,9 +2277,8 @@ function loadSpriteForResult(pokeName,fallbackEmoji){
         if(++_tried<_urls.length){
           _img.src=_urls[_tried];
         }else{
-          console.warn("All sprite URLs failed, showing emoji fallback");
-          _rIco.style.fontSize="56px";
-          _rIco.textContent=fallbackEmoji||"❓";
+          console.warn("All sprite URLs failed");
+          _rIco.textContent='';
           // Habilitar botones en fallback
           const acts = document.getElementById("res-acts");
           if(acts){
@@ -2652,19 +2646,16 @@ function spriteUrl(name,size){
 
 function spriteImg(name,cls,alt){
   const url=spriteUrl(name);
-  if(!url)return`<span style="font-size:28px">${alt||"\u2753"}</span>`;
-  // Use a wrapper that shows emoji until image loads, hides emoji once img loads
-  const eid="e"+Math.random().toString(36).slice(2,9);
+  if(!url)return`<span style="font-size:14px;color:#aaa">?</span>`;
   const iid="i"+Math.random().toString(36).slice(2,9);
   setTimeout(()=>{
     const img=document.getElementById(iid);
-    const em=document.getElementById(eid);
-    if(!img||!em)return;
-    img.onload=function(){em.style.display="none";img.style.display="";};
-    img.onerror=function(){img.style.display="none";em.style.display="";};
+    if(!img)return;
+    img.onload=function(){img.style.display="";};
+    img.onerror=function(){img.style.display="none";};
     img.src=url;
   },0);
-  return`<span id="${eid}" style="font-size:24px">${alt||"\u2753"}</span><img id="${iid}" class="${cls||"pk-sprite-md"}" alt="${name}" style="display:none">`;
+  return`<img id="${iid}" class="${cls||"pk-sprite-md"}" alt="${name}" style="display:none">`;
 }
 
 /* ── SPAWN FLOATING BACKGROUND SPRITES ── */
@@ -2690,14 +2681,12 @@ function loadSpriteInto(elId,name,fallbackEmoji,flip){
   const url=spriteUrl(name);
   const el=document.getElementById(elId);
   if(!el)return;
-  if(!url){el.innerHTML=`<span style="font-size:44px">${fallbackEmoji||"\u2753"}</span>`;return;}
+  if(!url){el.innerHTML='';return;}
   const flipStyle=flip?"transform:scaleX(-1);":"";
-  el.innerHTML=`<span class="b-spr-em" style="font-size:44px">${fallbackEmoji||"\u2753"}</span>`
-    +`<img class="pk-sprite-battle b-spr-img" src="${url}" style="${flipStyle}display:none" alt="${name}">`;
+  el.innerHTML=`<img class="pk-sprite-battle b-spr-img" src="${url}" style="${flipStyle}display:none" alt="${name}">`;
   const img=el.querySelector(".b-spr-img");
-  const em=el.querySelector(".b-spr-em");
-  img.onload=function(){em.style.display="none";img.style.display="";};
-  img.onerror=function(){img.style.display="none";em.style.display="";};
+  img.onload=function(){img.style.display="";};
+  img.onerror=function(){img.style.display="none";};
 }
 const _origRenderBattle=renderBattle;
 renderBattle=function(msg){
@@ -2765,7 +2754,7 @@ openBall=function(){
     const revealId="rspr"+Date.now();
     Screens.render("reveal",renderRevealScreen());
     document.getElementById("reveal-inner").innerHTML=`<div class="fadeup" style="padding:2rem 1rem;text-align:center">
-      <div id="${revealId}" style="width:128px;height:128px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;"><span style="font-size:72px">${sd.s}</span></div>
+      <div id="${revealId}" style="width:128px;height:128px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;"></div>
       <h2 style="margin-bottom:4px">¡${sd.n}!</h2>
       <span style="display:inline-block;font-size:11px;padding:3px 10px;border-radius:12px;background:${tc[sd.t]||"#F1EFE8"};color:#444;margin:4px">${sd.t}</span>
       <p style="margin:10px 0 5px">Nv.5 · HP: ${p.maxHp} · Ataque: ${p.atk}</p>
@@ -2782,7 +2771,7 @@ openBall=function(){
         let tried=0;
         const urls=[artUrl,smlUrl];
         function tryNext(){
-          img.onload=function(){el.querySelector("span").style.display="none";img.style.display="block";};
+          img.onload=function(){img.style.display="block";};
           img.onerror=function(){if(++tried<urls.length){img.src=urls[tried];}};
           img.src=urls[tried];
         }
