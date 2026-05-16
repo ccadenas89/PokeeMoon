@@ -1,0 +1,80 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Sprites: descargar todos (1–898)",
+      "type": "shell",
+      "command": "python",
+      "args": ["download_sprites.py", "--start", "1", "--end", "898", "--output", "sprites/raw"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Sprites: descargar Kanto (1–151)",
+      "type": "shell",
+      "command": "python",
+      "args": ["download_sprites.py", "--start", "1", "--end", "151", "--output", "sprites/raw"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Sprites: alinear (una vez)",
+      "type": "shell",
+      "command": "python",
+      "args": ["align_sprites.py", "--once", "--input", "sprites/raw", "--output", "sprites/aligned", "--tile", "64"],
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Sprites: watcher (tiempo real)",
+      "type": "shell",
+      "command": "python",
+      "args": ["align_sprites.py", "--watch", "--input", "sprites/raw", "--output", "sprites/aligned", "--tile", "64"],
+      "group": "build",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^\\[align\\].*ERROR.*$"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^\\[align\\] Watching",
+          "endsPattern": "^\\[align\\] Watcher detenido"
+        }
+      }
+    },
+    {
+      "label": "Sprites: descargar + alinear todo",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Sprites: descargar todos (1–898)",
+        "Sprites: alinear (una vez)"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}

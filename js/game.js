@@ -2678,15 +2678,17 @@ function spriteImg(name,cls,alt){
 
 /* ── PATCH RENDER FUNCTIONS TO USE SPRITES ── */
 function loadSpriteInto(elId,name,fallbackEmoji,flip){
-  const url=spriteUrl(name);
+  const id=PKID[name];
   const el=document.getElementById(elId);
   if(!el)return;
-  if(!url){el.innerHTML='';return;}
+  if(!id){el.innerHTML='';return;}
   const flipStyle=flip?"transform:scaleX(-1);":"";
-  el.innerHTML=`<img class="pk-sprite-battle b-spr-img" src="${url}" style="${flipStyle}display:none" alt="${name}">`;
+  const localUrl=`sprites/aligned/${id}.png`;
+  const remoteUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+  el.innerHTML=`<img class="pk-sprite-battle b-spr-img" src="${localUrl}" style="${flipStyle}display:none" alt="${name}">`;
   const img=el.querySelector(".b-spr-img");
   img.onload=function(){img.style.display="";};
-  img.onerror=function(){img.style.display="none";};
+  img.onerror=function(){img.src=remoteUrl;img.onerror=function(){img.style.display="none";};};
 }
 const _origRenderBattle=renderBattle;
 renderBattle=function(msg){
