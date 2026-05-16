@@ -1914,8 +1914,8 @@ function initBattle(msg){
   Screens.show("battle");
   renderBattle(msg);
   const b=G.battle;
-  document.getElementById("b-catch-btn").style.display=b.canCatch?"inline":"none";
-  document.getElementById("b-run-btn").style.display=(b.type==="gym"||b.type==="league"||b.type==="trainer")?"none":"inline";
+  document.getElementById("b-catch-btn").disabled=!b.canCatch;
+  document.getElementById("b-run-btn").disabled=(b.type==="gym"||b.type==="league"||b.type==="trainer");
   const bg=getBattleBg();
   const bgImg=document.getElementById("b-bg-img");
   if(bgImg){

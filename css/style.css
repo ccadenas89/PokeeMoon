@@ -151,10 +151,12 @@ button{cursor:pointer}
 .hpt{font-size:10px;color:var(--color-text-secondary);margin-top:1px}
 .divl{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:7px 0;position:relative;z-index:1}
 .blog{display:none}
-.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:7px}
+.b-actions{display:flex;gap:5px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;flex:1}
+.bgrid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:5px;flex:1}
+.bgrid button{height:100%;min-height:36px}
 .mbtn{padding:7px 10px;font-size:12px;border-radius:var(--border-radius-md);text-align:left}
 .mbtn .mp{font-size:9px;opacity:0.6;display:block;margin-top:1px}
-.arow{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
 .pkcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:6px;text-align:center;font-size:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
 .pkcard .ps{font-size:24px;display:block;margin-bottom:1px}
 .pkcard .pn{font-weight:500;color:var(--color-text-primary);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}

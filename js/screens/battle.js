@@ -27,12 +27,14 @@ function renderBattleScreen(){
     </div>
     <div class="blog" id="blog"></div>
     <div id="b-main">
-      <div class="mgrid" id="bmoves"></div>
-      <div class="arow">
-        <button onclick="bAct('bag')">Mochila</button>
-        <button onclick="bAct('team')">Equipo</button>
-        <button id="b-catch-btn" onclick="bAct('catch')">Poké Ball</button>
-        <button onclick="bAct('run')" id="b-run-btn">Huir</button>
+      <div class="b-actions">
+        <div class="mgrid" id="bmoves"></div>
+        <div class="bgrid">
+          <button onclick="bAct('bag')">Mochila</button>
+          <button id="b-catch-btn" onclick="bAct('catch')">Poké Ball</button>
+          <button onclick="bAct('team')">Equipo</button>
+          <button onclick="bAct('run')" id="b-run-btn">Huir</button>
+        </div>
       </div>
     </div>
     <div id="b-bag-panel" style="display:none">
