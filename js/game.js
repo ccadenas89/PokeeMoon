@@ -60,6 +60,7 @@ const FISH=[
   {n:"Inkay",s:"🦑",t:"siniestro",hp:53,atk:54},{n:"Arrokuda",s:"🐟",t:"agua",hp:41,atk:63},
   {n:"Dracovish",s:"🦈",t:"agua",hp:90,atk:90},{n:"Clauncher",s:"🦐",t:"agua",hp:50,atk:53},
 ];
+const LEGENDARY_MYTHICAL=new Set(["Articuno","Zapdos","Moltres","Mewtwo","Mew","Raikou","Entei","Suicune","Lugia","Ho-Oh","Celebi","Regirock","Regice","Registeel","Latias","Latios","Kyogre","Groudon","Rayquaza","Jirachi","Deoxys","Uxie","Mesprit","Azelf","Dialga","Palkia","Heatran","Regigigas","Giratina","Cresselia","Phione","Manaphy","Darkrai","Shaymin","Arceus","Cobalion","Terrakion","Virizion","Tornadus","Thundurus","Reshiram","Zekrom","Landorus","Kyurem","Keldeo","Meloetta","Genesect","Xerneas","Yveltal","Zygarde","Diancie","Hoopa","Volcanion","Solgaleo","Lunala","Nihilego","Buzzwole","Pheromosa","Xurkitree","Celesteela","Kartana","Guzzlord","Necrozma","Magearna","Marshadow","Poipole","Naganadel","Stakataka","Blacephalon","Zeraora","Zacian","Zamazenta","Eternatus","Kubfu","Urshifu","Zarude","Regieleki","Regidrago","Glastrier","Spectrier","Calyrex","Enamorus","Koraidon","Miraidon","Wo-Chien","Chien-Pao","Ting-Lu","Chi-Yu","Roaring Moon","Iron Valiant","Gouging Fire","Raging Bolt","Iron Boulder","Iron Crown","Terapagos","Pecharunt"]);
 const BASE_POKEMON=[
   {n:"Bulbasaur",s:"🌿",t:"planta",hp:45,atk:49,mv:["Látigo cepa","Polvo veneno","Drenadoras","Rayo solar"]},
   {n:"Charmander",s:"🔥",t:"fuego",hp:39,atk:52,mv:["Ascuas","Rasguño","Lanzallamas","Garra dragón"]},
@@ -1483,7 +1484,7 @@ function enterNode(ri,ni){
   if(node.t==="town"){
     if(node.id==="paleta"&&!G._paletaGiftReceived&&Math.random()<0.5){
       G._paletaGiftReceived=true;
-      const otherPoke=BASE_POKEMON.filter(p=>p.n!==G.team[0].name);
+      const otherPoke=BASE_POKEMON.filter(p=>p.n!==G.team[0].name&&!LEGENDARY_MYTHICAL.has(p.n));
       const giftData=otherPoke[Math.floor(Math.random()*otherPoke.length)];
       const giftPoke=mkPoke(giftData,5);
       giftPoke.hp=giftPoke.maxHp;
@@ -1564,13 +1565,14 @@ function showGiftScreen(giftData,ri,ni){
   _giftRi=ri;
   _giftNi=ni;
   const id=PKID[giftData.n];
-  const spriteUrl=id?`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`:null;
+  const artUrl=id?`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`:null;
+  const smlUrl=id?`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`:null;
   let html=`<div style="padding:20px;text-align:center">
     <div style="font-size:48px;margin-bottom:16px">🎁</div>
     <h2 style="margin:0 0 8px">¡Regalo de mamá!</h2>
     <p style="font-size:14px;color:var(--color-text-secondary);margin-bottom:16px">Tu madre te regala un Pokémon para tu largo viaje.</p>
     <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:20px;margin-bottom:16px">
-      <div id="gift-sprite" style="font-size:64px">❓</div>
+      <div id="gift-sprite" style="font-size:72px;width:128px;height:128px;margin:0 auto;display:flex;align-items:center;justify-content:center;">❓</div>
       <div id="gift-name" style="font-size:18px;font-weight:600;margin-top:8px">???</div>
       <div style="font-size:13px;color:var(--color-text-secondary)">???</div>
     </div>
@@ -1578,7 +1580,6 @@ function showGiftScreen(giftData,ri,ni){
   </div>`;
   Screens.render("gift",html);
   Screens.show("gift");
-  // Animación de revelación
   setTimeout(() => {
     const spriteEl = document.getElementById("gift-sprite");
     const nameEl = document.getElementById("gift-name");
@@ -1587,14 +1588,28 @@ function showGiftScreen(giftData,ri,ni){
     spriteEl.style.transform = "scale(1.2)";
     setTimeout(() => {
       spriteEl.style.transform = "scale(1)";
-      if (spriteUrl) {
-        spriteEl.innerHTML = `<img src="${spriteUrl}" style="width:96px;height:96px;image-rendering:pixelated" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="font-size:64px;display:none">${giftData.s}</span>`;
+      if (artUrl || smlUrl) {
+        const img=document.createElement("img");
+        img.style.cssText="width:128px;height:128px;object-fit:contain;display:none;";
+        const span=document.createElement("span");
+        span.style.cssText="font-size:72px;display:none";
+        span.textContent=giftData.s;
+        spriteEl.innerHTML="";
+        spriteEl.appendChild(img);
+        spriteEl.appendChild(span);
+        let tried=0;
+        const urls=[artUrl,smlUrl].filter(Boolean);
+        function tryNext(){
+          img.onload=function(){img.style.display="block";};
+          img.onerror=function(){if(++tried<urls.length){img.src=urls[tried];}else{img.style.display="none";span.style.display="block";}};
+          img.src=urls[tried];
+        }
+        tryNext();
       } else {
-        spriteEl.textContent = giftData.s;
+        spriteEl.textContent=giftData.s;
       }
       nameEl.textContent = giftData.n;
       typeEl.textContent = giftData.t;
-      // Habilitar botón
       document.getElementById("gift-btn").disabled = false;
     }, 500);
   }, 1000);
@@ -2750,7 +2765,7 @@ openBall=function(){
     const revealId="rspr"+Date.now();
     Screens.render("reveal",renderRevealScreen());
     document.getElementById("reveal-inner").innerHTML=`<div class="fadeup" style="padding:2rem 1rem;text-align:center">
-      <div id="${revealId}" style="width:160px;height:160px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;"><span style="font-size:80px">${sd.s}</span></div>
+      <div id="${revealId}" style="width:128px;height:128px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;"><span style="font-size:72px">${sd.s}</span></div>
       <h2 style="margin-bottom:4px">¡${sd.n}!</h2>
       <span style="display:inline-block;font-size:11px;padding:3px 10px;border-radius:12px;background:${tc[sd.t]||"#F1EFE8"};color:#444;margin:4px">${sd.t}</span>
       <p style="margin:10px 0 5px">Nv.5 · HP: ${p.maxHp} · Ataque: ${p.atk}</p>
@@ -2762,7 +2777,7 @@ openBall=function(){
         const artUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
         const smlUrl=`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
         const img=document.createElement("img");
-        img.style.cssText="width:160px;height:160px;object-fit:contain;display:none;";
+        img.style.cssText="width:128px;height:128px;object-fit:contain;display:none;";
         el.appendChild(img);
         let tried=0;
         const urls=[artUrl,smlUrl];
